@@ -29,7 +29,13 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-6 left-4 right-4 z-50 max-w-[400px] mx-auto pb-safe pointer-events-none">
-      <nav className="flex items-center justify-around px-2 h-[72px] bg-white/60 backdrop-blur-xl border border-black/5 rounded-[36px] shadow-[0_8px_32px_rgba(0,0,0,0.08)] relative pointer-events-auto">
+      <nav 
+        className="flex items-center justify-around px-2 h-[72px] bg-white/60 backdrop-blur-xl border border-black/5 rounded-[36px] shadow-[0_8px_32px_rgba(0,0,0,0.08)] relative pointer-events-auto"
+        style={{
+          WebkitMaskImage: "radial-gradient(circle at 50% 12px, transparent 42px, black 43px)",
+          maskImage: "radial-gradient(circle at 50% 12px, transparent 42px, black 43px)"
+        }}
+      >
         {navItems.map((item, idx) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -37,10 +43,9 @@ export function BottomNav() {
           if (item.isPrimary) {
             return (
               <div key={item.href} className="relative h-full flex items-center justify-center w-20">
-                {/* The Cutout Illusion using a thick border matching the app background */}
                 <Link
                   href={item.href}
-                  className="absolute -top-5 flex flex-col items-center justify-center w-[72px] h-[72px] bg-[#16A34A] rounded-full border-[6px] border-[#F8FAF9] shadow-[0_4px_16px_rgba(22,163,74,0.4)] text-white hover:bg-[#15803d] transition-transform active:scale-95 group"
+                  className="absolute -top-6 flex flex-col items-center justify-center w-[72px] h-[72px] bg-[#16A34A] rounded-full shadow-[0_4px_16px_rgba(22,163,74,0.4)] text-white hover:bg-[#15803d] transition-transform active:scale-95 group"
                 >
                   <Icon className="w-8 h-8 stroke-[2] group-hover:scale-110 transition-transform" />
                   <span className="sr-only">{item.label}</span>
