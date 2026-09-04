@@ -29,7 +29,7 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-6 left-4 right-4 z-50 max-w-[400px] mx-auto pb-safe pointer-events-none">
-      <nav className="flex items-center justify-around px-2 h-[72px] bg-[#14532D] rounded-[36px] shadow-[0_8px_32px_rgba(20,83,45,0.4)] relative pointer-events-auto">
+      <nav className="flex items-center justify-around px-2 h-[72px] bg-[#14532D]/70 backdrop-blur-xl border border-white/10 rounded-[36px] shadow-[0_8px_32px_rgba(20,83,45,0.4)] relative pointer-events-auto">
         {navItems.map((item, idx) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
