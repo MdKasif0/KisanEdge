@@ -739,12 +739,12 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
       {/* Background with subtle botanical hints */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         <img 
-          src="/loc-bg-placeholder.png" 
+          src="/notif-bg.png" 
           alt="" 
-          className="absolute bottom-0 left-0 w-full h-[60vh] object-cover object-bottom opacity-40 mix-blend-multiply" 
+          className="absolute bottom-0 left-0 w-full h-[80vh] object-cover object-bottom opacity-60 mix-blend-multiply" 
           style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f8faf9] via-[#f8faf9]/80 to-transparent h-[70%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f8faf9] via-[#f8faf9]/70 to-transparent h-[50%]" />
       </div>
 
       {/* Brand Header & Progress */}
@@ -775,57 +775,15 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
         </div>
       </div>
 
-      {/* Main Hero Visual (CSS Built) */}
-      <div className="relative z-10 flex-1 flex justify-center items-center w-full px-4 sm:px-6 min-h-[160px] py-4">
+      {/* Main Hero Visual */}
+      <div className="relative z-10 flex-1 flex justify-center items-center w-full px-4 sm:px-6 min-h-[140px] py-2 sm:py-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] flex items-center justify-center"
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[420px] h-full max-h-[300px] flex items-center justify-center pointer-events-none mix-blend-multiply mx-auto"
         >
-          {/* Subtle radial green tint / glow */}
-          <div className="absolute inset-0 bg-[#dcfce7] rounded-full blur-[20px] opacity-60 scale-125" />
-          
-          {/* Signal ripple rings */}
-          <motion.div 
-            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 border-2 border-[#16a34a]/30 rounded-full scale-110" 
-          />
-          <motion.div 
-            animate={{ scale: [1.1, 1.5, 1.1], opacity: [0.3, 0, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute inset-0 border-2 border-[#16a34a]/20 rounded-full scale-125" 
-          />
-
-          {/* Main Circular Container */}
-          <div className="relative w-full h-full bg-gradient-to-tr from-[#f0fdf4] to-white rounded-full flex items-center justify-center shadow-[0_12px_32px_rgba(22,163,74,0.12)] border-2 border-white">
-            <Bell className="w-16 h-16 sm:w-20 sm:h-20 text-[#16a34a] stroke-[1.5]" />
-            
-            {/* Notification Dot */}
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.8, type: "spring" }}
-              className="absolute top-[28%] right-[30%] w-4 h-4 bg-[#ef4444] rounded-full border-2 border-white"
-            />
-          </div>
-
-          {/* Floating tiny leaves/sparkles */}
-          <motion.div 
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -left-2 rotate-[-20deg]"
-          >
-            <Leaf className="w-5 h-5 text-[#16a34a]/60" />
-          </motion.div>
-          <motion.div 
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-2 -right-4 rotate-[15deg]"
-          >
-            <Sparkles className="w-6 h-6 text-[#16a34a]/40" />
-          </motion.div>
+          <img src="/notif-hero.png" alt="" className="w-full h-full object-contain drop-shadow-none" />
         </motion.div>
       </div>
 
@@ -857,7 +815,7 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4]/80 backdrop-blur flex items-center justify-center mb-2 sm:mb-3">
             <Leaf className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
           <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
@@ -871,7 +829,7 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4]/80 backdrop-blur flex items-center justify-center mb-2 sm:mb-3">
             <CloudSun className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
           <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
@@ -885,7 +843,7 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4]/80 backdrop-blur flex items-center justify-center mb-2 sm:mb-3">
             <Droplet className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
           <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
