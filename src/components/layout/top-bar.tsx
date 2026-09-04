@@ -5,8 +5,16 @@ import { UserCircle, Bell, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/store/user-store";
 
+import { usePathname } from "next/navigation";
+
 export function TopBar() {
   const { location, name, role } = useUser();
+  const pathname = usePathname();
+
+  // Hide TopBar on pages that have their own custom headers
+  if (pathname === "/home" || pathname === "/scan" || pathname === "/results") {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#f8faf9]/90 backdrop-blur-md border-b border-gray-100">
