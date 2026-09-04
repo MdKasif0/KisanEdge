@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Camera, Upload, Zap, RefreshCcw, X, Scan } from "lucide-react";
+import { Camera, Upload, Zap, RefreshCcw, X, Scan, Image as ImageIcon, Sun, Maximize, Leaf, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "@/lib/store/user-store";
 import { useRouter } from "next/navigation";
 import { MOCK_DIAGNOSES } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 
 type ScanState = "idle" | "preview" | "analyzing";
 
@@ -25,6 +26,8 @@ export default function ScanPage() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [hasCamera, setHasCamera] = useState(true);
   const [analysisStep, setAnalysisStep] = useState(0);
+  const [isFlashActive, setIsFlashActive] = useState(false);
+  const [facingMode, setFacingMode] = useState<"environment" | "user">("environment");
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,16 +39,18 @@ export default function ScanPage() {
       startCamera();
     }
     return () => stopCamera();
-  }, [scanState]);
+  }, [scanState, facingMode]);
 
   const startCamera = async () => {
+    stopCamera(); // Stop any existing stream before starting a new one
+    
     if (typeof window === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       setHasCamera(false);
       return;
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
+        video: { facingMode }
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -76,6 +81,11 @@ export default function ScanPage() {
     
     const ctx = canvas.getContext("2d");
     if (ctx) {
+      // If using front camera, we should mirror the capture so it matches the preview
+      if (facingMode === "user") {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
       setImageSrc(dataUrl);
@@ -129,7 +139,7 @@ export default function ScanPage() {
         localStorage.setItem("kisanedge_scan_image", imageSrc);
         localStorage.setItem("kisanedge_scan_result", JSON.stringify(diagnosis));
       } catch (e) {
-        console.error("Failed to save to localStorage, image might be too large", e);
+        console.error("Failed to save to localStorage", e);
       }
     }
     
@@ -137,63 +147,110 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-black absolute inset-0 z-[100] overflow-hidden sm:bg-gray-900">
-      <div className="w-full h-full max-w-md mx-auto relative flex flex-col bg-black shadow-2xl overflow-hidden">
-        {/* Header */}
-        <header className="flex items-center justify-between p-4 z-20 absolute top-0 left-0 right-0 bg-gradient-to-b from-black/70 to-transparent pt-safe">
-          <Link href="/home">
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full">
-              <X className="w-6 h-6" />
-          </Button>
-        </Link>
-        <div className="flex flex-col items-center">
-          <h1 className="text-white font-bold text-lg">Scan your plant</h1>
-        </div>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full">
-          <Zap className="w-6 h-6" />
-        </Button>
-      </header>
-
-      {/* Main View Area */}
-      <div className="flex-1 relative w-full h-full bg-black">
-        {scanState === "idle" && hasCamera && (
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
+    <div className="flex flex-col h-[100dvh] bg-black absolute inset-0 z-[100] overflow-hidden">
+      <div className="w-full h-full max-w-md mx-auto relative flex flex-col bg-black overflow-hidden shadow-2xl">
         
-        {scanState === "idle" && !hasCamera && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center">
-            <Scan className="w-16 h-16 mb-4 opacity-50" />
-            <h2 className="text-xl font-semibold mb-2">Camera Unavailable</h2>
-            <p className="text-gray-400">Please use the gallery upload button below.</p>
-          </div>
-        )}
+        {/* Main View Area - EDGE TO EDGE */}
+        <div className="absolute inset-0 w-full h-full bg-black z-0">
+          {scanState === "idle" && hasCamera && (
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover",
+                facingMode === "user" && "scale-x-[-1]"
+              )}
+            />
+          )}
+          
+          {scanState === "idle" && !hasCamera && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center z-10">
+              <Scan className="w-16 h-16 mb-4 opacity-50" />
+              <h2 className="text-xl font-semibold mb-2">Camera Unavailable</h2>
+              <p className="text-[#94A3B8]">Allow camera access to scan your plants and detect diseases.</p>
+              <div className="flex gap-3 mt-6">
+                <Button className="bg-[#16A34A] hover:bg-[#15803d]" onClick={startCamera}>Try Again</Button>
+                <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800" onClick={() => fileInputRef.current?.click()}>Use Gallery</Button>
+              </div>
+            </div>
+          )}
 
-        {(scanState === "preview" || scanState === "analyzing") && imageSrc && (
-          <img 
-            src={imageSrc} 
-            alt="Preview" 
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
+          {(scanState === "preview" || scanState === "analyzing") && imageSrc && (
+            <img 
+              src={imageSrc} 
+              alt="Preview" 
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+        </div>
+
+        {/* Gradients to ensure text readability */}
+        <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between">
+          <div className="h-40 bg-gradient-to-b from-black/60 to-transparent" />
+          <div className="h-64 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        </div>
+
+        {/* Header */}
+        <header className="flex items-center justify-between p-4 z-20 absolute top-0 left-0 right-0 pt-safe">
+          <Link href="/home" className="shrink-0">
+            <button className="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+          </Link>
+          <div className="flex flex-col items-center flex-1">
+            <h1 className="text-white font-bold text-[20px] sm:text-[22px] tracking-tight text-shadow-sm">Scan your plant</h1>
+            <span className="text-white/80 text-[13px] font-medium mt-0.5">AI-powered plant health scan</span>
+          </div>
+          <button 
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 transition-colors shrink-0"
+            onClick={() => setIsFlashActive(!isFlashActive)}
+          >
+            <div className="relative">
+              <Zap className={cn("w-6 h-6 transition-colors", isFlashActive ? "text-yellow-400 fill-yellow-400" : "text-white")} />
+              {isFlashActive && <div className="absolute top-0 right-0 w-2 h-2 bg-[#16A34A] rounded-full border border-black" />}
+            </div>
+          </button>
+        </header>
 
         {/* Viewfinder Overlays */}
-        {scanState === "idle" && (
-          <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-8 z-10">
-            <div className="relative w-full aspect-[3/4] max-w-sm rounded-3xl border-2 border-white/30">
-              <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-[#16a34a] -translate-x-0.5 -translate-y-0.5 rounded-tl-3xl" />
-              <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-[#16a34a] translate-x-0.5 -translate-y-0.5 rounded-tr-3xl" />
-              <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-[#16a34a] -translate-x-0.5 translate-y-0.5 rounded-bl-3xl" />
-              <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-[#16a34a] translate-x-0.5 translate-y-0.5 rounded-br-3xl" />
+        {scanState === "idle" && hasCamera && (
+          <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-8 z-20">
+            {/* AI Scanning Frame */}
+            <div className="relative w-full aspect-[3/4] max-w-sm rounded-[28px] border border-white/20">
+              
+              {/* Animated Laser Line */}
+              <div className="absolute inset-0 overflow-hidden rounded-[28px]">
+                <motion.div 
+                  className="w-full h-0.5 bg-[#16A34A] shadow-[0_0_12px_2px_rgba(22,163,74,0.6)]"
+                  animate={{ y: ["0%", "4000%", "0%"] }} // Using percentage of parent height approx
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  style={{ top: "10%", position: "absolute" }}
+                />
+              </div>
+
+              {/* Corner Accents */}
+              <div className="absolute -top-0.5 -left-0.5 w-12 h-12 border-t-4 border-l-4 border-[#16A34A] rounded-tl-[28px] shadow-[0_0_8px_rgba(22,163,74,0.3)]" />
+              <div className="absolute -top-0.5 -right-0.5 w-12 h-12 border-t-4 border-r-4 border-[#16A34A] rounded-tr-[28px] shadow-[0_0_8px_rgba(22,163,74,0.3)]" />
+              <div className="absolute -bottom-0.5 -left-0.5 w-12 h-12 border-b-4 border-l-4 border-[#16A34A] rounded-bl-[28px] shadow-[0_0_8px_rgba(22,163,74,0.3)]" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-12 h-12 border-b-4 border-r-4 border-[#16A34A] rounded-br-[28px] shadow-[0_0_8px_rgba(22,163,74,0.3)]" />
             </div>
-            <p className="text-white font-medium bg-black/50 px-4 py-2 rounded-full backdrop-blur-md mt-6 shadow-lg text-sm">
-              Keep the affected area inside the frame
-            </p>
+
+            {/* Instruction Pill */}
+            <div className="mt-6 flex flex-col items-center gap-4">
+              <div className="bg-black/50 backdrop-blur-md px-5 py-3 rounded-full border border-white/10 shadow-lg flex items-center gap-2.5">
+                <Leaf className="w-5 h-5 text-[#16A34A]" />
+                <span className="text-white font-medium text-[15px] sm:text-[16px]">Keep the affected area inside the frame</span>
+              </div>
+              
+              {/* Smart Tips */}
+              <div className="flex items-center gap-3 text-white/70 text-[13px] font-medium">
+                <span className="flex items-center gap-1.5"><Sun className="w-3.5 h-3.5" /> Use natural light</span>
+                <span className="w-1 h-1 bg-white/30 rounded-full" />
+                <span className="flex items-center gap-1.5"><Maximize className="w-3.5 h-3.5" /> Avoid blurry images</span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -203,103 +260,133 @@ export default function ScanPage() {
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
-              className="absolute inset-0 z-30"
+              className="absolute inset-0 z-30 flex flex-col items-center justify-center p-6"
             >
-              {/* Dimming backdrop */}
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+              {/* Dimming backdrop but keeping plant visible */}
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
               
-              {/* Laser scanning line */}
+              {/* Green Scanning Gradient Effect */}
               <motion.div 
-                className="absolute left-0 right-0 h-1 bg-[#16a34a] shadow-[0_0_15px_#16a34a,0_0_5px_#16a34a]"
-                initial={{ top: "10%" }}
-                animate={{ top: ["10%", "90%", "10%"] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-b from-[#16A34A]/0 via-[#16A34A]/20 to-[#16A34A]/0"
+                animate={{ y: ["-100%", "100%"] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               />
 
-              {/* Status Box */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <motion.div 
-                  className="bg-black/80 backdrop-blur-md p-6 rounded-2xl flex flex-col items-center w-[280px] shadow-2xl border border-white/10"
-                  initial={{ scale: 0.9 }}
-                  animate={{ scale: 1 }}
-                >
-                  <div className="relative w-16 h-16 mb-4">
-                    <div className="absolute inset-0 border-4 border-white/20 rounded-full" />
-                    <div className="absolute inset-0 border-4 border-transparent border-t-[#16a34a] rounded-full animate-spin" />
-                    <Scan className="absolute inset-0 m-auto w-6 h-6 text-white" />
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="w-20 h-20 mb-6 relative">
+                  <motion.div 
+                    className="absolute inset-0 border-4 border-[#16A34A]/30 rounded-full"
+                  />
+                  <motion.div 
+                    className="absolute inset-0 border-4 border-transparent border-t-[#16A34A] rounded-full"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Leaf className="w-8 h-8 text-[#16A34A]" />
                   </div>
-                  <h3 className="text-white font-semibold text-lg mb-1">Analyzing...</h3>
+                </div>
+
+                <h3 className="text-white font-bold text-[24px] mb-2 tracking-tight">Analyzing your plant</h3>
+                
+                <div className="h-6 overflow-hidden">
                   <motion.p 
                     key={analysisStep}
-                    initial={{ opacity: 0, y: 5 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-[#16a34a] font-medium text-sm text-center"
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-[#DCFCE7] font-medium text-[15px]"
                   >
                     {ANALYZING_STEPS[analysisStep]}
                   </motion.p>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
 
-      {/* Controls Area */}
-      <div className="bg-black p-6 z-20 pb-safe pb-8">
-        {scanState === "idle" && (
-          <div className="flex flex-col gap-6">
-            <div className="text-center text-white/70 text-xs">
-              <p>Tips: Use natural light • Avoid blurry images • Capture closely</p>
+        {/* Controls Area (Bottom) */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 pb-safe mb-4 z-20 flex flex-col">
+          
+          {/* Ready to scan badge */}
+          {scanState === "idle" && hasCamera && (
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#16A34A]/20 backdrop-blur-md border border-[#16A34A]/30 text-[#DCFCE7] text-[13px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" /> Ready to scan
+              </div>
             </div>
-            <div className="flex items-center justify-center gap-8">
-              <input 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
-                ref={fileInputRef} 
-                onChange={handleFileUpload} 
-              />
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full text-white"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="w-6 h-6" />
-              </Button>
+          )}
+
+          {scanState === "idle" && (
+            <div className="flex items-center justify-between px-2">
+              {/* Gallery Button */}
+              <div className="flex flex-col items-center gap-2">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                />
+                <button 
+                  className="w-14 h-14 bg-black/40 backdrop-blur-md border border-white/10 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-white"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <ImageIcon className="w-6 h-6" />
+                </button>
+                <span className="text-white/70 text-[12px] font-medium">Gallery</span>
+              </div>
+
+              {/* Premium Shutter Button */}
               <button 
                 onClick={handleCapture}
                 disabled={!hasCamera}
-                className="w-20 h-20 bg-white rounded-full flex items-center justify-center p-1.5 focus:outline-none focus:ring-4 focus:ring-[#16a34a]/50 active:scale-95 transition-transform disabled:opacity-50"
+                className="relative w-[80px] h-[80px] flex items-center justify-center focus:outline-none active:scale-95 transition-transform disabled:opacity-50 group"
               >
-                <div className="w-full h-full border-2 border-black rounded-full" />
+                {/* Outer White Ring */}
+                <div className="absolute inset-0 border-[4px] border-white rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)]" />
+                {/* Inner Green Circle */}
+                <div className="w-[62px] h-[62px] bg-[#16A34A] rounded-full group-active:bg-[#15803d] transition-colors shadow-inner flex items-center justify-center">
+                  {/* Optional tiny icon inside the shutter to emphasize scan */}
+                  <Scan className="w-6 h-6 text-white/50" />
+                </div>
               </button>
-              <div className="w-14 h-14" /> {/* Spacer for symmetry */}
-            </div>
-          </div>
-        )}
 
-        {scanState === "preview" && (
-          <div className="flex gap-4">
-            <Button 
-              variant="outline" 
-              className="flex-1 h-14 rounded-2xl bg-white/10 border-white/20 text-white hover:bg-white/20 font-semibold"
-              onClick={handleRetake}
-            >
-              <RefreshCcw className="w-5 h-5 mr-2" /> Retake
-            </Button>
-            <Button 
-              className="flex-[2] h-14 rounded-2xl bg-[#16a34a] hover:bg-[#15803d] text-white font-bold text-lg shadow-[0_4px_14px_rgba(22,163,74,0.4)]"
-              onClick={handleAnalyze}
-            >
-              Analyze <Scan className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
-        )}
-      </div>
-      
-      {/* Hidden Canvas for capture */}
-      <canvas ref={canvasRef} className="hidden" />
+              {/* Flip Camera Button */}
+              <div className="flex flex-col items-center gap-2">
+                <button 
+                  onClick={() => setFacingMode(prev => prev === "environment" ? "user" : "environment")}
+                  className="w-14 h-14 bg-black/40 backdrop-blur-md border border-white/10 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-white"
+                >
+                  <RefreshCcw className="w-6 h-6" />
+                </button>
+                <span className="text-white/70 text-[12px] font-medium">Flip</span>
+              </div>
+            </div>
+          )}
+
+          {/* Preview Controls */}
+          {scanState === "preview" && (
+            <div className="flex gap-4 px-2">
+              <Button 
+                variant="outline" 
+                className="flex-1 h-14 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 font-semibold text-[16px]"
+                onClick={handleRetake}
+              >
+                Retake
+              </Button>
+              <Button 
+                className="flex-[2] h-14 rounded-2xl bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-[16px] shadow-[0_8px_20px_rgba(22,163,74,0.4)]"
+                onClick={handleAnalyze}
+              >
+                Analyze Plant <Sparkles className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          )}
+        </div>
+        
+        {/* Hidden Canvas for capture */}
+        <canvas ref={canvasRef} className="hidden" />
       </div>
     </div>
   );
