@@ -87,12 +87,10 @@ export default function EnvironmentPage() {
         
         {/* Header */}
         <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/home">
-              <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors -ml-2">
-                <ArrowLeft className="w-6 h-6 text-[#14532D]" />
-              </button>
-            </Link>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-[#16A34A] rounded-xl flex items-center justify-center">
+              <Sprout className="w-5 h-5 text-white stroke-[2.5]" />
+            </div>
             <h1 className="text-[20px] font-bold text-[#14532D] tracking-tight">
               {isFarmer ? "Field Sensor" : "Plant Environment"}
             </h1>
