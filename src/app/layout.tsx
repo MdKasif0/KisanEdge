@@ -34,6 +34,8 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+import { TranslationProvider } from "@/lib/i18n/context";
+
 export default function RootLayout({
   children,
 }: {
@@ -44,7 +46,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <TranslationProvider>
+          {children}
+        </TranslationProvider>
+      </body>
     </html>
   );
 }
