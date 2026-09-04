@@ -352,36 +352,185 @@ function StepLanguage({ onNext }: { onNext: () => void }) {
 
 function StepRole({ onNext }: { onNext: (role: "farmer" | "home") => void }) {
   const { t } = useTranslation();
+  const [selectedRole, setSelectedRole] = useState<"farmer" | "home">("farmer");
+
+  const handleSelect = (role: "farmer" | "home") => {
+    setSelectedRole(role);
+    setTimeout(() => onNext(role), 350); // slight delay for visual feedback before proceeding
+  };
+
   return (
-    <div className="flex flex-col h-full bg-background p-4 pb-safe">
-      <div className="mt-8 mb-8 text-center">
-        <h2 className="text-2xl font-bold text-brand-deep">{t("onboarding.role.title")}</h2>
+    <div className="relative flex flex-col h-full bg-[#f8faf9] pb-safe overflow-y-auto">
+      {/* Background Image Placeholder */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <img 
+          src="/role-bg-placeholder.png" 
+          alt="" 
+          className="w-full h-full object-cover object-bottom opacity-60" 
+        />
+        {/* Subtle white gradient at top to ensure header/text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f8faf9] via-[#f8faf9]/80 to-transparent h-[60%]" />
       </div>
-      <div className="flex-1 flex flex-col gap-4 max-w-md mx-auto w-full">
-        <button
-          onClick={() => onNext("farmer")}
-          className="flex-1 bg-white border-2 border-gray-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 hover:border-brand-primary hover:bg-brand-soft/30 transition-all active:scale-95 group"
+
+      {/* Brand Header & Progress */}
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[56px] h-[56px] sm:w-[60px] sm:h-[60px] bg-[#16a34a] rounded-[16px] sm:rounded-[18px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-white stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-[22px] sm:text-[24px] text-[#0e3b1c] tracking-tight leading-none">
+              KisanEdge
+            </span>
+            <span className="text-[14px] sm:text-[15px] text-gray-500 mt-1 font-medium">
+              Smart care for every plant.
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Indicator (Step 2 Active) */}
+        <div className="flex items-center gap-[6px] sm:gap-[8px]">
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+        </div>
+      </div>
+
+      {/* Main Heading & Subtitle */}
+      <div className="relative z-10 px-6 sm:px-8 mt-8 sm:mt-10 mb-6 sm:mb-8">
+        <motion.h2 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[34px] sm:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight"
         >
-          <div className="w-24 h-24 bg-brand-soft rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-            🌾
-          </div>
-          <div className="text-center">
-            <h3 className="text-xl font-bold text-brand-deep mb-1">{t("onboarding.role.farmer")}</h3>
-            <p className="text-gray-500 text-sm">{t("onboarding.role.farmerDesc")}</p>
-          </div>
-        </button>
-        <button
-          onClick={() => onNext("home")}
-          className="flex-1 bg-white border-2 border-gray-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 hover:border-brand-primary hover:bg-brand-soft/30 transition-all active:scale-95 group"
+          How do you <span className="text-[#16a34a]">grow plants?</span>
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[17px] sm:text-[19px] text-[#64748b] font-medium mt-3"
         >
-          <div className="w-24 h-24 bg-brand-soft rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-            🪴
+          This helps us personalize your experience.
+        </motion.p>
+      </div>
+
+      {/* Main Content: Cards */}
+      <div className="relative z-10 px-6 sm:px-8 flex flex-col gap-4 sm:gap-5 pb-24 max-w-[600px] mx-auto w-full">
+        
+        {/* Farmer Card */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => handleSelect("farmer")}
+          className={cn(
+            "relative w-full flex items-center p-5 sm:p-6 rounded-[24px] sm:rounded-[28px] border-[2px] transition-all duration-200 text-left overflow-hidden h-[180px] sm:h-[200px]",
+            selectedRole === "farmer" 
+              ? "bg-[#f2fdf5] border-[#16a34a] shadow-[0_8px_24px_rgba(22,163,74,0.15)]"
+              : "bg-white border-transparent shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+          )}
+        >
+          {/* Left Image */}
+          <div className="flex-shrink-0 w-[130px] h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden z-10 bg-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+            <img src="/farmer-placeholder.png" alt="Farmer" className="w-full h-full object-cover" />
           </div>
-          <div className="text-center">
-            <h3 className="text-xl font-bold text-brand-deep mb-1">{t("onboarding.role.home")}</h3>
-            <p className="text-gray-500 text-sm">{t("onboarding.role.homeDesc")}</p>
+
+          {/* Right Content */}
+          <div className="flex flex-col ml-5 sm:ml-6 flex-1 z-10 h-full justify-center">
+            {/* Recommended Badge */}
+            <div className="self-start inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#dcfce7] rounded-full mb-2.5">
+              <Leaf className="w-3.5 h-3.5 text-[#16a34a]" />
+              <span className="text-[#16a34a] text-[13px] sm:text-[14px] font-semibold tracking-wide">Recommended</span>
+            </div>
+            
+            <span className="text-[26px] sm:text-[30px] font-bold text-[#0e3b1c] leading-none mb-2 tracking-tight uppercase">
+              FARMER
+            </span>
+            <span className="text-[17px] sm:text-[19px] text-[#64748b] font-medium leading-snug">
+              Grow crops in fields
+            </span>
           </div>
-        </button>
+
+          {/* Action Arrow */}
+          <div className={cn(
+            "absolute right-5 sm:right-6 w-[48px] h-[48px] sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center transition-colors duration-200 shadow-sm z-10",
+            selectedRole === "farmer" 
+              ? "bg-[#16a34a]" 
+              : "bg-white border border-gray-200 text-[#16a34a]"
+          )}>
+            <ArrowRight className={cn(
+              "w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]",
+              selectedRole === "farmer" ? "text-white" : "text-[#16a34a]"
+            )} />
+          </div>
+        </motion.button>
+
+        {/* Home Grower Card */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => handleSelect("home")}
+          className={cn(
+            "relative w-full flex items-center p-5 sm:p-6 rounded-[24px] sm:rounded-[28px] border-[2px] transition-all duration-200 text-left overflow-hidden h-[180px] sm:h-[200px]",
+            selectedRole === "home" 
+              ? "bg-[#f2fdf5] border-[#16a34a] shadow-[0_8px_24px_rgba(22,163,74,0.15)]"
+              : "bg-white border-transparent shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
+          )}
+        >
+          {/* Left Image */}
+          <div className="flex-shrink-0 w-[130px] h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden z-10 bg-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+            <img src="/home-grower-placeholder.png" alt="Home Grower" className="w-full h-full object-cover" />
+          </div>
+
+          {/* Right Content */}
+          <div className="flex flex-col ml-5 sm:ml-6 flex-1 z-10 h-full justify-center">
+            <span className="text-[25px] sm:text-[29px] font-bold text-[#0e3b1c] leading-none mb-2 tracking-tight uppercase">
+              HOME GROWER
+            </span>
+            <span className="text-[17px] sm:text-[19px] text-[#64748b] font-medium leading-[1.3] pr-12 sm:pr-14">
+              Grow plants at home, in pots or a garden
+            </span>
+          </div>
+
+          {/* Action Arrow */}
+          <div className={cn(
+            "absolute right-5 sm:right-6 w-[48px] h-[48px] sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center transition-colors duration-200 shadow-sm z-10",
+            selectedRole === "home" 
+              ? "bg-[#16a34a]" 
+              : "bg-white border border-[#e5e7eb] text-[#64748b]"
+          )}>
+            <ArrowRight className={cn(
+              "w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]",
+              selectedRole === "home" ? "text-white" : "text-[#16a34a]"
+            )} />
+          </div>
+        </motion.button>
+      </div>
+
+      {/* Bottom Brand Message */}
+      <div className="relative z-10 mt-auto pb-6 sm:pb-8 flex items-center justify-center w-full px-6 pointer-events-none">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex items-center justify-center gap-3 sm:gap-4 w-full"
+        >
+          <div className="h-[1px] flex-1 max-w-[40px] sm:max-w-[50px] bg-gray-200" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[14px] sm:text-[16px] text-gray-500 font-medium">
+            <Leaf className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#16a34a]" /> 
+            Different spaces, same greener tomorrow.
+          </div>
+          <div className="h-[1px] flex-1 max-w-[40px] sm:max-w-[50px] bg-gray-200" />
+        </motion.div>
       </div>
     </div>
   );
