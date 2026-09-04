@@ -900,14 +900,26 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
   );
 }
 
+const ALL_PLANTS = (() => {
+  const combined = [...FARM_CROPS, ...HOME_PLANTS];
+  const unique: typeof FARM_CROPS = [];
+  const seen = new Set<string>();
+  for (const p of combined) {
+    if (!seen.has(p.name)) {
+      seen.add(p.name);
+      unique.push(p);
+    }
+  }
+  return unique;
+})();
+
 function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () => void }) {
   const { t } = useTranslation();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   
-  const data = role === "farmer" ? FARM_CROPS : HOME_PLANTS;
-  const filtered = data.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = ALL_PLANTS.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
 
   const toggle = (id: string) => {
     const next = new Set(selected);
@@ -1020,7 +1032,7 @@ function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () =
         </motion.div>
 
         {/* Scrollable Crop Grid */}
-        <div className="flex-1 overflow-y-auto w-full px-6 sm:px-8 pt-6 pb-[120px] sm:pb-[140px] mt-2 relative z-10">
+        <div className="flex-1 overflow-y-auto w-full px-6 sm:px-8 pt-6 pb-[180px] sm:pb-[200px] mt-2 relative z-10">
           <div className="w-full max-w-[500px] mx-auto">
             {filtered.length === 0 ? (
               <motion.div 
