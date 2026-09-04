@@ -599,14 +599,14 @@ function StepLocation({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Main Hero Image */}
-      <div className="relative z-10 flex justify-center mt-6 sm:mt-10 mb-6 sm:mb-8 px-6">
+      <div className="relative z-10 flex justify-center mt-4 sm:mt-8 mb-4 sm:mb-6 w-full">
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[340px] aspect-[4/3] flex items-center justify-center pointer-events-none mix-blend-multiply"
+          className="relative w-full flex items-center justify-center pointer-events-none mix-blend-multiply"
         >
-          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-full object-contain drop-shadow-sm" />
+          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-auto" />
         </motion.div>
       </div>
 
