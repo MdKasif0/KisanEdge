@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Camera, Upload, Zap, RefreshCcw, X, Scan, Image as ImageIcon, Sun, Maximize, Leaf, Check } from "lucide-react";
+import { Camera, Upload, Zap, RefreshCcw, X, Scan, Image as ImageIcon, Sun, Maximize, Leaf, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
