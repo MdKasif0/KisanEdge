@@ -194,34 +194,156 @@ function StepLanguage({ onNext }: { onNext: () => void }) {
   const { t, language, setLanguage } = useTranslation();
   
   return (
-    <div className="flex flex-col h-full bg-background p-4 pb-safe">
-      <div className="mt-8 mb-6 text-center">
-        <h2 className="text-2xl font-bold text-brand-deep">{t("onboarding.lang.title")}</h2>
-        <p className="text-gray-500 mt-2">{t("onboarding.lang.subtitle")}</p>
+    <div className="relative flex flex-col h-full bg-[#f8fcf9] pb-safe overflow-hidden">
+      {/* Top Background Atmospheric Gradient */}
+      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#eaf5ef] to-transparent opacity-70 pointer-events-none" />
+
+      {/* Subtle Botanical Decoration (Top Right) */}
+      <div className="absolute top-[12%] right-[-10%] opacity-40 pointer-events-none select-none">
+        <Leaf className="w-32 h-32 text-[#a3e635] rotate-[25deg]" strokeWidth={1} />
+        <p className="absolute top-[40%] right-[35%] text-[11px] font-medium text-[#16a34a] -rotate-[15deg] whitespace-nowrap opacity-60">
+          Farming<br/>Grows<br/>Together
+        </p>
       </div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-          {Object.entries(LANGUAGES).map(([code, lang]) => (
-            <button
-              key={code}
-              onClick={() => {
-                setLanguage(code as LanguageCode);
-                setTimeout(onNext, 300); // Small delay for visual feedback
-              }}
-              className={cn(
-                "p-4 rounded-2xl border-2 text-left transition-all",
-                language === code 
-                  ? "border-brand-primary bg-brand-soft shadow-sm" 
-                  : "border-gray-100 bg-white hover:border-brand-primary/30"
-              )}
-            >
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-bold text-lg text-brand-deep">{lang.nativeName}</span>
-                {language === code && <Check className="w-5 h-5 text-brand-primary" />}
-              </div>
-              <span className="text-sm text-gray-500">{lang.name}</span>
-            </button>
-          ))}
+
+      {/* Brand Header & Progress */}
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6">
+        {/* Brand Logo & Name */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] bg-[#16a34a] rounded-[16px] sm:rounded-[20px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-white stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-[22px] sm:text-[24px] text-[#0e3b1c] tracking-tight leading-none">
+              KisanEdge
+            </span>
+            <span className="text-[14px] sm:text-[15px] text-gray-500 mt-1">
+              Smart care for every plant.
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Indicator */}
+        <div className="flex items-center gap-[6px] sm:gap-[8px]">
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+        </div>
+      </div>
+
+      {/* Main Heading & Subtitle */}
+      <div className="relative z-10 px-6 sm:px-8 mt-8 sm:mt-10">
+        <motion.h2 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[34px] sm:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight"
+        >
+          Choose your <span className="text-[#16a34a]">language</span>
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[17px] sm:text-[19px] text-gray-500 font-medium mt-3"
+        >
+          You can change this anytime from Settings.
+        </motion.p>
+      </div>
+
+      {/* Language Grid */}
+      <div className="relative z-20 flex-1 overflow-y-auto px-6 sm:px-8 mt-6 sm:mt-8 pb-[180px] sm:pb-[200px]">
+        <div className="grid grid-cols-2 gap-4 sm:gap-5 w-full max-w-[600px] mx-auto">
+          {Object.entries(LANGUAGES).map(([code, lang], i) => {
+            const isSelected = language === code;
+            return (
+              <motion.button
+                key={code}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.15 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                onClick={() => setLanguage(code as LanguageCode)}
+                whileTap={{ scale: 0.97 }}
+                className={cn(
+                  "relative flex flex-col justify-center items-start p-5 sm:p-6 h-[110px] sm:h-[125px] rounded-[20px] transition-all overflow-hidden border",
+                  isSelected 
+                    ? "bg-[#f2fdf5] border-[#16a34a] shadow-[0_6px_16px_rgba(22,163,74,0.12)]"
+                    : "bg-white border-gray-100/80 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:bg-gray-50 hover:border-gray-200"
+                )}
+              >
+                {/* Text Content */}
+                <span className="font-bold text-[24px] sm:text-[26px] text-[#0e3b1c] z-10 leading-none mb-2">
+                  {lang.nativeName}
+                </span>
+                <span className="text-[16px] sm:text-[17px] text-gray-500 font-medium z-10">
+                  {lang.name}
+                </span>
+                
+                {/* Selected Indicator */}
+                {isSelected && (
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 w-[36px] h-[36px] sm:w-[40px] sm:h-[40px] rounded-full bg-[#16a34a] flex items-center justify-center shadow-md"
+                  >
+                    <Check className="w-5 h-5 sm:w-6 sm:h-6 text-white stroke-[3]" />
+                  </motion.div>
+                )}
+                
+                {/* Subtle Card Artwork Placeholder */}
+                <div className="absolute bottom-0 right-0 w-24 h-24 opacity-[0.03] pointer-events-none overflow-hidden rounded-br-[20px] mix-blend-multiply">
+                  <div className="w-full h-full bg-[#0e3b1c] rounded-full translate-x-8 translate-y-8" />
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bottom Floating CTA Area */}
+      <div className="absolute bottom-0 left-0 right-0 z-30 pointer-events-none">
+        
+        {/* Rolling Hills Decoration */}
+        <div className="absolute bottom-0 left-0 w-full h-[180px] sm:h-[220px] overflow-hidden opacity-30 z-0 flex items-end">
+          <svg viewBox="0 0 1440 320" className="w-full min-w-[800px] absolute bottom-0 opacity-40">
+            <path fill="#16a34a" fillOpacity="1" d="M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,250.7C1248,256,1344,288,1392,304L1440,320L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          </svg>
+          <svg viewBox="0 0 1440 320" className="w-full min-w-[800px] absolute bottom-[-20px] opacity-60">
+            <path fill="#16a34a" fillOpacity="1" d="M0,192L60,202.7C120,213,240,235,360,234.7C480,235,600,213,720,208C840,203,960,213,1080,229.3C1200,245,1320,267,1380,277.3L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+          </svg>
+        </div>
+
+        {/* Action Button Container */}
+        <div className="relative z-10 px-6 sm:px-8 pb-6 sm:pb-8 pt-10 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-auto">
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onNext}
+            className="w-full h-[56px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] text-white text-[17px] sm:text-[18px] font-semibold rounded-[16px] sm:rounded-[18px] shadow-[0_8px_24px_rgba(22,163,74,0.25)] flex justify-center items-center gap-2 group transition-colors"
+          >
+            Continue 
+            <ArrowRight className="w-5 h-5 sm:w-[22px] sm:h-[22px] stroke-[2.5] transition-transform duration-200 group-hover:translate-x-1" />
+          </motion.button>
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="flex items-center justify-center gap-3 sm:gap-4 mt-5 sm:mt-6"
+          >
+            <div className="h-[1px] flex-1 max-w-[40px] sm:max-w-[50px] bg-gray-200" />
+            <div className="flex items-center gap-1.5 sm:gap-2 text-[14px] sm:text-[15px] text-gray-500 font-medium">
+              <Leaf className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#16a34a]" /> A greener tomorrow, in your language
+            </div>
+            <div className="h-[1px] flex-1 max-w-[40px] sm:max-w-[50px] bg-gray-200" />
+          </motion.div>
         </div>
       </div>
     </div>
