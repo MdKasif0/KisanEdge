@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, MapPin, Bell, Search, Check, ArrowRight, CloudSun, Sprout } from "lucide-react";
+import { Leaf, MapPin, Bell, Search, Check, ArrowRight, CloudSun, Sprout, Droplet, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 import { LANGUAGES, LanguageCode } from "@/lib/i18n/translations";
@@ -735,22 +735,208 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background p-4 pb-safe">
-      <div className="flex-1 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-        <div className="w-32 h-32 bg-orange-50 rounded-full flex items-center justify-center mb-8 relative">
-          <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-20" />
-          <Bell className="w-12 h-12 text-orange-500" />
-        </div>
-        <h2 className="text-2xl font-bold text-brand-deep mb-3">{t("onboarding.notif.title")}</h2>
-        <p className="text-gray-500 leading-relaxed mb-12">{t("onboarding.notif.desc")}</p>
+    <div className="relative flex flex-col h-full bg-[#f8faf9] pb-safe overflow-hidden">
+      {/* Background with subtle botanical hints */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+        <img 
+          src="/loc-bg-placeholder.png" 
+          alt="" 
+          className="absolute bottom-0 left-0 w-full h-[60vh] object-cover object-bottom opacity-40 mix-blend-multiply" 
+          style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f8faf9] via-[#f8faf9]/80 to-transparent h-[70%]" />
       </div>
-      <div className="flex flex-col gap-3 max-w-md mx-auto w-full">
-        <Button size="lg" className="w-full h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl" onClick={handleAllow}>
-          {t("onboarding.notif.allow")}
-        </Button>
-        <Button variant="ghost" className="w-full h-14 text-gray-500" onClick={onNext}>
-          {t("onboarding.notif.deny")}
-        </Button>
+
+      {/* Brand Header & Progress */}
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6 flex-none">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] bg-[#16a34a] rounded-[14px] sm:rounded-[16px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-[20px] sm:text-[22px] text-[#0e3b1c] tracking-tight leading-none">
+              KisanEdge
+            </span>
+            <span className="text-[13px] sm:text-[14px] text-gray-500 mt-1 font-medium">
+              Smart care for every plant.
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Indicator (Step 4 Active) */}
+        <div className="flex items-center gap-[6px] sm:gap-[8px]">
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[12px] h-[12px] sm:w-[14px] sm:h-[14px] rounded-full bg-[#16a34a] ring-4 ring-[#dcfce7]" />
+        </div>
+      </div>
+
+      {/* Main Hero Visual (CSS Built) */}
+      <div className="relative z-10 flex-1 flex justify-center items-center w-full px-4 sm:px-6 min-h-[160px] py-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] flex items-center justify-center"
+        >
+          {/* Subtle radial green tint / glow */}
+          <div className="absolute inset-0 bg-[#dcfce7] rounded-full blur-[20px] opacity-60 scale-125" />
+          
+          {/* Signal ripple rings */}
+          <motion.div 
+            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 border-2 border-[#16a34a]/30 rounded-full scale-110" 
+          />
+          <motion.div 
+            animate={{ scale: [1.1, 1.5, 1.1], opacity: [0.3, 0, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="absolute inset-0 border-2 border-[#16a34a]/20 rounded-full scale-125" 
+          />
+
+          {/* Main Circular Container */}
+          <div className="relative w-full h-full bg-gradient-to-tr from-[#f0fdf4] to-white rounded-full flex items-center justify-center shadow-[0_12px_32px_rgba(22,163,74,0.12)] border-2 border-white">
+            <Bell className="w-16 h-16 sm:w-20 sm:h-20 text-[#16a34a] stroke-[1.5]" />
+            
+            {/* Notification Dot */}
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.8, type: "spring" }}
+              className="absolute top-[28%] right-[30%] w-4 h-4 bg-[#ef4444] rounded-full border-2 border-white"
+            />
+          </div>
+
+          {/* Floating tiny leaves/sparkles */}
+          <motion.div 
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-4 -left-2 rotate-[-20deg]"
+          >
+            <Leaf className="w-5 h-5 text-[#16a34a]/60" />
+          </motion.div>
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-2 -right-4 rotate-[15deg]"
+          >
+            <Sparkles className="w-6 h-6 text-[#16a34a]/40" />
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Main Heading & Subtitle */}
+      <div className="relative z-10 px-6 sm:px-8 text-center flex flex-col items-center flex-none">
+        <motion.h2 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[28px] sm:text-[34px] md:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight max-w-[320px]"
+        >
+          Stay <span className="text-[#16a34a]">protected</span>
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[15px] sm:text-[17px] md:text-[19px] text-[#64748b] font-medium mt-2 sm:mt-3 md:mt-4 max-w-[320px] leading-snug"
+        >
+          Receive important disease, weather, irrigation and plant-care alerts.
+        </motion.p>
+      </div>
+
+      {/* Benefit Row */}
+      <div className="relative z-10 px-4 sm:px-8 mt-5 sm:mt-8 flex items-start justify-center gap-2 sm:gap-4 md:gap-6 w-full max-w-[400px] mx-auto flex-none">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+            <Leaf className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
+            Disease<br/>alerts
+          </span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+            <CloudSun className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
+            Weather<br/>changes
+          </span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#f0fdf4] flex items-center justify-center mb-2 sm:mb-3">
+            <Droplet className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
+            Irrigation<br/>reminders
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Actions */}
+      <div className="relative z-10 px-6 sm:px-8 mt-6 sm:mt-10 flex flex-col gap-3 sm:gap-4 w-full max-w-[400px] mx-auto mb-4 sm:mb-8 flex-none">
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleAllow}
+          className="w-full h-[52px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[14px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)]"
+          aria-label="Allow notifications for disease, weather, irrigation, and plant-care alerts."
+        >
+          <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="flex-1 text-[16px] sm:text-[19px] font-semibold text-center">Allow Notifications</span>
+          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        </motion.button>
+        
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onNext}
+          className="w-full h-[44px] flex items-center justify-center text-[#64748b] text-[15px] sm:text-[18px] font-medium hover:text-[#0e3b1c] transition-colors"
+        >
+          Not Now
+        </motion.button>
+      </div>
+
+      {/* Bottom Brand Message */}
+      <div className="relative z-10 flex items-center justify-center w-full px-6 pointer-events-none pb-4 sm:pb-8 flex-none">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="flex items-center justify-center gap-3 sm:gap-4 w-full"
+        >
+          <div className="h-[1px] flex-1 max-w-[30px] sm:max-w-[40px] bg-gray-200" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[13px] sm:text-[16px] text-gray-500 font-medium">
+            <Leaf className="w-4 h-4 sm:w-[16px] sm:h-[16px] text-[#16a34a]" /> 
+            Your plants, always on your radar
+          </div>
+          <div className="h-[1px] flex-1 max-w-[30px] sm:max-w-[40px] bg-gray-200" />
+        </motion.div>
       </div>
     </div>
   );
