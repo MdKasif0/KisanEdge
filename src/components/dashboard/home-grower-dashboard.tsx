@@ -29,15 +29,15 @@ export function HomeGrowerDashboard() {
     : MOCK_PLANTS.slice(0, 3);
 
   return (
-    <div className="flex flex-col gap-6 p-4">
+    <div className="flex flex-col gap-5 sm:gap-6 p-3.5 sm:p-4 pb-24">
       {/* Welcome */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-        <h1 className="text-[26px] font-bold text-[#0e3b1c] tracking-tight">Good morning, {name}</h1>
-        <p className="text-gray-500 font-medium mt-1">Let's check on your plants today.</p>
+        <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">Good morning, {name}</h1>
+        <p className="text-[14px] sm:text-[15px] text-gray-500 font-medium mt-1">Let's check on your plants today.</p>
       </motion.div>
 
       {/* Plant Health Hero */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-[24px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col gap-4">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col gap-3 sm:gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-[#0e3b1c]">Overall Health</h2>
           <span className="text-[#16a34a] font-bold text-[28px] tracking-tight">91<span className="text-gray-400 text-lg">/100</span></span>

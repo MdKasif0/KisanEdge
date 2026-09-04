@@ -108,7 +108,7 @@ export function FarmerDashboard() {
               </div>
               
               <div className="flex flex-col gap-0">
-                <span className="text-[40px] font-bold leading-none tracking-tighter">28°C</span>
+                <span className="text-[32px] sm:text-[40px] font-bold leading-none tracking-tighter">28°C</span>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[16px] font-semibold">Sunny</span>
                   <div className="w-1 h-1 rounded-full bg-white/50" />
@@ -119,7 +119,7 @@ export function FarmerDashboard() {
               </div>
 
               {/* Metrics Row */}
-              <div className="flex items-center justify-between bg-black/10 rounded-2xl p-3.5 mt-5 backdrop-blur-sm border border-white/10">
+              <div className="flex items-center justify-between bg-black/10 rounded-2xl p-2.5 sm:p-3.5 mt-5 backdrop-blur-sm border border-white/10">
                 <div className="flex items-center gap-2.5">
                   <Droplet className="w-5 h-5 text-blue-200" />
                   <div className="flex flex-col">
@@ -255,9 +255,9 @@ export function FarmerDashboard() {
             </div>
             <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x hide-scrollbar">
               {userCrops.map((crop) => (
-                <Link key={crop.id} href={`/plants/${crop.id}`} className="snap-start shrink-0 w-[260px]">
+                <Link key={crop.id} href={`/plants/${crop.id}`} className="snap-start shrink-0 w-[220px] sm:w-[260px]">
                   <div className="bg-white p-3.5 rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center gap-4 hover:border-[#16A34A]/30 transition-colors">
-                    <div className="w-16 h-16 rounded-[16px] bg-[#F0FDF4] flex items-center justify-center shrink-0">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[16px] bg-[#F0FDF4] flex items-center justify-center shrink-0">
                       <span className="text-3xl">{crop.image}</span>
                     </div>
                     <div className="flex flex-col py-1">
