@@ -776,14 +776,14 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Main Hero Visual */}
-      <div className="relative z-10 flex-1 flex justify-center items-center w-full px-4 sm:px-6 min-h-[140px] py-2 sm:py-4">
+      <div className="relative z-10 flex-1 flex justify-center items-center w-full">
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[420px] h-full max-h-[300px] flex items-center justify-center pointer-events-none mix-blend-multiply mx-auto"
+          className="relative w-full flex items-center justify-center pointer-events-none mix-blend-multiply"
         >
-          <img src="/notif-hero.png" alt="" className="w-full h-full object-contain drop-shadow-none" />
+          <img src="/notif-hero.png" alt="" className="w-full h-auto drop-shadow-none" />
         </motion.div>
       </div>
 
