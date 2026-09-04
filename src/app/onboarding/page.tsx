@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, MapPin, Bell, Search, Check } from "lucide-react";
+import { Leaf, MapPin, Bell, Search, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 import { LANGUAGES, LanguageCode } from "@/lib/i18n/translations";
@@ -15,29 +15,135 @@ import { cn } from "@/lib/utils";
 
 function StepWelcome({ onNext }: { onNext: () => void }) {
   const { t } = useTranslation();
+
+  const handleSkip = () => {
+    storage.set("kisanedge_onboarded", true);
+    window.location.href = "/home";
+  };
+
+  const rawSkip = t("onboarding.welcome.skip");
+  const hasQuestion = rawSkip.includes("?");
+  const skipPrefix = hasQuestion ? rawSkip.split("?")[0] + "?" : rawSkip;
+  const skipAction = hasQuestion ? rawSkip.split("?")[1]?.trim() || "Skip" : "";
+
   return (
-    <div className="flex flex-col h-full bg-brand-primary">
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-white text-center">
-        <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-md mb-8 shadow-inner">
-          <Leaf className="w-12 h-12 text-white" />
-        </div>
-        <h1 className="text-4xl font-bold mb-4 tracking-tight">KisanEdge</h1>
-        <p className="text-lg text-white/90 mb-8 max-w-xs">{t("onboarding.welcome.tagline")}</p>
-        <p className="text-sm text-white/70 max-w-xs">{t("onboarding.welcome.desc")}</p>
-      </div>
-      <div className="bg-white p-6 rounded-t-3xl pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-        <div className="flex flex-col gap-4 max-w-md mx-auto w-full">
-          <Button size="lg" className="w-full text-lg h-14 rounded-2xl" onClick={onNext}>
-            {t("onboarding.welcome.start")}
-          </Button>
-          <Button variant="ghost" className="w-full text-gray-500 hover:bg-gray-50" onClick={() => {
-            storage.set("kisanedge_onboarded", true);
-            window.location.href = "/home";
-          }}>
-            {t("onboarding.welcome.skip")}
-          </Button>
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden select-none bg-[#114b24]">
+      {/* High Definition Botanical Background */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none"
+        style={{ backgroundImage: `url('/onboarding-bg-hd.png')` }}
+      />
+
+      {/* Top Section with Safe-area & Micro-typography */}
+      <div className="relative z-10 pt-safe pt-5 px-6 flex justify-end">
+        <div className="text-right pointer-events-none">
+          <p className="text-[10px] sm:text-[11px] font-medium tracking-[0.18em] uppercase text-white/70 leading-tight">
+            Healthier Crops
+          </p>
+          <p className="text-[10px] sm:text-[11px] font-medium tracking-[0.18em] uppercase text-white/70 leading-tight">
+            Brighter Tomorrows
+          </p>
+          <div className="w-5 h-[1.5px] bg-white/50 ml-auto mt-1 rounded-full" />
         </div>
       </div>
+
+      {/* Hero Branding Section (Logo, Name, Tagline, Description) */}
+      <div className="relative z-10 flex flex-col items-center text-center px-6 mt-1 sm:mt-3">
+        {/* Animated Brand Logo Squircle */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="relative mb-4 sm:mb-5"
+        >
+          <div className="w-[90px] h-[90px] sm:w-[98px] sm:h-[98px] rounded-[26px] p-0.5 relative group">
+            <img 
+              src="/logo-squircle-hd.png" 
+              alt="KisanEdge" 
+              className="w-full h-full object-contain drop-shadow-[0_12px_28px_rgba(22,163,74,0.45)]"
+            />
+          </div>
+        </motion.div>
+
+        {/* Brand Name */}
+        <motion.h1 
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className="text-4xl sm:text-[40px] font-extrabold text-white tracking-tight leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+        >
+          KisanEdge
+        </motion.h1>
+
+        {/* Tagline */}
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[19px] sm:text-[21px] font-semibold text-white/95 mt-2 tracking-tight drop-shadow-[0_1px_6px_rgba(0,0,0,0.25)]"
+        >
+          {t("onboarding.welcome.tagline")}
+        </motion.p>
+
+        {/* Description */}
+        <motion.p 
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[14px] sm:text-[15px] font-normal text-white/85 mt-2.5 max-w-[300px] leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]"
+        >
+          {t("onboarding.welcome.desc")}
+        </motion.p>
+      </div>
+
+      {/* Middle Interactive / AI Scanner Ambient Details */}
+      <div className="relative z-10 flex-1 min-h-[120px] sm:min-h-[160px] pointer-events-none flex items-center justify-center">
+        {/* Subtle AI Scan reticle pulse animation */}
+        <motion.div
+          initial={{ opacity: 0.35 }}
+          animate={{ opacity: [0.25, 0.6, 0.25] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          className="w-40 h-32 rounded-2xl border border-white/20 shadow-[0_0_24px_rgba(34,197,94,0.18)]"
+        />
+      </div>
+
+      {/* Native Bottom Sheet Card */}
+      <motion.div 
+        initial={{ opacity: 0, y: 80 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-20 bg-white rounded-t-[32px] sm:rounded-t-[36px] pt-3.5 pb-7 px-6 shadow-[0_-14px_45px_rgba(0,0,0,0.18)] pb-safe"
+      >
+        {/* Drag Handle Indicator */}
+        <div className="w-12 h-1 bg-neutral-300 rounded-full mx-auto mb-4 sm:mb-5" />
+
+        <div className="flex flex-col gap-3 max-w-md mx-auto w-full">
+          {/* Primary CTA Button */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={onNext}
+            className="w-full h-14 bg-[#16a34a] hover:bg-[#15803d] active:bg-[#15803d] text-white text-[17px] font-semibold rounded-2xl flex items-center justify-center gap-2 shadow-[0_6px_20px_rgba(22,163,74,0.35)] transition-all cursor-pointer group"
+          >
+            <span>{t("onboarding.welcome.start")}</span>
+            <ArrowRight className="w-5 h-5 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-1" />
+          </motion.button>
+
+          {/* Secondary Skip Action */}
+          <button
+            onClick={handleSkip}
+            className="w-full py-2.5 flex items-center justify-center text-[15px] text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer"
+          >
+            {hasQuestion ? (
+              <>
+                <span>{skipPrefix}</span>
+                <span className="ml-1.5 text-[#16a34a] font-semibold hover:underline">{skipAction}</span>
+              </>
+            ) : (
+              <span>{rawSkip}</span>
+            )}
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
