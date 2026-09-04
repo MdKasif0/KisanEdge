@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CropCard } from "@/components/features/crop-card";
 import { MOCK_HOME_INSIGHTS, MOCK_PLANTS } from "@/lib/mock-data";
-import { ArrowRight, AlertTriangle, ScanLine, Droplet, Sun, Flower, Search } from "lucide-react";
+import { ArrowRight, AlertTriangle, ScanLine, Droplet, Sun, Flower, Search, CloudSun, Thermometer } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
@@ -53,6 +53,52 @@ export function HomeGrowerDashboard() {
             <ScanLine className="w-5 h-5 mr-2" /> Scan My Plant
           </Button>
         </Link>
+      </motion.div>
+
+      {/* Plant Environment Card */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-gradient-to-br from-[#14532D] to-[#0e3b1c] rounded-[24px] p-5 text-white shadow-lg relative overflow-hidden">
+        <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+        <div className="flex justify-between items-start mb-4 relative z-10">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2 mb-1">
+              <CloudSun className="w-4 h-4 text-amber-300" />
+              <h2 className="text-[16px] font-bold text-white/90">Plant Environment</h2>
+            </div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="w-2 h-2 rounded-full bg-[#16A34A] shadow-[0_0_8px_rgba(22,163,74,0.8)]" />
+              <span className="text-[12px] text-white/70 font-medium">Sensor Connected</span>
+            </div>
+          </div>
+          <Link href="/environment">
+            <Button variant="ghost" size="sm" className="h-8 rounded-full bg-white/10 hover:bg-white/20 text-white text-[12px] font-semibold border border-white/10">
+              Details <ArrowRight className="w-3 h-3 ml-1" />
+            </Button>
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3 relative z-10">
+          <div className="bg-white/10 backdrop-blur-md rounded-[16px] p-3 flex flex-col border border-white/5">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Droplet className="w-3.5 h-3.5 text-blue-300" />
+              <span className="text-[11px] font-medium text-white/70">Pot Moisture</span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-[20px] font-bold">31%</span>
+              <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-sm font-semibold">Low</span>
+            </div>
+          </div>
+          
+          <div className="bg-white/10 backdrop-blur-md rounded-[16px] p-3 flex flex-col border border-white/5">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Thermometer className="w-3.5 h-3.5 text-orange-300" />
+              <span className="text-[11px] font-medium text-white/70">Soil Temp</span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-[20px] font-bold">28°</span>
+              <span className="text-[10px] bg-[#16A34A]/20 text-[#DCFCE7] px-1.5 py-0.5 rounded-sm font-semibold">Good</span>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       {/* My Plants */}
