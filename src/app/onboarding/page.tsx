@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, MapPin, Bell, Search, Check, ArrowRight, CloudSun, Sprout, Droplet, Sparkles } from "lucide-react";
+import { Leaf, MapPin, Bell, Search, Check, ArrowRight, CloudSun, Sprout, Droplet, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 import { LANGUAGES, LanguageCode } from "@/lib/i18n/translations";
@@ -904,6 +904,7 @@ function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () =
   const { t } = useTranslation();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   
   const data = role === "farmer" ? FARM_CROPS : HOME_PLANTS;
   const filtered = data.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
@@ -921,56 +922,225 @@ function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () =
   };
 
   return (
-    <div className="flex flex-col h-full bg-background p-4 pb-safe">
-      <div className="mt-8 mb-6 text-center max-w-md mx-auto w-full">
-        <h2 className="text-2xl font-bold text-brand-deep">
-          {role === "farmer" ? t("onboarding.crop.farmerTitle") : t("onboarding.crop.homeTitle")}
-        </h2>
-        <p className="text-gray-500 mt-2">
-          {role === "farmer" ? t("onboarding.crop.farmerDesc") : t("onboarding.crop.homeDesc")}
-        </p>
-      </div>
-      
-      <div className="relative mb-6 max-w-md mx-auto w-full">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-        <input 
-          type="text" 
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Search..."
-          className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-brand-primary"
+    <div className="relative flex flex-col h-full bg-[#f8faf9] overflow-hidden">
+      {/* Background with subtle botanical hints */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <img 
+          src="/loc-bg-placeholder.png" 
+          alt="" 
+          className="absolute bottom-0 left-0 w-full h-[60vh] object-cover object-bottom opacity-30 mix-blend-multiply" 
+          style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto mb-4">
-        <div className="grid grid-cols-2 gap-3 max-w-md mx-auto pb-4">
-          {filtered.map(plant => (
-            <button
-              key={plant.id}
-              onClick={() => toggle(plant.id)}
-              className={cn(
-                "p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-3 transition-all",
-                selected.has(plant.id)
-                  ? "border-brand-primary bg-brand-soft shadow-sm"
-                  : "border-gray-100 bg-white hover:border-gray-200"
-              )}
-            >
-              <div className="text-4xl">{plant.emoji}</div>
-              <span className="font-semibold text-brand-deep text-sm">{plant.name}</span>
-            </button>
-          ))}
+      {/* Brand Header & Progress */}
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6 flex-none">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] bg-[#16a34a] rounded-[14px] sm:rounded-[16px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-[20px] sm:text-[22px] text-[#0e3b1c] tracking-tight leading-none">
+              KisanEdge
+            </span>
+            <span className="text-[13px] sm:text-[14px] text-gray-500 mt-1 font-medium">
+              Smart care for every plant.
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Indicator (Step 5/Final) */}
+        <div className="flex items-center gap-[6px] sm:gap-[8px]">
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[12px] h-[12px] sm:w-[14px] sm:h-[14px] rounded-full bg-[#16a34a] ring-4 ring-[#dcfce7]" />
         </div>
       </div>
 
-      <div className="pt-2 max-w-md mx-auto w-full bg-background">
-        <Button 
-          size="lg" 
-          className="w-full h-14 rounded-2xl shadow-lg" 
-          disabled={selected.size === 0}
-          onClick={handleFinish}
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+        {/* Main Heading & Subtitle */}
+        <div className="px-6 sm:px-8 mt-6 sm:mt-8 text-center flex flex-col items-center flex-none">
+          <motion.h2 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[28px] sm:text-[32px] md:text-[36px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight max-w-[320px]"
+          >
+            Select your <span className="text-[#16a34a]">crops</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[15px] sm:text-[16px] md:text-[18px] text-[#64748b] font-medium mt-2 sm:mt-3 md:mt-4 max-w-[320px] leading-snug"
+          >
+            Choose the crops you currently grow.
+          </motion.p>
+        </div>
+        
+        {/* Search Bar */}
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="px-6 sm:px-8 mt-6 sm:mt-8 flex-none w-full max-w-[500px] mx-auto relative z-20"
         >
-          {t("onboarding.crop.continue")} ({selected.size})
-        </Button>
+          <div className={cn(
+            "relative flex items-center w-full h-[52px] sm:h-[58px] bg-white rounded-[16px] sm:rounded-[18px] transition-all duration-200 shadow-[0_2px_8px_rgba(0,0,0,0.02)]",
+            isSearchFocused ? "ring-4 ring-[#dcfce7] border border-[#16a34a]" : "border border-[#e5e7eb]"
+          )}>
+            <Search className="absolute left-4 text-gray-400 w-5 h-5 sm:w-6 sm:h-6" />
+            <input 
+              type="text" 
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setIsSearchFocused(false)}
+              placeholder="Search crops..."
+              className="w-full h-full bg-transparent pl-[44px] sm:pl-[52px] pr-12 text-[16px] sm:text-[17px] text-[#0e3b1c] font-medium placeholder:text-gray-400 placeholder:font-normal focus:outline-none rounded-[16px] sm:rounded-[18px]"
+            />
+            <AnimatePresence>
+              {search && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => setSearch("")}
+                  className="absolute right-4 w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5 stroke-[3]" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Scrollable Crop Grid */}
+        <div className="flex-1 overflow-y-auto w-full px-6 sm:px-8 pt-6 pb-[120px] sm:pb-[140px] mt-2 relative z-10">
+          <div className="w-full max-w-[500px] mx-auto">
+            {filtered.length === 0 ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex flex-col items-center justify-center py-10"
+              >
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <Leaf className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-[18px] font-semibold text-[#0e3b1c] mb-1">No crops found</h3>
+                <p className="text-[#64748b] text-[15px]">Try searching for another crop.</p>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {filtered.map((plant, index) => {
+                  const isSelected = selected.has(plant.id);
+                  return (
+                    <motion.button
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.4 + (index * 0.05), ease: [0.16, 1, 0.3, 1] }}
+                      key={plant.id}
+                      onClick={() => toggle(plant.id)}
+                      whileTap={{ scale: 0.96 }}
+                      className={cn(
+                        "relative flex flex-col items-center justify-center h-[130px] sm:h-[155px] rounded-[18px] sm:rounded-[22px] transition-all duration-200 border",
+                        isSelected
+                          ? "bg-[#dcfce7] border-[#16a34a] shadow-[0_4px_12px_rgba(22,163,74,0.1)]"
+                          : "bg-white border-[#e5e7eb] hover:border-gray-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                      )}
+                      aria-label={`${plant.name}, ${isSelected ? 'selected. Double tap to deselect' : 'not selected'}`}
+                    >
+                      {/* Selection Indicator */}
+                      <div className={cn(
+                        "absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 border-2",
+                        isSelected 
+                          ? "bg-[#16a34a] border-[#16a34a]" 
+                          : "bg-transparent border-[#e5e7eb]"
+                      )}>
+                        <AnimatePresence>
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              exit={{ scale: 0 }}
+                            >
+                              <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Icon */}
+                      <div className="relative mb-2 sm:mb-3">
+                        <div className={cn(
+                          "absolute inset-0 bg-[#16a34a] rounded-full blur-[20px] transition-opacity duration-300",
+                          isSelected ? "opacity-20" : "opacity-0"
+                        )} />
+                        <div className="text-[42px] sm:text-[52px] leading-none drop-shadow-md z-10 relative select-none">
+                          {plant.emoji}
+                        </div>
+                      </div>
+                      
+                      {/* Name */}
+                      <span className="font-semibold text-[15px] sm:text-[17px] text-[#0e3b1c] z-10 relative">
+                        {plant.name}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Bottom Actions */}
+      <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none">
+        {/* Gradient fade to prevent sharp cutoff */}
+        <div className="h-12 bg-gradient-to-b from-transparent to-[#f8faf9]" />
+        <div className="bg-[#f8faf9] px-6 sm:px-8 pb-safe pt-2 pointer-events-auto w-full">
+          <div className="max-w-[400px] mx-auto w-full flex flex-col gap-4 pb-4 sm:pb-6">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              whileTap={selected.size > 0 ? { scale: 0.98 } : {}}
+              onClick={handleFinish}
+              disabled={selected.size === 0}
+              className={cn(
+                "w-full h-[56px] sm:h-[60px] rounded-[16px] sm:rounded-[18px] text-white flex items-center px-6 transition-all duration-200",
+                selected.size > 0 
+                  ? "bg-[#16a34a] hover:bg-[#15803d] shadow-[0_8px_20px_rgba(22,163,74,0.25)]" 
+                  : "bg-[#cbd5e1] text-[#94a3b8] cursor-not-allowed"
+              )}
+            >
+              <div className="w-6 sm:w-6" /> {/* Spacer */}
+              <span className="flex-1 text-[17px] sm:text-[18px] font-semibold text-center">
+                {selected.size > 0 ? `Continue (${selected.size})` : "Select crops"}
+              </span>
+              {selected.size > 0 ? <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" /> : <div className="w-5 sm:w-6" />}
+            </motion.button>
+            
+            {/* Bottom Brand Message */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="flex items-center justify-center gap-3 w-full"
+            >
+              <div className="h-[1px] flex-1 max-w-[30px] bg-gray-200" />
+              <div className="flex items-center gap-1.5 text-[13px] sm:text-[14px] text-gray-500 font-medium">
+                <Leaf className="w-[14px] h-[14px] text-[#16a34a]" /> 
+                Grow today, a greener tomorrow
+              </div>
+              <div className="h-[1px] flex-1 max-w-[30px] bg-gray-200" />
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
