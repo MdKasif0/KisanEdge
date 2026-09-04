@@ -58,7 +58,7 @@ export default function FieldDetailsPage({ params }: { params: Promise<{ id: str
   return (
     <div className="flex flex-col min-h-[100dvh] bg-[#F8FAF9] pb-24 relative overflow-hidden">
       {/* Background Hero */}
-      <div className="absolute top-0 left-0 right-0 h-[280px] bg-gradient-to-b from-[#14532D] to-[#16A34A] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[240px] sm:h-[280px] bg-gradient-to-b from-[#14532D] to-[#16A34A] pointer-events-none" />
       <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/5 rounded-bl-full pointer-events-none" />
 
       {/* Header */}
@@ -81,10 +81,10 @@ export default function FieldDetailsPage({ params }: { params: Promise<{ id: str
         <div className="flex justify-between items-end">
           <div className="flex flex-col gap-1">
             <span className="text-white/80 text-[13px] font-semibold uppercase tracking-wider">{field.crop}</span>
-            <h1 className="text-[32px] font-bold leading-tight">{field.name}</h1>
+            <h1 className="text-[26px] sm:text-[32px] font-bold leading-tight">{field.name}</h1>
             <div className="flex items-center gap-1.5 mt-1 text-white/90">
               <MapPin className="w-3.5 h-3.5" />
-              <span className="text-[13px] font-medium">{field.area} • Planted {field.sowingDate}</span>
+              <span className="text-[12px] sm:text-[13px] font-medium">{field.area} • Planted {field.sowingDate}</span>
             </div>
           </div>
           <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/20">
@@ -97,14 +97,14 @@ export default function FieldDetailsPage({ params }: { params: Promise<{ id: str
       <div className="relative z-20 flex flex-col gap-5 px-4 sm:px-5">
         
         {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 gap-3 -mt-2">
-          <div className="bg-white rounded-[20px] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex flex-col">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 -mt-2">
+          <div className="bg-white rounded-[20px] p-3 sm:p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#E5E7EB] flex flex-col">
             <div className="flex items-center gap-2 mb-2">
               <Activity className="w-4 h-4 text-[#16A34A]" />
               <span className="text-[12px] font-semibold text-[#64748b]">Health Score</span>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="text-[28px] font-bold text-[#14532D]">{field.healthScore}</span>
+              <span className="text-[24px] sm:text-[28px] font-bold text-[#14532D]">{field.healthScore}</span>
               <span className="text-[14px] text-[#94A3B8] font-bold">/100</span>
             </div>
             <div className="w-full bg-gray-100 h-1.5 rounded-full mt-2 overflow-hidden">
