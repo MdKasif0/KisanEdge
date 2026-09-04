@@ -86,12 +86,12 @@ export default function EnvironmentPage() {
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-24">
         
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
+        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-3.5 sm:px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-[#16A34A] rounded-xl flex items-center justify-center">
               <Sprout className="w-5 h-5 text-white stroke-[2.5]" />
             </div>
-            <h1 className="text-[20px] font-bold text-[#14532D] tracking-tight">
+            <h1 className="text-[18px] sm:text-[20px] font-bold text-[#14532D] tracking-tight">
               {isFarmer ? "Field Sensor" : "Plant Environment"}
             </h1>
           </div>
@@ -102,13 +102,13 @@ export default function EnvironmentPage() {
         </header>
 
         <motion.div 
-          className="p-5 flex flex-col gap-6"
+          className="p-3.5 sm:p-5 flex flex-col gap-5 sm:gap-6"
           variants={containerVariants}
           initial="hidden"
           animate="show"
         >
           {/* HARDWARE CONNECTION CARD */}
-          <motion.div variants={itemVariants} className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E5E7EB] relative overflow-hidden">
+          <motion.div variants={itemVariants} className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E5E7EB] relative overflow-hidden">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gray-50 rounded-[16px] border border-gray-100 flex items-center justify-center relative shadow-inner">
