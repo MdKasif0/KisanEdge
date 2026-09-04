@@ -28,22 +28,24 @@ export function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 pb-safe">
-      <nav className="flex items-center justify-around px-2 h-16 max-w-md mx-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-[0_-4px_24px_rgba(0,0,0,0.02)] pb-safe">
+      <nav className="flex items-center justify-around px-2 h-[72px] max-w-md mx-auto relative">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
           if (item.isPrimary) {
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative -top-5 flex flex-col items-center justify-center w-14 h-14 bg-[#16a34a] rounded-full shadow-[0_8px_16px_rgba(22,163,74,0.3)] text-white hover:bg-[#15803d] transition-transform active:scale-95"
-              >
-                <Icon className="w-6 h-6 stroke-[2.5]" />
-                <span className="sr-only">{item.label}</span>
-              </Link>
+              <div key={item.href} className="relative h-full flex items-center justify-center w-16">
+                <Link
+                  href={item.href}
+                  className="absolute bottom-6 flex flex-col items-center justify-center w-[56px] h-[56px] bg-[#16a34a] rounded-full shadow-[0_8px_20px_rgba(22,163,74,0.35)] text-white hover:bg-[#15803d] transition-transform active:scale-95"
+                >
+                  <Icon className="w-6 h-6 stroke-[2]" />
+                  <span className="sr-only">{item.label}</span>
+                </Link>
+                <span className="absolute bottom-2 text-[11px] font-medium text-gray-500">{item.label}</span>
+              </div>
             );
           }
 
@@ -53,11 +55,11 @@ export function BottomNav() {
               href={item.href}
               className={cn(
                 "flex flex-col items-center justify-center w-16 h-full gap-1 transition-colors",
-                isActive ? "text-[#16a34a]" : "text-gray-400 hover:text-gray-600"
+                isActive ? "text-[#16a34a]" : "text-[#64748b] hover:text-[#14532D]"
               )}
             >
-              <Icon className={cn("w-5 h-5", isActive && "stroke-[2.5px]")} />
-              <span className="text-[10px] font-semibold text-center leading-tight truncate w-full px-1">{item.label}</span>
+              <Icon className={cn("w-6 h-6", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
+              <span className={cn("text-[11px] font-medium text-center leading-tight truncate w-full px-1", isActive ? "font-bold" : "")}>{item.label}</span>
             </Link>
           );
         })}
