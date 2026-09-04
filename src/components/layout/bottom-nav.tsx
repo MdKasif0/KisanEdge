@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ScanLine, Sprout, Leaf, Bell, UserCircle } from "lucide-react";
+import { Home, ScanLine, Sprout, Leaf, CloudSun, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 import { useUser } from "@/lib/store/user-store";
@@ -13,7 +13,7 @@ export function BottomNav() {
   const { t } = useTranslation();
   const { role } = useUser();
 
-  if (pathname === "/scan" || pathname === "/results") {
+  if (pathname === "/scan" || pathname === "/results" || pathname === "/environment") {
     return null;
   }
 
@@ -23,7 +23,7 @@ export function BottomNav() {
       ? { icon: Sprout, label: "Farm", href: "/farm" }
       : { icon: Leaf, label: "Plants", href: "/plants" },
     { icon: ScanLine, label: "Scan", href: "/scan", isPrimary: true },
-    { icon: Bell, label: "Alerts", href: "/alerts" },
+    { icon: CloudSun, label: "Env", href: "/environment" },
     { icon: UserCircle, label: "Profile", href: "/profile" },
   ];
 
