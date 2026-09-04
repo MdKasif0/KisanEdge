@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, MapPin, Bell, Search, Check, ArrowRight } from "lucide-react";
+import { Leaf, MapPin, Bell, Search, Check, ArrowRight, CloudSun, Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 import { LANGUAGES, LanguageCode } from "@/lib/i18n/translations";
@@ -558,22 +558,166 @@ function StepLocation({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background p-4 pb-safe">
-      <div className="flex-1 flex flex-col items-center justify-center text-center max-w-md mx-auto">
-        <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mb-8 relative">
-          <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20" />
-          <MapPin className="w-12 h-12 text-blue-500" />
-        </div>
-        <h2 className="text-2xl font-bold text-brand-deep mb-3">{t("onboarding.loc.title")}</h2>
-        <p className="text-gray-500 leading-relaxed mb-12">{t("onboarding.loc.desc")}</p>
+    <div className="relative flex flex-col h-full bg-[#f8faf9] pb-safe overflow-y-auto overflow-x-hidden">
+      {/* Background Image Placeholder */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        <img 
+          src="/loc-bg-placeholder.png" 
+          alt="" 
+          className="w-full h-full object-cover object-bottom opacity-50" 
+        />
+        {/* Subtle white gradient at top to ensure header/text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f8faf9] via-[#f8faf9]/70 to-transparent h-[60%]" />
       </div>
-      <div className="flex flex-col gap-3 max-w-md mx-auto w-full">
-        <Button size="lg" className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl" onClick={handleAllow}>
-          {t("onboarding.loc.allow")}
-        </Button>
-        <Button variant="ghost" className="w-full h-14 text-gray-500" onClick={onNext}>
-          {t("onboarding.loc.deny")}
-        </Button>
+
+      {/* Brand Header & Progress */}
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[56px] h-[56px] sm:w-[60px] sm:h-[60px] bg-[#16a34a] rounded-[16px] sm:rounded-[18px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-white stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-[22px] sm:text-[24px] text-[#0e3b1c] tracking-tight leading-none">
+              KisanEdge
+            </span>
+            <span className="text-[14px] sm:text-[15px] text-gray-500 mt-1 font-medium">
+              Smart care for every plant.
+            </span>
+          </div>
+        </div>
+
+        {/* Progress Indicator (Step 3 Active) */}
+        <div className="flex items-center gap-[6px] sm:gap-[8px]">
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-[#16a34a]" />
+          <div className="w-[10px] h-[10px] sm:w-[12px] sm:h-[12px] rounded-full bg-[#16a34a]" />
+          <div className="w-4 sm:w-5 h-[2px] bg-gray-200" />
+          <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-gray-200" />
+        </div>
+      </div>
+
+      {/* Main Hero Image */}
+      <div className="relative z-10 flex justify-center mt-6 sm:mt-10 mb-6 sm:mb-8 px-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[320px] aspect-[4/3] flex items-center justify-center pointer-events-none"
+        >
+          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-full object-contain drop-shadow-sm" />
+        </motion.div>
+      </div>
+
+      {/* Main Heading & Subtitle */}
+      <div className="relative z-10 px-6 sm:px-8 text-center flex flex-col items-center">
+        <motion.h2 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[34px] sm:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight max-w-[320px]"
+        >
+          Enable <span className="text-[#16a34a]">location</span>
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[17px] sm:text-[19px] text-[#64748b] font-medium mt-3 sm:mt-4 max-w-[320px] leading-snug"
+        >
+          Use your location for local weather, crop conditions and personalized alerts.
+        </motion.p>
+      </div>
+
+      {/* Benefit Row */}
+      <div className="relative z-10 px-6 sm:px-8 mt-8 sm:mt-10 flex items-start justify-center gap-4 sm:gap-6 w-full max-w-[400px] mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
+            <CloudSun className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+            Local<br/>weather
+          </span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
+            <Sprout className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+            Crop<br/>conditions
+          </span>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center flex-1 text-center"
+        >
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
+            <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          </div>
+          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+            Personalized<br/>alerts
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Actions */}
+      <div className="relative z-10 px-6 sm:px-8 mt-10 sm:mt-12 flex flex-col gap-4 w-full max-w-[400px] mx-auto mb-10">
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleAllow}
+          className="w-full h-[56px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[16px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)]"
+          aria-label="Allow location to get local weather, crop conditions, and personalized alerts."
+        >
+          <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="flex-1 text-[17px] sm:text-[19px] font-semibold text-center">Allow Location</span>
+          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        </motion.button>
+        
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onNext}
+          className="w-full h-[48px] flex items-center justify-center text-[#64748b] text-[16px] sm:text-[18px] font-medium hover:text-[#0e3b1c] transition-colors"
+        >
+          Not Now
+        </motion.button>
+      </div>
+
+      {/* Bottom Brand Message */}
+      <div className="relative z-10 mt-auto pb-6 sm:pb-8 flex items-center justify-center w-full px-6 pointer-events-none">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="flex items-center justify-center gap-3 sm:gap-4 w-full"
+        >
+          <div className="h-[1px] flex-1 max-w-[30px] sm:max-w-[40px] bg-gray-200" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[14px] sm:text-[16px] text-gray-500 font-medium">
+            <Leaf className="w-4 h-4 sm:w-[16px] sm:h-[16px] text-[#16a34a]" /> 
+            Smarter farming starts where you are
+          </div>
+          <div className="h-[1px] flex-1 max-w-[30px] sm:max-w-[40px] bg-gray-200" />
+        </motion.div>
       </div>
     </div>
   );
