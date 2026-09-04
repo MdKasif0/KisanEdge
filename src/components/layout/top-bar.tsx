@@ -12,7 +12,7 @@ export function TopBar() {
   const pathname = usePathname();
 
   // Hide TopBar on pages that have their own custom headers
-  if (pathname === "/home" || pathname === "/scan" || pathname === "/results") {
+  if (pathname === "/home" || pathname === "/scan" || pathname === "/results" || pathname === "/environment") {
     return null;
   }
 
