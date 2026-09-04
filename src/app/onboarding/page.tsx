@@ -558,7 +558,7 @@ function StepLocation({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <div className="relative flex flex-col h-full bg-[#f8faf9] pb-safe overflow-y-auto overflow-x-hidden">
+    <div className="relative flex flex-col h-full bg-[#f8faf9] pb-safe overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <img 
@@ -571,16 +571,16 @@ function StepLocation({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Brand Header & Progress */}
-      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6">
+      <div className="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-safe mt-4 sm:mt-6 flex-none">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-[56px] h-[56px] sm:w-[60px] sm:h-[60px] bg-[#16a34a] rounded-[16px] sm:rounded-[18px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
-            <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-white stroke-[2.5]" />
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] bg-[#16a34a] rounded-[14px] sm:rounded-[16px] flex items-center justify-center shadow-[0_8px_16px_rgba(22,163,74,0.25)]">
+            <Leaf className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2.5]" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-[22px] sm:text-[24px] text-[#0e3b1c] tracking-tight leading-none">
+            <span className="font-bold text-[20px] sm:text-[22px] text-[#0e3b1c] tracking-tight leading-none">
               KisanEdge
             </span>
-            <span className="text-[14px] sm:text-[15px] text-gray-500 mt-1 font-medium">
+            <span className="text-[13px] sm:text-[14px] text-gray-500 mt-1 font-medium">
               Smart care for every plant.
             </span>
           </div>
@@ -598,25 +598,25 @@ function StepLocation({ onNext }: { onNext: () => void }) {
         </div>
       </div>
 
-      {/* Main Hero Image */}
-      <div className="relative z-10 flex justify-center mt-4 sm:mt-8 mb-4 sm:mb-6 w-full">
+      {/* Main Hero Image - flexible height to prevent scrolling */}
+      <div className="relative z-10 flex-1 flex justify-center items-center w-full px-4 sm:px-6 min-h-[140px]">
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full flex items-center justify-center pointer-events-none mix-blend-multiply"
+          className="relative w-full max-w-[400px] h-[90%] max-h-[320px] flex items-center justify-center pointer-events-none mix-blend-multiply mx-auto"
         >
-          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-auto" />
+          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-full object-contain drop-shadow-none" />
         </motion.div>
       </div>
 
       {/* Main Heading & Subtitle */}
-      <div className="relative z-10 px-6 sm:px-8 text-center flex flex-col items-center">
+      <div className="relative z-10 px-6 sm:px-8 text-center flex flex-col items-center flex-none">
         <motion.h2 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[34px] sm:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight max-w-[320px]"
+          className="text-[28px] sm:text-[34px] md:text-[38px] font-bold text-[#0e3b1c] leading-[1.15] tracking-tight max-w-[320px]"
         >
           Enable <span className="text-[#16a34a]">location</span>
         </motion.h2>
@@ -624,24 +624,24 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[17px] sm:text-[19px] text-[#64748b] font-medium mt-3 sm:mt-4 max-w-[320px] leading-snug"
+          className="text-[15px] sm:text-[17px] md:text-[19px] text-[#64748b] font-medium mt-2 sm:mt-3 md:mt-4 max-w-[320px] leading-snug"
         >
           Use your location for local weather, crop conditions and personalized alerts.
         </motion.p>
       </div>
 
       {/* Benefit Row */}
-      <div className="relative z-10 px-6 sm:px-8 mt-8 sm:mt-10 flex items-start justify-center gap-4 sm:gap-6 w-full max-w-[400px] mx-auto">
+      <div className="relative z-10 px-4 sm:px-8 mt-5 sm:mt-8 flex items-start justify-center gap-2 sm:gap-4 md:gap-6 w-full max-w-[400px] mx-auto flex-none">
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
-            <CloudSun className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-2 sm:mb-3">
+            <CloudSun className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
-          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
             Local<br/>weather
           </span>
         </motion.div>
@@ -652,10 +652,10 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
-            <Sprout className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-2 sm:mb-3">
+            <Sprout className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
-          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
             Crop<br/>conditions
           </span>
         </motion.div>
@@ -666,28 +666,28 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center flex-1 text-center"
         >
-          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-3">
-            <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-[#16a34a] stroke-[2]" />
+          <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-full bg-[#dcfce7] flex items-center justify-center mb-2 sm:mb-3">
+            <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-[#16a34a] stroke-[2]" />
           </div>
-          <span className="text-[15px] sm:text-[16px] text-[#64748b] font-medium leading-tight">
+          <span className="text-[13px] sm:text-[15px] text-[#64748b] font-medium leading-tight">
             Personalized<br/>alerts
           </span>
         </motion.div>
       </div>
 
       {/* Actions */}
-      <div className="relative z-10 px-6 sm:px-8 mt-10 sm:mt-12 flex flex-col gap-4 w-full max-w-[400px] mx-auto mb-10">
+      <div className="relative z-10 px-6 sm:px-8 mt-6 sm:mt-10 flex flex-col gap-3 sm:gap-4 w-full max-w-[400px] mx-auto mb-4 sm:mb-8 flex-none">
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           whileTap={{ scale: 0.98 }}
           onClick={handleAllow}
-          className="w-full h-[56px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[16px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)]"
+          className="w-full h-[52px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[14px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)]"
           aria-label="Allow location to get local weather, crop conditions, and personalized alerts."
         >
           <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="flex-1 text-[17px] sm:text-[19px] font-semibold text-center">Allow Location</span>
+          <span className="flex-1 text-[16px] sm:text-[19px] font-semibold text-center">Allow Location</span>
           <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </motion.button>
         
@@ -697,14 +697,14 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
           whileTap={{ scale: 0.98 }}
           onClick={onNext}
-          className="w-full h-[48px] flex items-center justify-center text-[#64748b] text-[16px] sm:text-[18px] font-medium hover:text-[#0e3b1c] transition-colors"
+          className="w-full h-[44px] flex items-center justify-center text-[#64748b] text-[15px] sm:text-[18px] font-medium hover:text-[#0e3b1c] transition-colors"
         >
           Not Now
         </motion.button>
       </div>
 
       {/* Bottom Brand Message */}
-      <div className="relative z-10 mt-auto pb-6 sm:pb-8 flex items-center justify-center w-full px-6 pointer-events-none">
+      <div className="relative z-10 flex items-center justify-center w-full px-6 pointer-events-none pb-4 sm:pb-8 flex-none">
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -712,7 +712,7 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           className="flex items-center justify-center gap-3 sm:gap-4 w-full"
         >
           <div className="h-[1px] flex-1 max-w-[30px] sm:max-w-[40px] bg-gray-200" />
-          <div className="flex items-center gap-1.5 sm:gap-2 text-[14px] sm:text-[16px] text-gray-500 font-medium">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-[13px] sm:text-[16px] text-gray-500 font-medium">
             <Leaf className="w-4 h-4 sm:w-[16px] sm:h-[16px] text-[#16a34a]" /> 
             Smarter farming starts where you are
           </div>
