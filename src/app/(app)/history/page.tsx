@@ -25,7 +25,7 @@ export default function HistoryPage() {
   return (
     <div className="flex flex-col min-h-[100dvh] bg-[#F8FAF9] pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-3.5 sm:px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button 
             onClick={() => router.back()}
@@ -43,7 +43,7 @@ export default function HistoryPage() {
       </header>
 
       {/* Filters */}
-      <div className="px-4 sm:px-5 pt-4 pb-2 overflow-x-auto hide-scrollbar flex gap-2">
+      <div className="px-3.5 sm:px-5 pt-4 pb-2 overflow-x-auto hide-scrollbar flex gap-2">
         {FILTERS.map(filter => (
           <button
             key={filter}
@@ -60,7 +60,7 @@ export default function HistoryPage() {
       </div>
 
       {/* History List */}
-      <div className="flex flex-col gap-3 p-4 sm:p-5">
+      <div className="flex flex-col gap-3 p-3.5 sm:p-5">
         <span className="text-[13px] font-bold text-[#94A3B8] uppercase tracking-wider ml-1 mb-1">Recent Scans</span>
         
         {filteredHistory.length === 0 ? (
@@ -74,7 +74,7 @@ export default function HistoryPage() {
               animate={{ opacity: 1, y: 0 }} 
               transition={{ delay: idx * 0.05 }}
               key={scan.id} 
-              className="bg-white p-4 rounded-[20px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#E5E7EB] flex flex-col gap-3 relative overflow-hidden"
+              className="bg-white p-3 sm:p-4 rounded-[18px] sm:rounded-[20px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#E5E7EB] flex flex-col gap-3 relative overflow-hidden"
             >
               {/* Status accent border */}
               <div className={`absolute left-0 top-0 bottom-0 w-1 ${scan.severity === 'Healthy' ? 'bg-[#16A34A]' : 'bg-amber-500'}`} />
