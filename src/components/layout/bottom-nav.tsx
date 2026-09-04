@@ -42,7 +42,7 @@ export function BottomNav() {
                   href={item.href}
                   className="absolute -top-5 flex flex-col items-center justify-center w-[72px] h-[72px] bg-[#16A34A] rounded-full border-[6px] border-[#F8FAF9] shadow-[0_4px_16px_rgba(22,163,74,0.4)] text-white hover:bg-[#15803d] transition-transform active:scale-95 group"
                 >
-                  <Icon className="w-7 h-7 stroke-[2] group-hover:scale-110 transition-transform" />
+                  <Icon className="w-8 h-8 stroke-[2] group-hover:scale-110 transition-transform" />
                   <span className="sr-only">{item.label}</span>
                 </Link>
               </div>
@@ -61,7 +61,7 @@ export function BottomNav() {
                 isActive ? "text-[#16A34A]" : "text-[#94A3B8] hover:text-[#64748B]"
               )}
             >
-              <Icon className={cn("w-[22px] h-[22px]", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
+              <Icon className={cn("w-[26px] h-[26px]", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
             </Link>
           );
         })}
