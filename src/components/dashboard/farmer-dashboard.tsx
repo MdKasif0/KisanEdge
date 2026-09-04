@@ -191,9 +191,11 @@ export function FarmerDashboard() {
                   <ScanLine className="w-5 h-5 mr-2" /> Scan Crop
                 </Button>
               </Link>
-              <Button variant="outline" className="flex-[2] h-12 rounded-[16px] border-[#E5E7EB] text-[#16A34A] font-semibold text-[15px] hover:bg-[#F0FDF4] bg-white transition-transform active:scale-[0.98]">
-                <Sprout className="w-5 h-5 mr-2" /> Soil
-              </Button>
+              <Link href="/environment" className="flex-[2]">
+                <Button variant="outline" className="w-full h-12 rounded-[16px] border-[#E5E7EB] text-[#16A34A] font-semibold text-[15px] hover:bg-[#F0FDF4] bg-white transition-transform active:scale-[0.98]">
+                  <Sprout className="w-5 h-5 mr-2" /> Soil
+                </Button>
+              </Link>
             </div>
           </motion.div>
 
