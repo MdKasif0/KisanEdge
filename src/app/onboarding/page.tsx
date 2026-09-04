@@ -48,7 +48,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Hero Branding Section (Logo, Name, Tagline, Description) */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 mt-2 sm:mt-4">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 mt-4 sm:mt-6">
         {/* Animated Brand Logo Squircle */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: -8 }}
@@ -56,12 +56,10 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           className="relative mb-5 sm:mb-6"
         >
-          <div className="w-[104px] h-[104px] sm:w-[114px] sm:h-[114px] relative">
-            <img 
-              src="/logo-squircle-hd.png" 
-              alt="KisanEdge" 
-              className="w-full h-full object-contain drop-shadow-[0_16px_32px_rgba(20,83,45,0.45)]"
-            />
+          <div className="w-[104px] h-[104px] sm:w-[114px] sm:h-[114px] rounded-[30px] bg-gradient-to-br from-[#a3e635] via-[#4ade80] to-[#16a34a] shadow-[0_16px_32px_rgba(20,83,45,0.45)] flex items-center justify-center relative overflow-hidden group">
+            {/* Subtle inner highlight */}
+            <div className="absolute inset-0 rounded-[30px] border-[1.5px] border-white/20 mix-blend-overlay" />
+            <Leaf className="w-[52px] h-[52px] sm:w-[58px] sm:h-[58px] text-white stroke-[2.5]" />
           </div>
         </motion.div>
 
@@ -97,14 +95,58 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Middle Interactive / AI Scanner Ambient Space */}
-      <div className="relative z-10 flex-1 min-h-[140px] sm:min-h-[180px] pointer-events-none flex items-center justify-center">
-        {/* Subtle breathing animation overlay aligned with the AI scanner reticle */}
-        <motion.div
-          initial={{ opacity: 0.2 }}
-          animate={{ opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-36 h-28 rounded-2xl border border-white/20 shadow-[0_0_24px_rgba(34,197,94,0.15)]"
-        />
+      <div className="relative z-10 flex-1 w-full pointer-events-none">
+        
+        {/* Left side micro-text */}
+        <motion.div 
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="absolute top-[20%] left-[8%] text-left"
+        >
+          <p className="text-[8px] sm:text-[9px] font-medium tracking-[0.25em] text-white/50 leading-snug">
+            PLANT CARE<br/>SMARTER<br/>FARMING<br/>BRIGHTER<br/>FUTURES
+          </p>
+          <div className="w-5 h-[1px] bg-white/30 mt-1.5" />
+        </motion.div>
+
+        {/* AI Scanner Reticle & Badge */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute inset-0 flex items-center justify-center -translate-y-4"
+        >
+          <div className="relative w-48 h-36 sm:w-56 sm:h-44">
+            {/* 4 Corners */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-[2.5px] border-l-[2.5px] border-white/80 rounded-tl-[16px]" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-[2.5px] border-r-[2.5px] border-white/80 rounded-tr-[16px]" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[2.5px] border-l-[2.5px] border-white/80 rounded-bl-[16px]" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[2.5px] border-r-[2.5px] border-white/80 rounded-br-[16px]" />
+            
+            {/* Animated Pulse */}
+            <motion.div
+              initial={{ opacity: 0.1 }}
+              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-2 bg-green-500/10 rounded-xl blur-md"
+            />
+          </div>
+
+          {/* Connected AI Badge */}
+          <div className="absolute top-[10%] right-[6%] sm:right-[15%] flex flex-col items-center">
+            <svg className="absolute -left-[55px] sm:-left-[70px] top-3 w-[60px] sm:w-[75px] h-[30px]" style={{ pointerEvents: 'none' }}>
+              <line x1="0" y1="30" x2="60" y2="0" stroke="rgba(255,255,255,0.4)" strokeWidth="1" strokeDasharray="2 2" />
+            </svg>
+            <div className="relative z-10 w-9 h-9 rounded-full border border-white/40 bg-emerald-600/30 backdrop-blur-md flex items-center justify-center shadow-lg">
+              <Leaf className="w-[18px] h-[18px] text-white" />
+              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white]" />
+            </div>
+            <p className="text-[8.5px] sm:text-[9.5px] text-white/70 mt-1.5 leading-[1.2] text-left ml-2">
+              AI<br/>for a<br/>greener<br/>tomorrow
+            </p>
+          </div>
+        </motion.div>
       </div>
 
       {/* Native Bottom Sheet Card */}
