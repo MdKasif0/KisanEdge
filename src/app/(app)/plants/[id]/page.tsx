@@ -45,7 +45,7 @@ export default function PlantDetailsPage({ params }: { params: Promise<{ id: str
   return (
     <div className="flex flex-col min-h-[100dvh] bg-[#F8FAF9] pb-24 relative overflow-hidden">
       {/* Background Hero */}
-      <div className="absolute top-0 left-0 right-0 h-[260px] bg-gradient-to-b from-[#0f4021] to-[#14532D] pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[220px] sm:h-[260px] bg-gradient-to-b from-[#0f4021] to-[#14532D] pointer-events-none" />
       <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-white/5 rounded-bl-full pointer-events-none" />
 
       {/* Header */}
@@ -67,13 +67,13 @@ export default function PlantDetailsPage({ params }: { params: Promise<{ id: str
       <div className="relative z-10 px-5 pt-2 pb-8 flex justify-between items-end text-white">
         <div className="flex flex-col gap-1">
           <span className="text-white/70 text-[12px] font-semibold uppercase tracking-wider">Indoor Plant</span>
-          <h1 className="text-[36px] font-bold leading-none mb-1">{plant.name}</h1>
+          <h1 className="text-[28px] sm:text-[36px] font-bold leading-none mb-1">{plant.name}</h1>
           <div className="flex items-center gap-2 mt-1">
             <div className="w-2.5 h-2.5 rounded-full bg-[#16A34A] shadow-[0_0_8px_rgba(22,163,74,0.6)]" />
             <span className="text-[14px] font-medium text-white/90">{plant.diseaseStatus}</span>
           </div>
         </div>
-        <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-[24px] flex items-center justify-center text-4xl shadow-lg border border-white/20">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/10 backdrop-blur-md rounded-[20px] sm:rounded-[24px] flex items-center justify-center text-3xl sm:text-4xl shadow-lg border border-white/20">
           {plant.image}
         </div>
       </div>

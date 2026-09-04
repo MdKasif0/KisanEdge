@@ -11,29 +11,29 @@ export default function PlantsPage() {
   const needsWater = MOCK_HOME_PLANTS.filter(p => p.waterStatus.toLowerCase().includes("due")).length;
 
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-5 relative min-h-[100dvh] bg-[#F8FAF9] pb-24">
+    <div className="flex flex-col gap-5 sm:gap-6 p-3.5 sm:p-5 relative min-h-[100dvh] bg-[#F8FAF9] pb-24">
       {/* Background Graphic */}
       <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-[#16A34A]/5 to-transparent rounded-bl-full pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between pt-safe pb-2">
-        <h1 className="text-[26px] font-bold text-[#14532D] tracking-tight">My Plants</h1>
+        <h1 className="text-[22px] sm:text-[26px] font-bold text-[#14532D] tracking-tight">My Plants</h1>
         <Button size="icon" className="rounded-full w-10 h-10 bg-[#16A34A] hover:bg-[#15803d] text-white shadow-md">
           <Plus className="w-5 h-5" />
         </Button>
       </header>
 
       {/* Metrics Grid */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-2 gap-3 relative z-10">
-        <div className="bg-white rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border border-[#E5E7EB]">
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-2 gap-2.5 sm:gap-3 relative z-10">
+        <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border border-[#E5E7EB]">
           <div className="flex items-center gap-2 mb-2">
             <Activity className="w-4 h-4 text-[#16A34A]" />
             <span className="text-[13px] font-medium text-[#64748b]">Avg Health</span>
           </div>
-          <div className="text-[28px] font-bold text-[#14532D] tracking-tight">{avgHealth}<span className="text-[16px] text-[#94A3B8]">/100</span></div>
+          <div className="text-[24px] sm:text-[28px] font-bold text-[#14532D] tracking-tight">{avgHealth}<span className="text-[14px] sm:text-[16px] text-[#94A3B8]">/100</span></div>
         </div>
         
-        <div className="bg-white rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border border-[#E5E7EB]">
+        <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] border border-[#E5E7EB]">
           <div className="flex items-center gap-2 mb-2">
             <Droplet className="w-4 h-4 text-blue-500" />
             <span className="text-[13px] font-medium text-[#64748b]">Needs Water</span>
