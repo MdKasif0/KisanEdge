@@ -30,7 +30,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
     <div className="relative w-full h-full flex flex-col justify-between overflow-hidden select-none bg-[#0e3b1c]">
       {/* High Definition Botanical Background */}
       <div 
-        className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none"
+        className="absolute inset-0 w-full h-full bg-cover bg-bottom pointer-events-none"
         style={{ backgroundImage: `url('/onboarding-bg-hd.png')` }}
       />
 
@@ -95,14 +95,14 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Middle Interactive / AI Scanner Ambient Space */}
-      <div className="relative z-10 flex-1 w-full pointer-events-none">
+      <div className="relative z-10 flex-1 w-full pointer-events-none mt-4">
         
         {/* Left side micro-text */}
         <motion.div 
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute top-[20%] left-[8%] text-left"
+          className="absolute bottom-[40%] left-[8%] text-left"
         >
           <p className="text-[8px] sm:text-[9px] font-medium tracking-[0.25em] text-white/50 leading-snug">
             PLANT CARE<br/>SMARTER<br/>FARMING<br/>BRIGHTER<br/>FUTURES
@@ -115,34 +115,34 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute inset-0 flex items-center justify-center -translate-y-4"
+          className="absolute inset-x-0 bottom-[-5%] sm:bottom-0 h-48 sm:h-56 flex justify-center"
         >
-          <div className="relative w-48 h-36 sm:w-56 sm:h-44">
+          <div className="relative w-48 h-40 sm:w-56 sm:h-48 mt-4">
             {/* 4 Corners */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-[2.5px] border-l-[2.5px] border-white/80 rounded-tl-[16px]" />
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-[2.5px] border-r-[2.5px] border-white/80 rounded-tr-[16px]" />
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[2.5px] border-l-[2.5px] border-white/80 rounded-bl-[16px]" />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[2.5px] border-r-[2.5px] border-white/80 rounded-br-[16px]" />
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-[2px] border-l-[2px] border-white/80 rounded-tl-[16px]" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-[2px] border-r-[2px] border-white/80 rounded-tr-[16px]" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[2px] border-l-[2px] border-white/80 rounded-bl-[16px]" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[2px] border-r-[2px] border-white/80 rounded-br-[16px]" />
             
             {/* Animated Pulse */}
             <motion.div
               initial={{ opacity: 0.1 }}
-              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              animate={{ opacity: [0.1, 0.25, 0.1] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-2 bg-green-500/10 rounded-xl blur-md"
             />
           </div>
 
           {/* Connected AI Badge */}
-          <div className="absolute top-[10%] right-[6%] sm:right-[15%] flex flex-col items-center">
-            <svg className="absolute -left-[55px] sm:-left-[70px] top-3 w-[60px] sm:w-[75px] h-[30px]" style={{ pointerEvents: 'none' }}>
+          <div className="absolute top-[5%] right-[6%] sm:right-[12%] flex flex-col items-center">
+            <svg className="absolute -left-[55px] sm:-left-[70px] top-4 w-[60px] sm:w-[75px] h-[30px]" style={{ pointerEvents: 'none' }}>
               <line x1="0" y1="30" x2="60" y2="0" stroke="rgba(255,255,255,0.4)" strokeWidth="1" strokeDasharray="2 2" />
             </svg>
-            <div className="relative z-10 w-9 h-9 rounded-full border border-white/40 bg-emerald-600/30 backdrop-blur-md flex items-center justify-center shadow-lg">
-              <Leaf className="w-[18px] h-[18px] text-white" />
-              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_white]" />
+            <div className="relative z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/40 bg-[#16a34a]/40 backdrop-blur-md flex items-center justify-center shadow-lg">
+              <Leaf className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-white" />
+              <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white/80 rounded-full shadow-[0_0_8px_white]" />
             </div>
-            <p className="text-[8.5px] sm:text-[9.5px] text-white/70 mt-1.5 leading-[1.2] text-left ml-2">
+            <p className="text-[8px] sm:text-[9px] text-white/70 mt-1.5 leading-[1.2] text-left ml-2">
               AI<br/>for a<br/>greener<br/>tomorrow
             </p>
           </div>
