@@ -38,3 +38,12 @@ body {
   overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Ensure no dev indicator or debug overlay circle is ever rendered */
+nextjs-portal,
+[data-nextjs-toast],
+#__next-build-watcher,
+div[data-nextjs-dialog-overlay] {
+  display: none !important;
+}
+
