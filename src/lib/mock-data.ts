@@ -88,3 +88,51 @@ export const MOCK_ALERTS: Alert[] = [
     date: "1 day ago",
   },
 ];
+
+export const MOCK_FARMER_INSIGHTS = [
+  {
+    id: "f1",
+    title: "Disease Risk",
+    description: "High humidity may increase fungal disease risk on Tomato crops.",
+    icon: "warning",
+    color: "orange"
+  },
+  {
+    id: "f2",
+    title: "Soil Moisture",
+    description: "Soil moisture is below your preferred range in Field B.",
+    icon: "droplet",
+    color: "blue"
+  },
+  {
+    id: "f3",
+    title: "Weather Alert",
+    description: "Heavy rain expected tomorrow. Plan harvest accordingly.",
+    icon: "cloud",
+    color: "indigo"
+  }
+];
+
+export const MOCK_HOME_INSIGHTS = [
+  {
+    id: "h1",
+    title: "Watering",
+    description: "Water your Tulsi. The top soil looks dry.",
+    icon: "droplet",
+    color: "blue"
+  },
+  {
+    id: "h2",
+    title: "Sunlight",
+    description: "Rotate your Aloe Vera toward the window for even growth.",
+    icon: "sun",
+    color: "amber"
+  },
+  {
+    id: "h3",
+    title: "Care Watch",
+    description: "Check your Rose plant for early fungal spots due to humidity.",
+    icon: "warning",
+    color: "orange"
+  }
+];

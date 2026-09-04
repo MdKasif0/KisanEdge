@@ -1,30 +1,40 @@
+"use client";
+
 import Link from "next/link";
-import { UserCircle, Settings } from "lucide-react";
+import { UserCircle, Bell, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/lib/store/user-store";
 
 export function TopBar() {
+  const { location, name, role } = useUser();
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
-      <div className="flex h-14 items-center justify-between px-4 max-w-md mx-auto">
-        <Link href="/home" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">K</span>
+    <header className="sticky top-0 z-40 w-full bg-[#f8faf9]/90 backdrop-blur-md border-b border-gray-100">
+      <div className="flex flex-col px-4 sm:px-6 pt-3 pb-2 max-w-md mx-auto">
+        <div className="flex h-12 items-center justify-between">
+          <div className="flex flex-col">
+            <Link href="/home" className="flex items-center gap-1.5">
+              <span className="font-bold text-[22px] text-[#0e3b1c] tracking-tight">KisanEdge</span>
+            </Link>
+            <div className="flex items-center gap-1 mt-0.5 text-gray-500">
+              <MapPin className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium">{location}</span>
+            </div>
           </div>
-          <span className="font-bold text-xl text-brand-deep tracking-tight">KisanEdge</span>
-        </Link>
-        <div className="flex items-center gap-2">
-          <Link href="/settings">
-            <Button variant="ghost" size="icon" className="text-gray-500 rounded-full">
-              <Settings className="w-5 h-5" />
-              <span className="sr-only">Settings</span>
-            </Button>
-          </Link>
-          <Link href="/profile">
-            <Button variant="ghost" size="icon" className="text-brand-primary rounded-full bg-brand-soft">
-              <UserCircle className="w-6 h-6" />
-              <span className="sr-only">Profile</span>
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/alerts">
+              <Button variant="ghost" size="icon" className="relative text-gray-500 rounded-full hover:bg-gray-100">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white" />
+                <span className="sr-only">Alerts</span>
+              </Button>
+            </Link>
+            <Link href="/profile">
+              <div className="w-9 h-9 rounded-full bg-[#dcfce7] flex items-center justify-center border border-[#16a34a]/20">
+                <span className="text-[#16a34a] font-bold text-sm">{name.charAt(0)}</span>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </header>
