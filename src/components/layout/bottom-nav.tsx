@@ -13,6 +13,10 @@ export function BottomNav() {
   const { t } = useTranslation();
   const { role } = useUser();
 
+  if (pathname === "/scan" || pathname === "/results") {
+    return null;
+  }
+
   const navItems: { icon: any; label: string; href: string; isPrimary?: boolean }[] = [
     { icon: Home, label: "Home", href: "/home" },
     role === "farmer" 
