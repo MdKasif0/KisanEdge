@@ -604,7 +604,7 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[320px] aspect-[4/3] flex items-center justify-center pointer-events-none"
+          className="relative w-full max-w-[340px] aspect-[4/3] flex items-center justify-center pointer-events-none mix-blend-multiply"
         >
           <img src="/enable-loc-placeholder.png" alt="" className="w-full h-full object-contain drop-shadow-sm" />
         </motion.div>
