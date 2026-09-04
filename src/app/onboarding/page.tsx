@@ -366,6 +366,7 @@ function StepRole({ onNext }: { onNext: (role: "farmer" | "home") => void }) {
         <img 
           src="/role-bg-placeholder.png" 
           alt="" 
+          loading="lazy"
           className="w-full h-full object-cover object-bottom opacity-60" 
         />
         {/* Subtle white gradient at top to ensure header/text readability */}
@@ -439,7 +440,7 @@ function StepRole({ onNext }: { onNext: (role: "farmer" | "home") => void }) {
         >
           {/* Left Image */}
           <div className="flex-shrink-0 w-[130px] h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden z-10 bg-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <img src="/farmer-placeholder.png" alt="Farmer" className="w-full h-full object-cover" />
+            <img src="/farmer-placeholder.png" alt="Farmer" loading="lazy" className="w-full h-full object-cover" />
           </div>
 
           {/* Right Content */}
@@ -488,7 +489,7 @@ function StepRole({ onNext }: { onNext: (role: "farmer" | "home") => void }) {
         >
           {/* Left Image */}
           <div className="flex-shrink-0 w-[130px] h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden z-10 bg-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-            <img src="/home-grower-placeholder.png" alt="Home Grower" className="w-full h-full object-cover" />
+            <img src="/home-grower-placeholder.png" alt="Home Grower" loading="lazy" className="w-full h-full object-cover" />
           </div>
 
           {/* Right Content */}
@@ -564,6 +565,7 @@ function StepLocation({ onNext }: { onNext: () => void }) {
         <img 
           src="/loc-bg-placeholder.png" 
           alt="" 
+          loading="lazy"
           className="w-full h-full object-cover object-bottom opacity-50" 
         />
         {/* Subtle white gradient at top to ensure header/text readability */}
@@ -606,7 +608,7 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full max-w-[400px] h-[90%] max-h-[320px] flex items-center justify-center pointer-events-none mix-blend-multiply mx-auto"
         >
-          <img src="/enable-loc-placeholder.png" alt="" className="w-full h-full object-contain drop-shadow-none" />
+          <img src="/enable-loc-placeholder.png" alt="" loading="lazy" className="w-full h-full object-contain drop-shadow-none" />
         </motion.div>
       </div>
 
@@ -783,7 +785,7 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full flex items-center justify-center pointer-events-none mix-blend-multiply"
         >
-          <img src="/notif-hero.png" alt="" className="w-full h-auto drop-shadow-none" />
+          <img src="/notif-hero.png" alt="" loading="lazy" className="w-full h-auto drop-shadow-none" />
         </motion.div>
       </div>
 
@@ -938,8 +940,9 @@ function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () =
       {/* Background with subtle botanical hints */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <img 
-          src="/loc-bg-placeholder.png" 
+          src="/notif-bg.png" 
           alt="" 
+          loading="lazy"
           className="absolute bottom-0 left-0 w-full h-[60vh] object-cover object-bottom opacity-30 mix-blend-multiply" 
           style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}
         />
