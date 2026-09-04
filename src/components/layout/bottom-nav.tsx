@@ -13,7 +13,7 @@ export function BottomNav() {
   const { t } = useTranslation();
   const { role } = useUser();
 
-  if (pathname === "/scan" || pathname === "/results" || pathname === "/environment") {
+  if (pathname === "/scan" || pathname === "/results") {
     return null;
   }
 
