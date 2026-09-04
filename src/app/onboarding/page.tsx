@@ -539,21 +539,47 @@ function StepRole({ onNext }: { onNext: (role: "farmer" | "home") => void }) {
 
 function StepLocation({ onNext }: { onNext: () => void }) {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   
   const handleAllow = () => {
     if ("geolocation" in navigator) {
+      setLoading(true);
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          storage.set("kisanedge_loc", { lat: pos.coords.latitude, lng: pos.coords.longitude });
+        async (pos) => {
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`);
+            const data = await res.json();
+            const city = data.address.city || data.address.town || data.address.village || data.address.county || "Local";
+            const state = data.address.state || "Area";
+            
+            storage.set("kisanedge_location", { 
+              lat: pos.coords.latitude, 
+              lng: pos.coords.longitude,
+              city,
+              state 
+            });
+          } catch (e) {
+            // Fallback if API fails
+            storage.set("kisanedge_location", { 
+              lat: pos.coords.latitude, 
+              lng: pos.coords.longitude,
+              city: "Unknown",
+              state: "Location" 
+            });
+          }
+          setLoading(false);
           onNext();
         },
         () => {
           // Fallback to default Indian location if denied
-          storage.set("kisanedge_loc", { lat: 20.5937, lng: 78.9629, mock: true });
+          storage.set("kisanedge_location", { lat: 18.5204, lng: 73.8567, city: "Pune", state: "MH", mock: true });
+          setLoading(false);
           onNext();
-        }
+        },
+        { timeout: 10000, enableHighAccuracy: false } // Avoid hanging indefinitely
       );
     } else {
+      storage.set("kisanedge_location", { lat: 18.5204, lng: 73.8567, city: "Pune", state: "MH", mock: true });
       onNext();
     }
   };
@@ -685,12 +711,19 @@ function StepLocation({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           whileTap={{ scale: 0.98 }}
           onClick={handleAllow}
-          className="w-full h-[52px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[14px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)]"
+          disabled={loading}
+          className="w-full h-[52px] sm:h-[60px] bg-[#16a34a] hover:bg-[#15803d] transition-colors rounded-[14px] sm:rounded-[18px] text-white flex items-center px-6 shadow-[0_8px_20px_rgba(22,163,74,0.25)] disabled:opacity-70"
           aria-label="Allow location to get local weather, crop conditions, and personalized alerts."
         >
-          <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="flex-1 text-[16px] sm:text-[19px] font-semibold text-center">Allow Location</span>
-          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          {loading ? (
+            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
+          )}
+          <span className="flex-1 text-[16px] sm:text-[19px] font-semibold text-center">
+            {loading ? "Locating..." : "Allow Location"}
+          </span>
+          {!loading && <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />}
         </motion.button>
         
         <motion.button
