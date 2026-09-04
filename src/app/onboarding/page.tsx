@@ -743,6 +743,7 @@ function StepNotifications({ onNext }: { onNext: () => void }) {
         <img 
           src="/notif-bg.png" 
           alt="" 
+          loading="lazy"
           className="absolute bottom-0 left-0 w-full h-[80vh] object-cover object-bottom opacity-60 mix-blend-multiply" 
           style={{ maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}
         />
@@ -940,7 +941,7 @@ function StepCrops({ role, onFinish }: { role: "farmer" | "home"; onFinish: () =
       {/* Background with subtle botanical hints */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <img 
-          src="/notif-bg.png" 
+          src="/loc-bg-placeholder.png" 
           alt="" 
           loading="lazy"
           className="absolute bottom-0 left-0 w-full h-[60vh] object-cover object-bottom opacity-30 mix-blend-multiply" 
