@@ -137,12 +137,13 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-black absolute inset-0 z-[100] overflow-hidden">
-      {/* Header */}
-      <header className="flex items-center justify-between p-4 z-20 absolute top-0 left-0 right-0 bg-gradient-to-b from-black/70 to-transparent pt-safe">
-        <Link href="/home">
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full">
-            <X className="w-6 h-6" />
+    <div className="flex flex-col h-[100dvh] bg-black absolute inset-0 z-[100] overflow-hidden sm:bg-gray-900">
+      <div className="w-full h-full max-w-md mx-auto relative flex flex-col bg-black shadow-2xl overflow-hidden">
+        {/* Header */}
+        <header className="flex items-center justify-between p-4 z-20 absolute top-0 left-0 right-0 bg-gradient-to-b from-black/70 to-transparent pt-safe">
+          <Link href="/home">
+            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 rounded-full">
+              <X className="w-6 h-6" />
           </Button>
         </Link>
         <div className="flex flex-col items-center">
@@ -299,6 +300,7 @@ export default function ScanPage() {
       
       {/* Hidden Canvas for capture */}
       <canvas ref={canvasRef} className="hidden" />
+      </div>
     </div>
   );
 }

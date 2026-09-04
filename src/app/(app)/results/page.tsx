@@ -49,9 +49,9 @@ export default function ResultsPage() {
         <h1 className="font-bold text-lg text-[#0e3b1c]">Scan Results</h1>
       </header>
 
-      <div className="flex-1 pb-10">
+      <div className="flex-1 pb-10 w-full max-w-md mx-auto">
         {/* Image Banner */}
-        <div className="relative w-full aspect-square md:aspect-video bg-black mx-auto overflow-hidden shadow-sm">
+        <div className="relative w-full h-[35vh] min-h-[250px] max-h-[350px] bg-black overflow-hidden shadow-sm sm:rounded-b-3xl">
           <img src={imageSrc} alt="Scanned Plant" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
