@@ -31,10 +31,10 @@ export function BottomNav() {
   const PrimaryIcon = primaryItem?.icon;
 
   return (
-    <div className="fixed bottom-6 left-4 right-4 z-50 max-w-[400px] mx-auto pb-safe pointer-events-none">
-      <div className="relative w-full h-[72px]">
+    <div className="fixed bottom-4 sm:bottom-6 left-3 right-3 sm:left-4 sm:right-4 z-50 max-w-[400px] mx-auto pb-safe pointer-events-none">
+      <div className="relative w-full h-[64px] sm:h-[72px]">
         <nav 
-          className="flex items-center justify-around px-2 h-full bg-white/60 backdrop-blur-xl border border-black/5 rounded-[36px] shadow-[0_8px_32px_rgba(0,0,0,0.08)] pointer-events-auto"
+          className="flex items-center justify-around px-1 sm:px-2 h-full bg-white/60 backdrop-blur-xl border border-black/5 rounded-[32px] sm:rounded-[36px] shadow-[0_8px_32px_rgba(0,0,0,0.08)] pointer-events-auto"
           style={{
             WebkitMaskImage: "radial-gradient(circle at 50% 12px, transparent 42px, black 43px)",
             maskImage: "radial-gradient(circle at 50% 12px, transparent 42px, black 43px)"
@@ -46,7 +46,7 @@ export function BottomNav() {
 
             if (item.isPrimary) {
               // Empty spacer where the cutout is
-              return <div key={item.href} className="w-20 shrink-0" />;
+              return <div key={item.href} className="w-16 sm:w-20 shrink-0" />;
             }
 
             return (
@@ -54,11 +54,11 @@ export function BottomNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center w-14 h-full gap-1 transition-all",
+                  "flex flex-col items-center justify-center w-12 sm:w-14 h-full gap-1 transition-all",
                   isActive ? "text-[#16A34A]" : "text-[#94A3B8] hover:text-[#64748B]"
                 )}
               >
-                <Icon className={cn("w-[26px] h-[26px]", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
+                <Icon className={cn("w-[24px] h-[24px] sm:w-[26px] sm:h-[26px]", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
               </Link>
             );
           })}
@@ -69,9 +69,9 @@ export function BottomNav() {
           <div className="absolute left-1/2 -translate-x-1/2 -top-6 pointer-events-auto">
             <Link
               href={primaryItem.href}
-              className="flex flex-col items-center justify-center w-[72px] h-[72px] bg-[#16A34A] rounded-full shadow-[0_4px_16px_rgba(22,163,74,0.4)] text-white hover:bg-[#15803d] transition-transform active:scale-95 group"
+              className="flex flex-col items-center justify-center w-[60px] h-[60px] sm:w-[72px] sm:h-[72px] bg-[#16A34A] rounded-full shadow-[0_4px_16px_rgba(22,163,74,0.4)] text-white hover:bg-[#15803d] transition-transform active:scale-95 group"
             >
-              <PrimaryIcon className="w-8 h-8 stroke-[2] group-hover:scale-110 transition-transform" />
+              <PrimaryIcon className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2] group-hover:scale-110 transition-transform" />
               <span className="sr-only">{primaryItem.label}</span>
             </Link>
           </div>
