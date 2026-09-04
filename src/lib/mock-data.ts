@@ -248,3 +248,147 @@ export const MOCK_DIAGNOSES: Record<string, Diagnosis> = {
     ]
   }
 };
+
+// --- New Mock Data for Details & History ---
+
+export type Field = {
+  id: string;
+  name: string;
+  crop: string;
+  area: string;
+  sowingDate: string;
+  growthStage: string;
+  healthScore: number;
+  alerts: number;
+  risk: string;
+  image: string;
+};
+
+export const MOCK_FIELDS: Field[] = [
+  {
+    id: "f1",
+    name: "Field A",
+    crop: "Tomato",
+    area: "2.5 Acres",
+    sowingDate: "12 Aug 2026",
+    growthStage: "Flowering",
+    healthScore: 82,
+    alerts: 2,
+    risk: "Moderate",
+    image: "🍅"
+  },
+  {
+    id: "f2",
+    name: "Field B",
+    crop: "Wheat",
+    area: "5.0 Acres",
+    sowingDate: "05 Jul 2026",
+    growthStage: "Vegetative Growth",
+    healthScore: 91,
+    alerts: 0,
+    risk: "Low",
+    image: "🌾"
+  },
+  {
+    id: "f3",
+    name: "Field C",
+    crop: "Potato",
+    area: "1.2 Acres",
+    sowingDate: "20 Aug 2026",
+    growthStage: "Germination",
+    healthScore: 74,
+    alerts: 1,
+    risk: "High",
+    image: "🥔"
+  }
+];
+
+export type DetailedPlant = {
+  id: string;
+  name: string;
+  healthScore: number;
+  waterStatus: string;
+  sunlightStatus: string;
+  diseaseStatus: string;
+  image: string;
+};
+
+export const MOCK_HOME_PLANTS: DetailedPlant[] = [
+  {
+    id: "p1",
+    name: "Tulsi",
+    healthScore: 92,
+    waterStatus: "Due today",
+    sunlightStatus: "Adequate",
+    diseaseStatus: "Healthy",
+    image: "🌿"
+  },
+  {
+    id: "p2",
+    name: "Rose",
+    healthScore: 78,
+    waterStatus: "Watered yesterday",
+    sunlightStatus: "Needs more light",
+    diseaseStatus: "Attention",
+    image: "🌹"
+  },
+  {
+    id: "p3",
+    name: "Monstera",
+    healthScore: 88,
+    waterStatus: "Good for 3 days",
+    sunlightStatus: "Adequate",
+    diseaseStatus: "Healthy",
+    image: "🪴"
+  }
+];
+
+export type HistoryScan = {
+  id: string;
+  date: string;
+  crop: string;
+  diagnosis: string;
+  confidence: number;
+  severity: "Healthy" | "Early" | "Moderate" | "Severe";
+  healthScore: number;
+  imagePath?: string;
+};
+
+export const MOCK_HISTORY: HistoryScan[] = [
+  {
+    id: "h1",
+    date: "Today, 10:30 AM",
+    crop: "Tomato",
+    diagnosis: "Early Blight",
+    confidence: 94,
+    severity: "Moderate",
+    healthScore: 68
+  },
+  {
+    id: "h2",
+    date: "Yesterday",
+    crop: "Wheat",
+    diagnosis: "Healthy",
+    confidence: 98,
+    severity: "Healthy",
+    healthScore: 91
+  },
+  {
+    id: "h3",
+    date: "02 Sep 2026",
+    crop: "Potato",
+    diagnosis: "Late Blight Risk",
+    confidence: 82,
+    severity: "Severe",
+    healthScore: 45
+  },
+  {
+    id: "h4",
+    date: "28 Aug 2026",
+    crop: "Tomato",
+    diagnosis: "Nitrogen Deficiency",
+    confidence: 88,
+    severity: "Early",
+    healthScore: 76
+  }
+];
