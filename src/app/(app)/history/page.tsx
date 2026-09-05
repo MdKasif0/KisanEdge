@@ -110,6 +110,11 @@ export default function HistoryPage() {
                   </div>
                 </div>
               </div>
+              <div className="mt-2.5 pt-2.5 border-t border-gray-100">
+                <Link href="/results" className="text-[13px] font-bold text-[#16a34a] hover:text-[#15803d] flex items-center justify-center w-full py-1 haptic-press">
+                  View Full Report
+                </Link>
+              </div>
             </motion.div>
           ))
         )}

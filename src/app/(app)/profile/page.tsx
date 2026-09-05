@@ -120,20 +120,26 @@ export default function ProfilePage() {
         {/* Account Actions */}
         <div className="flex flex-col gap-2 mt-2">
           <div className="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden flex flex-col divide-y divide-gray-50">
-            <Link href="/settings" className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <Link href="/settings" className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors haptic-press">
               <div className="flex items-center gap-3">
                 <Settings className="w-5 h-5 text-gray-500" />
                 <span className="text-[16px] font-medium text-gray-900">Account Settings</span>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-300" />
             </Link>
-            <button className="p-4 flex items-center justify-between hover:bg-red-50 transition-colors w-full text-left">
+            <button className="p-4 flex items-center justify-between hover:bg-red-50 transition-colors w-full text-left haptic-press">
               <div className="flex items-center gap-3">
                 <LogOut className="w-5 h-5 text-red-500" />
                 <span className="text-[16px] font-medium text-red-600">Sign Out</span>
               </div>
             </button>
           </div>
+        </div>
+
+        <div className="mt-8 flex justify-center pb-6">
+          <span className="text-[12px] font-medium text-gray-400 text-center">
+            KisanEdge v1.0.0 • Prototype
+          </span>
         </div>
       </div>
     </div>

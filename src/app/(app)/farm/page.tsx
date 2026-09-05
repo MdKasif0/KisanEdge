@@ -70,6 +70,11 @@ export default function FarmPage() {
                     <div className="flex flex-col">
                       <h3 className="font-bold text-[#14532D] text-[17px]">{field.name}</h3>
                       <p className="text-[13px] text-[#64748b] font-medium">{field.crop} • {field.area}</p>
+                      {field.crop === "Tomato" && field.healthScore < 80 && (
+                        <div className="mt-1.5 inline-block px-2 py-0.5 bg-orange-50 border border-orange-100 rounded-md text-[11px] font-bold text-orange-700">
+                          Last scan: Early Blight (94%)
+                        </div>
+                      )}
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-[#94A3B8]" />
