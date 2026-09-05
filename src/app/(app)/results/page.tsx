@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Camera,
   ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { storage } from "@/lib/storage";
