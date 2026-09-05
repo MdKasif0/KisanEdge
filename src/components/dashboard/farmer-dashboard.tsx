@@ -9,11 +9,13 @@ import {
   CloudRain, ThermometerSun
 } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
+import { useTranslation } from "@/lib/i18n/context";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
 
 export function FarmerDashboard() {
   const { name, crops } = useUser();
+  const { t } = useTranslation();
   
   const allPlants = [...FARM_CROPS, ...HOME_PLANTS];
   const userCrops = crops.length > 0 
@@ -89,12 +91,10 @@ export function FarmerDashboard() {
           animate="show"
           className="flex flex-col gap-6"
         >
-          {/* Greeting */}
-          <motion.div variants={item} className="flex flex-col gap-1">
-            <h2 className="text-[26px] sm:text-[28px] font-bold text-[#14532D] tracking-tight leading-tight">
-              Good morning, {name} <span className="inline-block origin-bottom-right hover:rotate-12 transition-transform">🌱</span>
-            </h2>
-            <p className="text-[15px] text-[#64748b] font-medium">Here is your farm overview today.</p>
+          {/* Welcome Section */}
+          <motion.div initial="hidden" animate="show" variants={item} className="pt-2">
+            <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">{t("dashboard.greeting")}, {name}</h1>
+            <p className="text-[14px] sm:text-[15px] text-[#64748b] font-medium mt-1">{t("dashboard.subtitle")}</p>
           </motion.div>
 
           {/* Weather Intelligence Card */}

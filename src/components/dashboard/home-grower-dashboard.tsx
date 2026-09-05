@@ -6,11 +6,13 @@ import { CropCard } from "@/components/features/crop-card";
 import { MOCK_HOME_INSIGHTS, MOCK_PLANTS } from "@/lib/mock-data";
 import { ArrowRight, AlertTriangle, ScanLine, Droplet, Sun, Flower, Search, CloudSun, Thermometer, Leaf, MapPin, Bell } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
+import { useTranslation } from "@/lib/i18n/context";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
 
 export function HomeGrowerDashboard() {
   const { name, crops } = useUser();
+  const { t } = useTranslation();
   
   const allPlants = [...FARM_CROPS, ...HOME_PLANTS];
   const userPlants = crops.length > 0 
@@ -61,7 +63,7 @@ export function HomeGrowerDashboard() {
 
       {/* Welcome */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-        <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">Good morning, {name}</h2>
+        <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">{t("dashboard.greeting")}, {name}</h2>
         <p className="text-[14px] sm:text-[15px] text-gray-500 font-medium mt-1">Let's check on your plants today.</p>
       </motion.div>
 
