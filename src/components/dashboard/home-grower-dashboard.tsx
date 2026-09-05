@@ -145,16 +145,17 @@ export function HomeGrowerDashboard() {
         </div>
       </motion.section>
 
-      {/* Plant Care Today */}
+      {/* Smart Insights Today */}
       <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-        <h2 className="text-[19px] font-bold text-[#0e3b1c] mb-3">Plant Care Today</h2>
+        <h2 className="text-[19px] font-bold text-[#0e3b1c] mb-3">Smart Insights Today</h2>
         <div className="flex flex-col gap-3">
           {MOCK_HOME_INSIGHTS.map(insight => (
             <div key={insight.id} className="bg-white border border-gray-100 p-4 rounded-2xl flex gap-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
               <div className="shrink-0 mt-0.5">
-                {insight.icon === 'warning' && <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-amber-500" /></div>}
+                {insight.icon === 'warning' && <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-orange-500" /></div>}
                 {insight.icon === 'droplet' && <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"><Droplet className="w-5 h-5 text-blue-500" /></div>}
                 {insight.icon === 'sun' && <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center"><Sun className="w-5 h-5 text-amber-500" /></div>}
+                {insight.icon === 'cloud' && <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center"><CloudSun className="w-5 h-5 text-indigo-500" /></div>}
               </div>
               <div>
                 <h4 className="font-semibold text-[#0e3b1c] text-[15px]">{insight.title}</h4>
