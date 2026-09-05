@@ -221,23 +221,250 @@ export default function ResultsPage() {
     );
   }
 
-  const cropTitle = `${result.plantType || "Tomato"} Diagnosis`;
+  const isNonPlant = result.status === "not_a_plant" || !result.plantDetected;
+  const isPoorImage = result.status === "poor_image" || (result.needsBetterImage && result.status !== "disease_detected" && result.status !== "healthy");
+
+  // DEDICATED VIEW 1: Non-Plant Image (Human face, indoor setting, object)
+  if (isNonPlant) {
+    return (
+      <div className="flex flex-col min-h-[100dvh] bg-[#F8FAF8] font-sans relative select-none">
+        {/* Header */}
+        <header
+          className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between"
+          style={{ paddingTop: "calc(var(--safe-top, 0px) + 10px)" }}
+        >
+          <button
+            onClick={() => router.push("/scan")}
+            className="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-[#0D3321] hover:bg-gray-100 transition-colors cursor-pointer"
+            title="Back to scanner"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-[#0D3321] font-bold text-[18px] tracking-tight">Scan Assessment</h1>
+          <div className="w-10" />
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 max-w-md mx-auto w-full flex flex-col pb-28">
+          {/* Photo Preview */}
+          <div className="relative w-full aspect-[4/3] bg-gray-900 overflow-hidden">
+            {imageSrc ? (
+              <img src={imageSrc} alt="Scanned subject" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                <Camera className="w-12 h-12 opacity-30" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+          </div>
+
+          {/* Primary Assessment Card */}
+          <div className="px-4 -mt-8 relative z-20">
+            <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-3.5">
+              <div className="flex items-center justify-between">
+                <span className="px-3.5 py-1 rounded-full text-[11px] font-extrabold tracking-wider uppercase bg-amber-50 text-amber-800 border border-amber-200/60">
+                  NO PLANT DETECTED
+                </span>
+                <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-[#0D3321] text-[22px] font-extrabold leading-tight tracking-tight">
+                  No Plant in Photo
+                </h2>
+                <p className="text-gray-600 text-[13.5px] leading-relaxed mt-1.5 font-normal">
+                  {result.explanation ||
+                    "No agricultural plant, leaf, or crop was detected in this photo. The image appears to show a person or indoor environment rather than agricultural foliage."}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Tips Section: How to get an accurate plant scan */}
+          <div className="px-4 mt-5 flex flex-col gap-2.5">
+            <h3 className="text-[#0D3321] font-bold text-[17px]">How to Scan for Crop Diseases</h3>
+            <div className="bg-white rounded-3xl p-5 shadow-xs border border-gray-100 flex flex-col gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-2xl bg-emerald-50 text-emerald-700 font-bold text-[13px] flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-gray-900 font-bold text-[14px]">Target the Leaf or Stem</span>
+                  <span className="text-gray-500 text-[12px] leading-snug mt-0.5">
+                    Hold the camera 10–20 cm away directly framing the affected crop foliage.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-2xl bg-emerald-50 text-emerald-700 font-bold text-[13px] flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-gray-900 font-bold text-[14px]">Ensure Clear Natural Lighting</span>
+                  <span className="text-gray-500 text-[12px] leading-snug mt-0.5">
+                    Scan under daytime daylight without harsh shadows or heavy glare.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5">
+                <div className="w-8 h-8 rounded-2xl bg-emerald-50 text-emerald-700 font-bold text-[13px] flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-gray-900 font-bold text-[14px]">Capture Visible Symptoms</span>
+                  <span className="text-gray-500 text-[12px] leading-snug mt-0.5">
+                    Frame leaf lesions, spots, or discoloration sharply inside the viewfinder.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="px-4 mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => router.push("/scan")}
+              className="w-full h-13 rounded-2xl bg-[#0F3E2E] hover:bg-[#134E39] active:scale-[0.99] text-white font-bold text-[15px] shadow-sm flex items-center justify-center gap-2.5 transition-all cursor-pointer"
+            >
+              <Camera className="w-5 h-5" />
+              <span>Scan Plant Photo</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => router.push("/assistant")}
+              className="h-12 rounded-2xl bg-white border border-gray-200 text-gray-800 font-bold text-[14px] hover:bg-gray-50 shadow-2xs active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <MessageSquare className="w-4 h-4 text-gray-600" />
+              <span>Ask KisanEdge AI</span>
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // DEDICATED VIEW 2: Inconclusive / Poor Image Quality
+  if (isPoorImage) {
+    return (
+      <div className="flex flex-col min-h-[100dvh] bg-[#F8FAF8] font-sans relative select-none">
+        {/* Header */}
+        <header
+          className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between"
+          style={{ paddingTop: "calc(var(--safe-top, 0px) + 10px)" }}
+        >
+          <button
+            onClick={() => router.push("/scan")}
+            className="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-[#0D3321] hover:bg-gray-100 transition-colors cursor-pointer"
+            title="Back to scanner"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-[#0D3321] font-bold text-[18px] tracking-tight">Image Inconclusive</h1>
+          <div className="w-10" />
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 max-w-md mx-auto w-full flex flex-col pb-28">
+          <div className="relative w-full aspect-[4/3] bg-gray-900 overflow-hidden">
+            {imageSrc ? (
+              <img src={imageSrc} alt="Scanned plant" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                <Camera className="w-12 h-12 opacity-30" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+          </div>
+
+          <div className="px-4 -mt-8 relative z-20">
+            <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex flex-col gap-3.5">
+              <div className="flex items-center justify-between">
+                <span className="px-3.5 py-1 rounded-full text-[11px] font-extrabold tracking-wider uppercase bg-amber-50 text-amber-800 border border-amber-200/60">
+                  IMAGE UNCLEAR
+                </span>
+                <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-[#0D3321] text-[22px] font-extrabold leading-tight tracking-tight">
+                  Photo Inconclusive
+                </h2>
+                <p className="text-gray-600 text-[13.5px] leading-relaxed mt-1.5 font-normal">
+                  {result.explanation ||
+                    "The photo is too blurry, dark, or distant to accurately evaluate plant symptoms. Please take a closer, sharper photograph."}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-4 mt-5 flex flex-col gap-2.5">
+            <h3 className="text-[#0D3321] font-bold text-[17px]">Tips for Clear Photos</h3>
+            <div className="bg-white rounded-3xl p-5 shadow-xs border border-gray-100 flex flex-col gap-3.5">
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <span className="text-gray-800 font-medium text-[13.5px]">Hold camera steady to avoid motion blur</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <span className="text-gray-800 font-medium text-[13.5px]">Move closer to the leaf surface (10–20 cm)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Check className="w-4 h-4 stroke-[2.5]" />
+                </div>
+                <span className="text-gray-800 font-medium text-[13.5px]">Ensure sufficient natural daylight</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-4 mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => router.push("/scan")}
+              className="w-full h-13 rounded-2xl bg-[#0F3E2E] hover:bg-[#134E39] active:scale-[0.99] text-white font-bold text-[15px] shadow-sm flex items-center justify-center gap-2.5 transition-all cursor-pointer"
+            >
+              <Camera className="w-5 h-5" />
+              <span>Retake Photo</span>
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // STANDARD VIEW: Valid Agricultural Plant Diagnosis
+  const cropTitle = `${result.plantType || "Crop"} Diagnosis`;
   const symptoms =
     result.observedSymptoms && result.observedSymptoms.length > 0
       ? result.observedSymptoms
+      : result.status === "healthy"
+      ? [
+          "Uniform healthy green coloration",
+          "Intact leaf margins with no lesions",
+          "Normal stem and foliage turgidity",
+        ]
       : [
-          "Minor leaf spotting",
-          "Slight discoloration on edges",
-          "Fungal patterns observed",
+          "Visual symptom patterns evaluated",
+          "Leaf coloration and texture analyzed",
         ];
 
   const nextSteps =
     result.recommendedActions && result.recommendedActions.length > 0
       ? result.recommendedActions
       : [
-          "Check soil drainage",
-          "Remove isolated affected leaves",
-          "Monitor closely over the next week",
+          "Monitor crop foliage regularly under natural daylight",
+          "Ensure balanced soil moisture and drainage",
+          "Consult local agricultural advisor if symptoms progress",
         ];
 
   const envRiskLabel =
