@@ -20,7 +20,7 @@ const FORECAST_DATA = [
 ];
 
 export function FarmerDashboard() {
-  const { name, location } = useUser();
+  const { name, location, role } = useUser();
   const [greeting, setGreeting] = useState("Good morning");
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export function FarmerDashboard() {
     }
   }, []);
 
+  const isFarmer = role !== "home";
   const displayName = name || "Kasif";
   const displayLocation = location || "Pune, MH";
 
@@ -126,7 +127,7 @@ export function FarmerDashboard() {
               {greeting}, {displayName}
             </h2>
             <p className="text-[15px] sm:text-[16px] text-[#64748B] font-normal mt-1">
-              Here is your farm overview today.
+              {isFarmer ? "Here is your farm overview today." : "Here is your plant overview today."}
             </p>
           </motion.div>
 
@@ -167,14 +168,14 @@ export function FarmerDashboard() {
             </Link>
 
             {/* Tertiary Action: My Farm */}
-            <Link href="/farm" className="shrink-0 min-w-[135px]">
+            <Link href={isFarmer ? "/farm" : "/plants"} className="shrink-0 min-w-[135px]">
               <div className="bg-white hover:bg-gray-50/80 border border-[#E5E7EB] rounded-[20px] p-3.5 flex items-center justify-between shadow-sm transition-transform active:scale-[0.98]">
                 <div className="flex items-center gap-2.5">
                   <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] flex items-center justify-center shrink-0">
                     <Sprout className="w-5 h-5 text-[#16A34A]" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-[14px] text-[#14532D]">My Farm</span>
+                    <span className="font-bold text-[14px] text-[#14532D]">{isFarmer ? "My Farm" : "My Plants"}</span>
                     <span className="text-[11px] text-[#64748B] font-medium">Manage crops</span>
                   </div>
                 </div>
