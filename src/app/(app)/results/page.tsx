@@ -9,12 +9,15 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Diagnosis } from "@/lib/mock-data";
+import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
 import { useRouter } from "next/navigation";
 
 export default function ResultsPage() {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [result, setResult] = useState<Diagnosis | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     // Read from localStorage
@@ -28,6 +31,11 @@ export default function ResultsPage() {
       } catch (e) {
         console.error("Failed to parse result", e);
       }
+    }
+    // Fallback to demo data for hackathon demo
+    if (!savedImage && !savedResultStr) {
+      setResult(DEMO_DIAGNOSIS);
+      setImageSrc("/farmer-placeholder.png");
     }
   }, []);
 
@@ -73,13 +81,22 @@ export default function ResultsPage() {
   const currentStepIndex = severitySteps.indexOf(result.severity);
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-[#f4f7f5] pb-safe font-sans">
+    <div className="flex flex-col min-h-[100dvh] bg-[#f4f7f5] pb-safe font-sans relative">
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-4 left-4 right-4 z-[100] flex justify-center toast-enter">
+          <div className="bg-[#14532D] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 max-w-sm">
+            <CheckCircle className="w-5 h-5 text-emerald-300 shrink-0" />
+            <span className="font-semibold text-[14px]">Diagnosis saved to history</span>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 pt-safe flex items-center justify-between shadow-sm">
         <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.back()}>
           <ArrowLeft className="w-5 h-5 text-[#0e3b1c]" />
         </Button>
-        <h1 className="font-bold text-[17px] text-[#0e3b1c] tracking-tight">KisanEdge Diagnosis</h1>
+        <h1 className="font-bold text-[17px] text-[#0e3b1c] tracking-tight">Tomato Diagnosis</h1>
         <div className="w-10" /> {/* Spacer */}
       </header>
 
@@ -330,8 +347,21 @@ export default function ResultsPage() {
 
           {/* Action Buttons */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mt-4 flex flex-col gap-3">
-            <Button size="lg" className="w-full h-[60px] rounded-2xl font-bold text-[17px] bg-[#0e3b1c] hover:bg-[#0a2a14] text-white shadow-xl flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
-              <CheckCircle className="w-5 h-5" /> Save Diagnosis
+            <Button 
+              size="lg" 
+              className={`w-full h-[60px] rounded-2xl font-bold text-[17px] shadow-xl flex items-center justify-center gap-2 transition-all haptic-press ${
+                isSaved ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#0e3b1c] hover:bg-[#0a2a14]'
+              } text-white`}
+              onClick={() => {
+                setIsSaved(true);
+                setShowToast(true);
+                try {
+                  localStorage.setItem('kisanedge_saved_diagnosis', JSON.stringify(result));
+                } catch(e) {}
+                setTimeout(() => setShowToast(false), 3000);
+              }}
+            >
+              <CheckCircle className="w-5 h-5" /> {isSaved ? 'Diagnosis Saved' : 'Save Diagnosis'}
             </Button>
             
             <div className="flex gap-3">
