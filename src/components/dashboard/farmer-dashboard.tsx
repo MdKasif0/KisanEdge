@@ -327,6 +327,22 @@ export function FarmerDashboard() {
             </div>
           </motion.div>
 
+          {/* Featured: My Farm Card */}
+          <motion.div variants={item}>
+            <Link href="/farm" className="block relative overflow-hidden bg-gradient-to-br from-[#16a34a] to-[#14532D] rounded-[24px] p-5 text-white shadow-lg group">
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors" />
+              <div className="flex justify-between items-start relative z-10">
+                <div className="flex flex-col">
+                  <h2 className="text-[18px] font-bold text-white/90">My Farm Overview</h2>
+                  <p className="text-[13px] text-white/80 mt-1 max-w-[200px]">View field health, sensor status, and detailed metrics.</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
           {/* Your Crops */}
           <motion.section variants={item}>
             <div className="flex items-center justify-between mb-4">
