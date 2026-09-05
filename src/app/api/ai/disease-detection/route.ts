@@ -173,7 +173,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
         completion = await groqDisease.chat.completions.create(
           {
             model: "qwen/qwen3.8-27b",
-            max_tokens: 850,
+            max_tokens: 3000,
             reasoning_effort: "medium",
             response_format: { type: "json_object" },
             messages: [
@@ -206,8 +206,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
       } catch (err: any) {
         lastError = err;
         console.warn(`[KisanEdge Disease AI] Attempt ${attempt} failed:`, err?.message || err);
-        if (attempt === 1 && (err?.status === 429 || err?.code === "ETIMEDOUT")) {
-          // Wait 1.5s before 1 retry
+        if (
+          attempt === 1 &&
+          (err?.status === 429 ||
+            err?.code === "ETIMEDOUT" ||
+            err?.message?.includes("json_validate_failed") ||
+            err?.message?.includes("completion tokens"))
+        ) {
+          // Wait 1.5s before retry
           await new Promise((resolve) => setTimeout(resolve, 1500));
           continue;
         }
@@ -248,11 +254,12 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
     const latency = Date.now() - startTime;
     const status = error?.status || 500;
     const errorCode = error?.code || error?.error?.code || "AI_UNAVAILABLE";
+    const rawMsg = error?.message || error?.error?.message || "";
 
     console.error(`[KisanEdge Disease AI] Error after ${latency}ms:`, {
       status,
       code: errorCode,
-      message: error?.message || "Unknown error",
+      message: rawMsg || "Unknown error",
     });
 
     if (error?.name === "AbortError") {
@@ -281,13 +288,44 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
       );
     }
 
-    if (status === 400 || errorCode === "invalid_request_error") {
+    if (status === 400) {
+      // Differentiate between JSON generation failure and actual image decoding error
+      if (
+        rawMsg.includes("json_validate_failed") ||
+        rawMsg.includes("Failed to generate JSON") ||
+        rawMsg.includes("completion tokens")
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "MODEL_GENERATION_FAILED",
+              message: "Unable to complete disease diagnosis for this image right now. Please retake the photo closer to the affected leaf in good lighting.",
+            },
+          },
+          { status: 502 }
+        );
+      }
+
+      if (rawMsg.toLowerCase().includes("image") || errorCode === "invalid_image") {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "INVALID_IMAGE",
+              message: "The uploaded image could not be decoded. Please upload a clear photo in JPEG, PNG, or WebP format.",
+            },
+          },
+          { status: 400 }
+        );
+      }
+
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: "INVALID_IMAGE",
-            message: "The uploaded image could not be processed. Please upload a clear photo in JPEG or PNG format.",
+            code: "BAD_REQUEST",
+            message: "Unable to analyze this image. Please upload a clear photo of the plant.",
           },
         },
         { status: 400 }
