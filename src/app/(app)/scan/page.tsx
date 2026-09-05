@@ -144,6 +144,9 @@ export default function ScanPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Reset input value so selecting the same file again triggers onChange
+    e.target.value = "";
+
     // Check size limit client-side before reading
     if (file.size > 20 * 1024 * 1024) {
       setErrorMessage("Please select an image smaller than 20 MB.");
@@ -152,10 +155,52 @@ export default function ScanPage() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      setImageSrc(event.target?.result as string);
-      setScanState("preview");
-      setErrorMessage(null);
-      stopCamera();
+      const rawDataUrl = event.target?.result as string;
+      if (!rawDataUrl) return;
+
+      // Optimize image for fast and reliable AI vision analysis
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const maxDim = 1600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const optimized = canvas.toDataURL("image/jpeg", 0.9);
+            setImageSrc(optimized);
+          } else {
+            setImageSrc(rawDataUrl);
+          }
+        } catch {
+          setImageSrc(rawDataUrl);
+        }
+        setScanState("preview");
+        setErrorMessage(null);
+        stopCamera();
+      };
+      img.onerror = () => {
+        setErrorMessage("The selected file could not be read as an image. Please choose another photo.");
+      };
+      img.src = rawDataUrl;
+    };
+    reader.onerror = () => {
+      setErrorMessage("Could not read the selected image file. Please try again.");
     };
     reader.readAsDataURL(file);
   };
@@ -472,7 +517,7 @@ export default function ScanPage() {
               <div className="flex flex-col items-center gap-1.5">
                 <input
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
+                  accept="image/*,image/jpeg,image/png,image/webp"
                   className="hidden"
                   ref={fileInputRef}
                   onChange={handleFileUpload}
