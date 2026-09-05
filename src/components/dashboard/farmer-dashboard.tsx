@@ -58,20 +58,6 @@ export function FarmerDashboard() {
 
   return (
     <div className="flex flex-col relative w-full overflow-x-hidden bg-[#F8FAF9] min-h-[100dvh]">
-      {/* Top Farm Sunrise Landscape Background (behind header & greeting) */}
-      <div 
-        className="absolute top-0 right-0 left-0 h-[300px] pointer-events-none overflow-hidden z-0"
-      >
-        <div 
-          className="absolute -top-4 -right-12 w-[380px] sm:w-[440px] h-[300px] bg-cover bg-center pointer-events-none opacity-45"
-          style={{ 
-            backgroundImage: 'url("/farm-landscape.png")',
-            maskImage: 'radial-gradient(ellipse at 75% 35%, black 25%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at 75% 35%, black 25%, transparent 75%)'
-          }} 
-        />
-      </div>
-
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-32">
         
         {/* Sticky Top Header */}
