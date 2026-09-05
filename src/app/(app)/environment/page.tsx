@@ -86,17 +86,18 @@ export default function EnvironmentPage() {
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-24">
         
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-3.5 sm:px-5 pt-safe pb-4 border-b border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-[#16A34A] rounded-xl flex items-center justify-center">
-              <Sprout className="w-5 h-5 text-white stroke-[2.5]" />
+        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pt-safe pt-3 pb-3 border-b border-gray-100 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <img src="/icon-512x512.png" alt="Environment" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
+            <div className="flex flex-col justify-center">
+              <h1 className="text-[20px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
+                {isFarmer ? "Field Sensor" : "Plant Environment"} <CloudSun className="w-4 h-4 text-[#16A34A]" />
+              </h1>
+              <p className="text-[13px] text-gray-500 mt-0.5 font-medium tracking-tight">Local weather & conditions</p>
             </div>
-            <h1 className="text-[18px] sm:text-[20px] font-bold text-[#14532D] tracking-tight">
-              {isFarmer ? "Field Sensor" : "Plant Environment"}
-            </h1>
           </div>
           <div className={cn(
-            "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)]",
+            "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)] self-start mt-2",
             connState === "connected" ? "bg-[#16A34A] shadow-[#16A34A]/50" : "bg-gray-400"
           )} />
         </header>
