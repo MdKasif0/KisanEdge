@@ -341,7 +341,7 @@ export default function ScanPage() {
               <button 
                 onClick={handleCapture}
                 disabled={!hasCamera}
-                className="relative w-[80px] h-[80px] flex items-center justify-center focus:outline-none active:scale-95 transition-transform disabled:opacity-50 group"
+                className="relative w-[80px] h-[80px] flex items-center justify-center focus:outline-none active:scale-95 transition-transform disabled:opacity-50 group haptic-press"
               >
                 {/* Outer White Ring */}
                 <div className="absolute inset-0 border-[4px] border-white rounded-full shadow-[0_0_15px_rgba(0,0,0,0.3)]" />
