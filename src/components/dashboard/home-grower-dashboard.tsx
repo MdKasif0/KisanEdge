@@ -9,6 +9,7 @@ import { useUser } from "@/lib/store/user-store";
 import { useTranslation } from "@/lib/i18n/context";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
+import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
 
 export function HomeGrowerDashboard() {
   const { name, crops } = useUser();
@@ -65,6 +66,25 @@ export function HomeGrowerDashboard() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
         <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">{t("dashboard.greeting")}, {name}</h2>
         <p className="text-[14px] sm:text-[15px] text-gray-500 font-medium mt-1">Let's check on your plants today.</p>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="flex gap-2 overflow-x-auto hide-scrollbar -mx-1 px-1">
+        <Link href="/scan" className="flex-1">
+          <div className="bg-[#16a34a] text-white rounded-2xl p-3.5 flex items-center gap-2.5 shadow-md haptic-press min-w-[140px]">
+            <ScanLine className="w-5 h-5 shrink-0" />
+            <span className="font-bold text-[14px]">Scan Plant</span>
+          </div>
+        </Link>
+        <Link href="/alerts" className="flex-1">
+          <div className="bg-white border border-gray-200 rounded-2xl p-3.5 flex items-center gap-2.5 shadow-sm haptic-press min-w-[140px]">
+            <Bell className="w-5 h-5 text-amber-500 shrink-0" />
+            <div className="flex flex-col">
+              <span className="font-bold text-[14px] text-[#0e3b1c]">Alerts</span>
+              <span className="text-[11px] text-red-500 font-semibold">3 new</span>
+            </div>
+          </div>
+        </Link>
       </motion.div>
 
       {/* Plant Health Hero */}
@@ -143,6 +163,27 @@ export function HomeGrowerDashboard() {
             </div>
             <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
               <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+
+      {/* Recent Diagnosis Card */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.19 }}>
+        <Link href="/results" className="block">
+          <div className="bg-white rounded-[20px] p-4 shadow-sm border border-orange-200 flex gap-3.5 haptic-press">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-6 h-6 text-orange-500" />
+            </div>
+            <div className="flex flex-col flex-1">
+              <div className="flex justify-between items-start">
+                <h3 className="font-bold text-[15px] text-[#0e3b1c] leading-tight">Early Blight Detected</h3>
+                <span className="text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">94% AI</span>
+              </div>
+              <p className="text-[13px] text-gray-500 mt-1">Tomato • Moderate severity</p>
+              <p className="text-[12px] text-[#16a34a] font-semibold mt-1.5 flex items-center gap-1">
+                View full diagnosis <ArrowRight className="w-3 h-3" />
+              </p>
             </div>
           </div>
         </Link>
