@@ -61,7 +61,7 @@ export function FarmerDashboard() {
         <header className="flex items-center justify-between pt-safe pb-6">
           <div className="flex flex-col gap-0.5">
             <h1 className="text-[22px] sm:text-[24px] font-bold text-[#14532D] tracking-tight flex items-center gap-2">
-              <img src="/icon-512x512.png" alt="KisanEdge" className="w-8 h-8 rounded-xl object-cover shadow-sm" />
+              <img src="/icon-512x512.png" alt="KisanEdge" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
               KisanEdge
             </h1>
             <div className="flex items-center gap-1 mt-1">
