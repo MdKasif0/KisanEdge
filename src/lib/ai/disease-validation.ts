@@ -99,17 +99,26 @@ export function sanitizeDiseaseResult(rawText: string): DiseaseDetectionResult {
   }
 
   // 1. Status
-  const status: DiseaseStatus = VALID_STATUSES.includes(parsed.status) ? parsed.status : "uncertain";
+  let status: DiseaseStatus = VALID_STATUSES.includes(parsed.status) ? parsed.status : "uncertain";
 
   // 2. Plant Detected
-  const plantDetected = Boolean(parsed.plantDetected);
+  let plantDetected = Boolean(parsed.plantDetected);
+
+  // Enforce consistency: if either indicates no plant, set to not_a_plant
+  if (status === "not_a_plant" || !plantDetected) {
+    status = "not_a_plant";
+    plantDetected = false;
+  }
 
   // 3. Plant Type & Part
-  const plantType = typeof parsed.plantType === "string" && parsed.plantType.trim() ? parsed.plantType.trim() : null;
-  const plantPart = typeof parsed.plantPart === "string" && parsed.plantPart.trim() ? parsed.plantPart.trim() : null;
+  const plantType = plantDetected && typeof parsed.plantType === "string" && parsed.plantType.trim() ? parsed.plantType.trim() : null;
+  const plantPart = plantDetected && typeof parsed.plantPart === "string" && parsed.plantPart.trim() ? parsed.plantPart.trim() : null;
 
   // 4. Condition Name
-  const conditionName = typeof parsed.conditionName === "string" && parsed.conditionName.trim() ? parsed.conditionName.trim() : null;
+  let conditionName = typeof parsed.conditionName === "string" && parsed.conditionName.trim() ? parsed.conditionName.trim() : null;
+  if (!plantDetected) {
+    conditionName = "No Plant Detected";
+  }
 
   // 5. Confidence (0 to 100)
   let confidence = typeof parsed.confidence === "number" ? Math.round(parsed.confidence) : 50;
@@ -120,26 +129,28 @@ export function sanitizeDiseaseResult(rawText: string): DiseaseDetectionResult {
   confidence = Math.max(0, Math.min(100, confidence));
 
   // 6. Severity
-  const severity: Severity = VALID_SEVERITIES.includes(parsed.severity) ? parsed.severity : "unknown";
+  const severity: Severity = plantDetected && VALID_SEVERITIES.includes(parsed.severity) ? parsed.severity : (plantDetected ? "unknown" : "healthy");
 
   // 7. Affected Area Percent
   let affectedAreaPercent: number | null = null;
-  if (typeof parsed.affectedAreaPercent === "number" && !isNaN(parsed.affectedAreaPercent)) {
+  if (plantDetected && typeof parsed.affectedAreaPercent === "number" && !isNaN(parsed.affectedAreaPercent)) {
     affectedAreaPercent = Math.max(0, Math.min(100, Math.round(parsed.affectedAreaPercent)));
   }
 
   // 8. Observed Symptoms
-  const observedSymptoms: string[] = Array.isArray(parsed.observedSymptoms)
+  const observedSymptoms: string[] = plantDetected && Array.isArray(parsed.observedSymptoms)
     ? parsed.observedSymptoms.filter((s: any) => typeof s === "string" && s.trim().length > 0).map((s: string) => s.trim())
     : [];
 
   // 9. Explanation
   const explanation = typeof parsed.explanation === "string" && parsed.explanation.trim()
     ? parsed.explanation.trim()
-    : "Visual analysis completed for the provided plant image.";
+    : (!plantDetected
+        ? "No plant, leaf, or crop was detected in this photo. The image shows a person, room, or non-plant object."
+        : "Visual analysis completed for the provided plant image.");
 
   // 10. Alternative Conditions (limit to 3)
-  const alternativeConditions: { name: string; reason: string }[] = Array.isArray(parsed.alternativeConditions)
+  const alternativeConditions: { name: string; reason: string }[] = plantDetected && Array.isArray(parsed.alternativeConditions)
     ? parsed.alternativeConditions
         .filter((c: any) => c && typeof c === "object" && c.name)
         .slice(0, 3)
@@ -150,31 +161,43 @@ export function sanitizeDiseaseResult(rawText: string): DiseaseDetectionResult {
     : [];
 
   // 11. Recommended Actions
-  const recommendedActions: string[] = Array.isArray(parsed.recommendedActions)
-    ? parsed.recommendedActions.filter((a: any) => typeof a === "string" && a.trim().length > 0).map((a: string) => a.trim())
-    : [
-        "Inspect the plant regularly under natural lighting.",
-        "Ensure proper airflow and avoid unnecessary leaf moisture.",
-        "Consult local agricultural guidance if symptoms worsen.",
-      ];
+  let recommendedActions: string[] = [];
+  if (!plantDetected) {
+    recommendedActions = [
+      "Point the camera directly at a plant leaf, stem, or crop",
+      "Ensure good natural lighting and sharp focus on the foliage",
+      "Hold the camera 10–20 cm away from the affected area to capture leaf details",
+    ];
+  } else if (Array.isArray(parsed.recommendedActions) && parsed.recommendedActions.length > 0) {
+    recommendedActions = parsed.recommendedActions.filter((a: any) => typeof a === "string" && a.trim().length > 0).map((a: string) => a.trim());
+  } else {
+    recommendedActions = [
+      "Inspect the plant regularly under natural lighting.",
+      "Ensure proper airflow and avoid unnecessary leaf moisture.",
+      "Consult local agricultural guidance if symptoms worsen.",
+    ];
+  }
 
   // 12. Warnings
   const warnings: string[] = Array.isArray(parsed.warnings)
     ? parsed.warnings.filter((w: any) => typeof w === "string" && w.trim().length > 0).map((w: string) => w.trim())
     : [];
 
-  // Always append standard AI visual assessment notice if not present
-  const standardWarning = "This is an AI visual assessment and not a laboratory-confirmed diagnosis.";
-  if (!warnings.some((w) => w.toLowerCase().includes("laboratory"))) {
-    warnings.push(standardWarning);
+  if (!plantDetected) {
+    warnings.push("Please photograph a real agricultural crop or plant part to receive a health diagnosis.");
+  } else {
+    const standardWarning = "This is an AI visual assessment and not a laboratory-confirmed diagnosis.";
+    if (!warnings.some((w) => w.toLowerCase().includes("laboratory"))) {
+      warnings.push(standardWarning);
+    }
   }
 
   // 13. Flags & Environmental Risk
-  const needsBetterImage = Boolean(parsed.needsBetterImage || status === "poor_image");
+  const needsBetterImage = Boolean(parsed.needsBetterImage || status === "poor_image" || !plantDetected);
   const expertVerificationRecommended = Boolean(
-    parsed.expertVerificationRecommended || severity === "severe" || severity === "critical" || status === "uncertain"
+    plantDetected && (parsed.expertVerificationRecommended || severity === "severe" || severity === "critical" || status === "uncertain")
   );
-  const environmentalRisk: EnvironmentalRisk = VALID_RISKS.includes(parsed.environmentalRisk) ? parsed.environmentalRisk : "unknown";
+  const environmentalRisk: EnvironmentalRisk = plantDetected && VALID_RISKS.includes(parsed.environmentalRisk) ? parsed.environmentalRisk : "unknown";
 
   return {
     status,

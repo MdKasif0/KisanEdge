@@ -243,7 +243,6 @@ export default function ScanPage() {
         body: JSON.stringify({
           image: imageSrc,
           crop: selectedCrop,
-          plant: selectedCrop,
           location,
           language,
         }),
