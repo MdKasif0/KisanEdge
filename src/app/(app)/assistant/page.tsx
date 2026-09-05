@@ -1,10 +1,10 @@
 "use client";
 
-import { Send, Bot, User, Mic, MapPin, CloudSun, Activity, Sprout, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Send, Bot, User, Mic, MapPin, CloudSun, Activity, Sprout, AlertTriangle, ShieldAlert } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@/lib/store/user-store";
 import { motion, AnimatePresence } from "framer-motion";
+import { DEMO_SENSOR, DEMO_WEATHER, DEMO_DIAGNOSIS, getContextualResponse } from "@/lib/demo-state";
 
 const SUGGESTIONS = [
   "Why are my tomato leaves turning yellow?",
@@ -15,12 +15,12 @@ const SUGGESTIONS = [
 ];
 
 export default function AssistantPage() {
-  const { name, role, location } = useUser();
+  const { name, role, location, crops } = useUser();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{role: 'ai' | 'user', text: string | React.ReactNode}[]>([
     {
       role: 'ai',
-      text: `Hello ${name}! I'm KisanEdge AI, your plant health assistant. I can see you're growing in ${location} and the weather is currently 28°C and Sunny. How can I help you today?`
+      text: `Hello ${name}! I'm KisanEdge AI, your plant health assistant. I can see you're growing in ${location} — it's currently ${DEMO_WEATHER.temp}°C and ${DEMO_WEATHER.condition}. Your soil moisture is at ${DEMO_SENSOR.soilMoisture}%. How can I help you today?`
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -41,35 +41,16 @@ export default function AssistantPage() {
     setInput("");
     setIsTyping(true);
 
-    // Mock AI Response
+    const response = getContextualResponse(text);
+
     setTimeout(() => {
       setIsTyping(false);
-      setMessages(prev => [...prev, {
-        role: 'ai',
-        text: (
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold text-[15px]">Yellowing leaves (Chlorosis) in tomatoes is common and usually caused by:</p>
-            <ul className="list-disc pl-5 space-y-1 mt-1 text-[14px]">
-              <li><strong className="text-gray-900">Overwatering or poor drainage:</strong> Checks if soil is soggy.</li>
-              <li><strong className="text-gray-900">Nitrogen deficiency:</strong> Leaves turn pale green then yellow.</li>
-              <li><strong className="text-gray-900">Fungal issues:</strong> Like Early Blight (usually starts with spots).</li>
-            </ul>
-            <div className="bg-orange-50 border border-orange-100 p-2.5 rounded-xl mt-1">
-              <span className="font-semibold text-orange-800 text-[13px] block mb-1">Recommended Actions:</span>
-              <ol className="list-decimal pl-4 text-orange-900 text-[13px] space-y-0.5">
-                <li>Check soil moisture using your sensor.</li>
-                <li>Ensure pots/field have proper drainage.</li>
-                <li>Apply a balanced NPK fertilizer if soil is dry and nutrient-poor.</li>
-              </ol>
-            </div>
-            <p className="text-[11px] text-gray-500 italic mt-1 leading-tight">
-              Note: I am an AI assistant, not a certified agronomist. Please verify treatments for commercial crops.
-            </p>
-          </div>
-        )
-      }]);
-    }, 1500);
+      setMessages(prev => [...prev, { role: 'ai', text: response.text }]);
+    }, response.delay);
   };
+
+  const cropDisplay = crops.length > 0 ? crops.slice(0, 2).join(", ") : "Tomato, Wheat";
+  const hasRecentDiagnosis = true; // Demo mode
 
   return (
     <div className="flex flex-col h-full bg-[#f8faf9] relative pb-24">
@@ -88,10 +69,12 @@ export default function AssistantPage() {
         {/* Context Pills */}
         <div className="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
           <ContextPill icon={MapPin} text={location} color="blue" />
-          <ContextPill icon={CloudSun} text="28° Sunny" color="amber" />
-          <ContextPill icon={Sprout} text="Tomato, Wheat" color="emerald" />
-          <ContextPill icon={Activity} text="Moisture: 31%" color="indigo" />
-          <ContextPill icon={AlertTriangle} text="No recent alerts" color="gray" />
+          <ContextPill icon={CloudSun} text={`${DEMO_WEATHER.temp}° ${DEMO_WEATHER.condition}`} color="amber" />
+          <ContextPill icon={Sprout} text={cropDisplay} color="emerald" />
+          <ContextPill icon={Activity} text={`Moisture: ${DEMO_SENSOR.soilMoisture}%`} color="indigo" />
+          {hasRecentDiagnosis && (
+            <ContextPill icon={ShieldAlert} text="Early Blight detected" color="red" />
+          )}
         </div>
       </div>
 
@@ -128,7 +111,7 @@ export default function AssistantPage() {
               <div className="w-8 h-8 bg-gradient-to-br from-[#16a34a] to-[#14532D] rounded-full flex items-center justify-center shrink-0 shadow-sm">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-gray-100 flex items-center gap-1 shadow-sm h-11">
+              <div className="bg-white p-4 rounded-2xl rounded-tl-none border border-gray-100 flex items-center gap-1.5 shadow-sm h-11">
                 <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" />
                 <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                 <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
@@ -159,7 +142,7 @@ export default function AssistantPage() {
 
         <div className="flex gap-2 items-end pointer-events-auto max-w-[500px] mx-auto">
           <div className="flex-1 bg-white border border-gray-200 rounded-3xl p-1.5 flex items-center shadow-[0_4px_20px_rgba(0,0,0,0.05)] focus-within:border-[#16a34a] focus-within:ring-2 focus-within:ring-[#16a34a]/20 transition-all">
-            <button className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-[#16a34a] hover:bg-[#16a34a]/10 transition-colors shrink-0">
+            <button className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-[#16a34a] hover:bg-[#16a34a]/10 transition-colors shrink-0 haptic-press">
               <Mic className="w-5 h-5" />
             </button>
             <input 
@@ -173,7 +156,7 @@ export default function AssistantPage() {
             {input.trim() && (
               <button 
                 onClick={() => handleSend(input)}
-                className="w-10 h-10 rounded-full bg-[#16a34a] flex items-center justify-center text-white shadow-sm hover:bg-[#15803d] shrink-0"
+                className="w-10 h-10 rounded-full bg-[#16a34a] flex items-center justify-center text-white shadow-sm hover:bg-[#15803d] shrink-0 haptic-press"
               >
                 <Send className="w-4 h-4 ml-0.5" />
               </button>
@@ -191,7 +174,8 @@ function ContextPill({ icon: Icon, text, color }: { icon: any, text: string, col
     amber: "bg-amber-50 text-amber-700 border-amber-100",
     emerald: "bg-emerald-50 text-emerald-700 border-emerald-100",
     indigo: "bg-indigo-50 text-indigo-700 border-indigo-100",
-    gray: "bg-gray-100 text-gray-600 border-gray-200"
+    gray: "bg-gray-100 text-gray-600 border-gray-200",
+    red: "bg-red-50 text-red-700 border-red-100"
   };
   
   return (

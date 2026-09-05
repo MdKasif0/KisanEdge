@@ -12,6 +12,7 @@ import { useUser } from "@/lib/store/user-store";
 import { useTranslation } from "@/lib/i18n/context";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
+import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
 
 export function FarmerDashboard() {
   const { name, crops } = useUser();
@@ -95,6 +96,31 @@ export function FarmerDashboard() {
           <motion.div initial="hidden" animate="show" variants={item} className="pt-2">
             <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">{t("dashboard.greeting")}, {name}</h1>
             <p className="text-[14px] sm:text-[15px] text-[#64748b] font-medium mt-1">{t("dashboard.subtitle")}</p>
+          </motion.div>
+
+          {/* Quick Actions */}
+          <motion.div variants={item} className="flex gap-2 overflow-x-auto hide-scrollbar -mx-1 px-1">
+            <Link href="/scan" className="flex-1">
+              <div className="bg-[#16a34a] text-white rounded-2xl p-3.5 flex items-center gap-2.5 shadow-md haptic-press min-w-[140px]">
+                <ScanLine className="w-5 h-5 shrink-0" />
+                <span className="font-bold text-[14px]">Scan Crop</span>
+              </div>
+            </Link>
+            <Link href="/alerts" className="flex-1">
+              <div className="bg-white border border-gray-200 rounded-2xl p-3.5 flex items-center gap-2.5 shadow-sm haptic-press min-w-[140px]">
+                <Bell className="w-5 h-5 text-amber-500 shrink-0" />
+                <div className="flex flex-col">
+                  <span className="font-bold text-[14px] text-[#0e3b1c]">Alerts</span>
+                  <span className="text-[11px] text-red-500 font-semibold">3 new</span>
+                </div>
+              </div>
+            </Link>
+            <Link href="/farm" className="flex-1">
+              <div className="bg-white border border-gray-200 rounded-2xl p-3.5 flex items-center gap-2.5 shadow-sm haptic-press min-w-[120px]">
+                <Sprout className="w-5 h-5 text-[#16a34a] shrink-0" />
+                <span className="font-bold text-[14px] text-[#0e3b1c]">My Farm</span>
+              </div>
+            </Link>
           </motion.div>
 
           {/* Weather Intelligence Card */}
