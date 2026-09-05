@@ -69,10 +69,12 @@ export function FarmerDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
-              <Bell className="w-6 h-6 text-[#14532D]" />
-              <div className="absolute top-2 right-2 w-2 h-2 bg-[#F59E0B] rounded-full border-2 border-[#F8FAF9]" />
-            </button>
+            <Link href="/alerts">
+              <button className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                <Bell className="w-6 h-6 text-[#14532D]" />
+                <div className="absolute top-2 right-2 w-2 h-2 bg-[#F59E0B] rounded-full border-2 border-[#F8FAF9]" />
+              </button>
+            </Link>
             <Link href="/profile">
               <div className="w-10 h-10 rounded-full bg-[#DCFCE7] border border-[#16A34A]/20 flex items-center justify-center cursor-pointer shadow-sm">
                 <span className="text-[#14532D] font-bold text-lg">K</span>
