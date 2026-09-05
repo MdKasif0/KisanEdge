@@ -1,6 +1,6 @@
 "use client";
 
-import { Send, Bot, User, Mic, MapPin, CloudSun, Activity, Sprout, AlertTriangle, ShieldAlert } from "lucide-react";
+import { Send, Bot, User, Mic, MapPin, CloudSun, Activity, Sprout, AlertTriangle, ShieldAlert, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@/lib/store/user-store";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,14 +55,14 @@ export default function AssistantPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8faf9] relative pb-24">
       {/* Header */}
-      <div className="pt-safe px-4 pb-3 bg-white sticky top-0 z-20 border-b border-gray-100 shadow-sm">
-        <div className="flex items-center gap-3 h-14">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#16a34a] to-[#14532D] rounded-full flex items-center justify-center shadow-md">
-            <Bot className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-[18px] font-bold text-[#0e3b1c] leading-tight">KisanEdge AI</h1>
-            <p className="text-[13px] text-gray-500 font-medium">Your plant health assistant</p>
+      <div className="pt-safe pt-3 px-4 pb-3 bg-white sticky top-0 z-20 border-b border-gray-100 shadow-sm">
+        <div className="flex items-center gap-3 h-[42px]">
+          <img src="/icon-512x512.png" alt="KisanEdge AI" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
+          <div className="flex flex-col justify-center">
+            <h1 className="text-[20px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
+              KisanEdge AI <Sparkles className="w-4 h-4 text-[#16A34A]" />
+            </h1>
+            <p className="text-[13px] text-gray-500 mt-0.5 font-medium tracking-tight">Your plant health assistant</p>
           </div>
         </div>
         
