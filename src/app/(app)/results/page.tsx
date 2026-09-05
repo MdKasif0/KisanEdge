@@ -3,386 +3,460 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { 
-  ArrowLeft, AlertTriangle, CheckCircle, ShieldAlert, ChevronRight, Stethoscope,
-  Info, Thermometer, Droplets, CloudRain, Activity, Check, Sprout, Leaf, MessageSquare, Camera
+import {
+  ArrowLeft,
+  AlertTriangle,
+  CheckCircle,
+  ShieldAlert,
+  ChevronRight,
+  Info,
+  Droplets,
+  Activity,
+  Sprout,
+  Leaf,
+  MessageSquare,
+  Camera,
+  RotateCcw,
+  Sparkles,
+  HelpCircle,
+  ExternalLink,
+  ShieldCheck,
+  Thermometer,
+  CloudRain,
+  Bookmark,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import type { Diagnosis } from "@/lib/mock-data";
-import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
 import { useRouter } from "next/navigation";
+import { storage } from "@/lib/storage";
+import { DiseaseDetectionResult, Severity } from "@/types/disease";
+import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
 
 export default function ResultsPage() {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [result, setResult] = useState<Diagnosis | null>(null);
+  const [result, setResult] = useState<DiseaseDetectionResult | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    // Read from localStorage
-    const savedImage = localStorage.getItem("kisanedge_scan_image");
-    const savedResultStr = localStorage.getItem("kisanedge_scan_result");
-    
+    // Read real scan result and image from localStorage
+    const savedImage = storage.get<string | null>("kisanedge_scan_image", null);
+    const savedResult = storage.get<any>("kisanedge_scan_result", null);
+
     if (savedImage) setImageSrc(savedImage);
-    if (savedResultStr) {
-      try {
-        setResult(JSON.parse(savedResultStr));
-      } catch (e) {
-        console.error("Failed to parse result", e);
+
+    if (savedResult) {
+      // Normalize result if it came from legacy Diagnosis mock or real DiseaseDetectionResult
+      if (savedResult.status) {
+        setResult(savedResult as DiseaseDetectionResult);
+      } else {
+        // Adapt legacy structure if any
+        setResult({
+          status: savedResult.type === "healthy" ? "healthy" : "disease_detected",
+          plantDetected: true,
+          plantType: "Tomato",
+          plantPart: "leaf",
+          conditionName: savedResult.disease || "Possible Early Blight",
+          confidence: savedResult.confidence || 94,
+          severity: (savedResult.severity?.toLowerCase() || "moderate") as Severity,
+          affectedAreaPercent: 28,
+          observedSymptoms: savedResult.reasons || ["Target-like concentric rings on leaves", "Lower leaf yellowing"],
+          explanation: savedResult.recommendation || "Visual pattern matches characteristic fungal symptoms.",
+          alternativeConditions: [{ name: "Septoria leaf spot", reason: "Similar circular spots with necrotic margins" }],
+          recommendedActions: savedResult.nextSteps || ["Inspect nearby plants", "Prune affected lower leaves", "Avoid overhead watering"],
+          warnings: ["This is an AI visual assessment and not a laboratory-confirmed diagnosis."],
+          needsBetterImage: false,
+          expertVerificationRecommended: false,
+          environmentalRisk: "high",
+        });
       }
-    }
-    // Fallback to demo data for hackathon demo
-    if (!savedImage && !savedResultStr) {
-      setResult(DEMO_DIAGNOSIS);
-      setImageSrc("/farmer-placeholder.png");
+    } else {
+      // Fallback demo scenario for testing
+      setImageSrc("/crops/tomato.jpg");
+      setResult({
+        status: "disease_detected",
+        plantDetected: true,
+        plantType: "Tomato",
+        plantPart: "leaf",
+        conditionName: DEMO_DIAGNOSIS.disease,
+        confidence: DEMO_DIAGNOSIS.confidence,
+        severity: "moderate",
+        affectedAreaPercent: 32,
+        observedSymptoms: DEMO_DIAGNOSIS.reasons,
+        explanation: "Visual symptoms and concentric ring lesions indicate probable early blight infection.",
+        alternativeConditions: [{ name: "Septoria Leaf Spot", reason: "Can produce similar necrotic lesions on Solanaceous crops" }],
+        recommendedActions: DEMO_DIAGNOSIS.nextSteps,
+        warnings: ["This is an AI visual assessment and not a laboratory-confirmed diagnosis."],
+        needsBetterImage: false,
+        expertVerificationRecommended: false,
+        environmentalRisk: "high",
+      });
     }
   }, []);
 
-  if (!imageSrc || !result) {
+  const handleSaveScan = () => {
+    if (!result) return;
+    try {
+      const history = storage.get<any[]>("kisanedge_scan_history", []);
+      const existingIdx = history.findIndex((h) => h.id === result.id);
+
+      const historyItem = {
+        id: result.id || `scan-${Date.now()}`,
+        date: "Today, Just now",
+        crop: result.plantType || "Plant",
+        diagnosis: result.conditionName || (result.status === "healthy" ? "Healthy Plant" : "Observation"),
+        confidence: result.confidence,
+        severity: result.severity === "healthy" ? "Healthy" : (result.severity.charAt(0).toUpperCase() + result.severity.slice(1)),
+        healthScore: result.status === "healthy" ? 96 : Math.max(30, 100 - (result.affectedAreaPercent || 30)),
+        image: imageSrc,
+        fullResult: result,
+      };
+
+      if (existingIdx >= 0) {
+        history[existingIdx] = historyItem;
+      } else {
+        history.unshift(historyItem);
+      }
+
+      storage.set("kisanedge_scan_history", history.slice(0, 20));
+      setIsSaved(true);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (err) {
+      console.warn("Error saving scan to history:", err);
+    }
+  };
+
+  if (!result) {
     return (
-      <div className="flex flex-col h-[100dvh] items-center justify-center p-6 text-center bg-[#f4f7f5]">
+      <div className="flex flex-col h-[100dvh] items-center justify-center p-6 text-center bg-[#f8faf9]">
         <div className="w-12 h-12 border-4 border-[#16a34a] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">Analyzing diagnostic data...</p>
+        <p className="text-gray-500 font-medium">Loading KisanEdge diagnosis...</p>
       </div>
     );
   }
 
-  const isHealthy = result.severity === "Healthy";
-  const isLowConfidence = result.confidence < 70;
+  const isHealthy = result.status === "healthy" || result.severity === "healthy";
+  const isNotPlant = result.status === "not_a_plant";
+  const isPoorImage = result.status === "poor_image" || result.needsBetterImage;
+  const isLowConfidence = result.confidence < 60;
+  const isHighSeverity = result.severity === "severe" || result.severity === "critical";
 
   // Severity color mapping
-  const severityColors = {
-    Healthy: "bg-emerald-500",
-    Early: "bg-amber-400",
-    Moderate: "bg-orange-500",
-    Severe: "bg-red-500"
+  const severityBadgeColors: Record<string, string> = {
+    healthy: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    early: "bg-amber-100 text-amber-800 border-amber-200",
+    mild: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    moderate: "bg-orange-100 text-orange-800 border-orange-200",
+    severe: "bg-red-100 text-red-800 border-red-200",
+    critical: "bg-rose-100 text-rose-900 border-rose-300",
+    unknown: "bg-gray-100 text-gray-700 border-gray-200",
   };
 
-  const severityBgColors = {
-    Healthy: "bg-emerald-50",
-    Early: "bg-amber-50",
-    Moderate: "bg-orange-50",
-    Severe: "bg-red-50"
-  };
-
-  const severityTextColors = {
-    Healthy: "text-emerald-700",
-    Early: "text-amber-700",
-    Moderate: "text-orange-700",
-    Severe: "text-red-700"
-  };
-
-  const activeColor = severityColors[result.severity];
-  const activeBg = severityBgColors[result.severity];
-  const activeText = severityTextColors[result.severity];
-
-  const severitySteps = ["Healthy", "Early", "Moderate", "Severe"];
-  const currentStepIndex = severitySteps.indexOf(result.severity);
+  const activeBadgeColor = severityBadgeColors[result.severity] || severityBadgeColors.unknown;
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-[#f4f7f5] pb-safe font-sans relative">
+    <div className="flex flex-col min-h-[100dvh] bg-[#f8faf9] pb-safe font-sans relative">
       {/* Toast Notification */}
       {showToast && (
-        <div className="fixed top-4 left-4 right-4 z-[100] flex justify-center toast-enter">
+        <div className="fixed top-4 left-4 right-4 z-[100] flex justify-center animate-fade-in">
           <div className="bg-[#14532D] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 max-w-sm">
             <CheckCircle className="w-5 h-5 text-emerald-300 shrink-0" />
-            <span className="font-semibold text-[14px]">Diagnosis saved to history</span>
+            <span className="font-semibold text-[14px]">Diagnosis saved to scan history</span>
           </div>
         </div>
       )}
+
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 pt-safe flex items-center justify-between shadow-sm">
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.back()}>
-          <ArrowLeft className="w-5 h-5 text-[#0e3b1c]" />
-        </Button>
-        <h1 className="font-bold text-[17px] text-[#0e3b1c] tracking-tight">Tomato Diagnosis</h1>
-        <div className="w-10" /> {/* Spacer */}
+      <header
+        className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex items-center justify-between shadow-2xs"
+        style={{ paddingTop: "calc(var(--safe-top, 0px) + 14px)" }}
+      >
+        <div className="max-w-md mx-auto w-full flex items-center justify-between">
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/scan")}>
+            <ArrowLeft className="w-5 h-5 text-[#0e3b1c]" />
+          </Button>
+          <div className="flex flex-col items-center">
+            <h1 className="font-bold text-[17px] text-[#0e3b1c] tracking-tight">Plant Health Assessment</h1>
+            <span className="text-[11px] font-semibold text-[#16a34a] flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> Groq Vision Intelligence
+            </span>
+          </div>
+          <button
+            onClick={handleSaveScan}
+            title="Save to history"
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+              isSaved ? "bg-emerald-50 text-emerald-600" : "text-gray-500 hover:bg-gray-100"
+            }`}
+          >
+            <Bookmark className={`w-5 h-5 ${isSaved ? "fill-emerald-600" : ""}`} />
+          </button>
+        </div>
       </header>
 
-      <div className="flex-1 w-full max-w-md mx-auto">
-        {/* Image Banner */}
-        <div className="relative w-full h-[35vh] min-h-[250px] max-h-[350px] bg-black overflow-hidden shadow-inner sm:rounded-b-3xl">
-          <img src={imageSrc} alt="Scanned Plant" className="w-full h-full object-cover opacity-90" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#f4f7f5] via-transparent to-black/30" />
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 pb-32">
+        {/* Image Preview & Crop Badge */}
+        <div className="relative rounded-3xl overflow-hidden shadow-sm aspect-[4/3] bg-gray-900 border border-gray-100 group">
+          {imageSrc ? (
+            <img src={imageSrc} alt="Scanned Plant" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-500">
+              <Camera className="w-12 h-12 opacity-30" />
+            </div>
+          )}
+
+          {/* Overlay Plant Badge */}
+          <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-white/10">
+            <Leaf className="w-3.5 h-3.5 text-[#16a34a]" />
+            <span>{result.plantType || "Plant"}</span>
+            {result.plantPart && <span className="text-white/60">• {result.plantPart}</span>}
+          </div>
+
+          {/* Retake Quick Action */}
+          <button
+            onClick={() => router.push("/scan")}
+            className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-white/10 transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Rescan</span>
+          </button>
         </div>
 
-        <div className="px-4 -mt-16 relative z-10 flex flex-col gap-6 pb-12">
-          
-          {/* Primary Diagnosis Card */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            className="bg-white rounded-[24px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border border-white/50 shadow-sm ${activeBg} ${activeText}`}>
-                {result.severity} SEVERITY
+        {/* NOT A PLANT WARNING */}
+        {isNotPlant && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-900 flex flex-col gap-2 shadow-xs">
+            <div className="flex items-center gap-2 font-bold text-[15px] text-amber-800">
+              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+              <span>No Plant Detected</span>
+            </div>
+            <p className="text-[13px] text-amber-800/90 leading-relaxed">{result.explanation}</p>
+            <Button
+              className="mt-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold self-start"
+              onClick={() => router.push("/scan")}
+            >
+              Take photo of a plant
+            </Button>
+          </div>
+        )}
+
+        {/* POOR IMAGE QUALITY WARNING */}
+        {isPoorImage && !isNotPlant && (
+          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-900 flex flex-col gap-2 shadow-xs">
+            <div className="flex items-center gap-2 font-bold text-[15px] text-blue-800">
+              <Info className="w-5 h-5 text-blue-600 shrink-0" />
+              <span>Image Quality Insufficient for Diagnosis</span>
+            </div>
+            <p className="text-[13px] text-blue-800/90 leading-relaxed">{result.explanation}</p>
+            <Button
+              className="mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold self-start"
+              onClick={() => router.push("/scan")}
+            >
+              Retake with closer focus
+            </Button>
+          </div>
+        )}
+
+        {/* HIGH SEVERITY CRITICAL WARNING */}
+        {isHighSeverity && (
+          <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-4 text-red-900 flex items-start gap-3 shadow-sm">
+            <ShieldAlert className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-bold text-[15px] text-red-900">Significant Symptoms Detected</h3>
+              <p className="text-[13px] text-red-800 mt-1 leading-snug">
+                Consider isolating affected plants where appropriate to prevent spread, and seek local agricultural
+                guidance for confirmed diagnosis and treatments.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Primary Diagnosis Header Card */}
+        <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col flex-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                {isHealthy ? "Plant Status" : "Observed Condition"}
+              </span>
+              <h2 className="text-[22px] font-bold text-[#14532D] leading-tight tracking-tight mt-0.5">
+                {result.conditionName || (isHealthy ? "Healthy Plant" : "Under Observation")}
+              </h2>
+            </div>
+
+            {/* Severity Pill */}
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shrink-0 ${activeBadgeColor}`}
+            >
+              {result.severity}
+            </span>
+          </div>
+
+          {/* AI Confidence & Affected Area Metrics */}
+          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-100">
+            {/* AI Confidence */}
+            <div className="bg-[#f8faf9] rounded-2xl p-3 border border-gray-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-semibold text-gray-500">
+                <span>AI Confidence</span>
+                <HelpCircle className="w-3.5 h-3.5 text-gray-400" />
               </div>
-              
-              {/* Circular Confidence Visual */}
-              <div className="relative w-14 h-14 flex items-center justify-center">
-                <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                  <circle cx="28" cy="28" r="24" stroke="currentColor" strokeWidth="4" fill="none" className="text-gray-100" />
-                  <circle 
-                    cx="28" cy="28" r="24" 
-                    stroke="currentColor" 
-                    strokeWidth="4" 
-                    fill="none" 
-                    strokeDasharray="150" 
-                    strokeDashoffset={150 - (150 * result.confidence) / 100}
-                    strokeLinecap="round"
-                    className="text-[#16a34a] transition-all duration-1000 ease-out" 
-                  />
-                </svg>
-                <div className="flex flex-col items-center justify-center">
-                  <span className="text-[14px] font-black text-[#0e3b1c]">{result.confidence}%</span>
-                  <span className="text-[8px] font-bold text-gray-400 -mt-1">AI</span>
-                </div>
+              <div className="flex items-baseline gap-1 mt-1">
+                <span className="text-[24px] font-extrabold text-[#14532D]">{result.confidence}%</span>
+                <span className="text-[11px] text-gray-400 font-medium">score</span>
+              </div>
+              {/* Progress bar */}
+              <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1.5">
+                <div
+                  className={`h-full rounded-full ${
+                    result.confidence >= 75
+                      ? "bg-[#16a34a]"
+                      : result.confidence >= 50
+                      ? "bg-amber-500"
+                      : "bg-red-500"
+                  }`}
+                  style={{ width: `${result.confidence}%` }}
+                />
               </div>
             </div>
 
-            <h2 className="text-[24px] font-extrabold text-[#0e3b1c] leading-tight mb-2">
-              {result.disease}
-            </h2>
-
-            {/* Severity Step Indicator */}
-            <div className="mt-6">
-              <div className="flex justify-between mb-2">
-                {severitySteps.map((step, idx) => (
-                  <span key={step} className={`text-[10px] font-bold uppercase ${idx === currentStepIndex ? activeText : 'text-gray-400'}`}>
-                    {step}
-                  </span>
-                ))}
+            {/* Affected Area / Environmental Risk */}
+            <div className="bg-[#f8faf9] rounded-2xl p-3 border border-gray-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs font-semibold text-gray-500">
+                <span>Affected Area</span>
+                <Activity className="w-3.5 h-3.5 text-gray-400" />
               </div>
-              <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden flex">
-                {severitySteps.map((_, idx) => (
-                  <div key={idx} className={`h-full flex-1 border-r border-white/50 last:border-0 ${idx <= currentStepIndex ? activeColor : 'bg-transparent'}`} />
-                ))}
+              <div className="flex items-baseline gap-1 mt-1">
+                <span className="text-[24px] font-extrabold text-[#14532D]">
+                  {result.affectedAreaPercent !== null ? `${result.affectedAreaPercent}%` : "—"}
+                </span>
+                <span className="text-[11px] text-gray-400 font-medium">surface</span>
               </div>
-            </div>
-          </motion.div>
-
-          {/* Low Confidence State */}
-          {isLowConfidence && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-bold text-amber-900 text-sm">Low AI Confidence</h4>
-                <p className="text-xs text-amber-700 mt-1 mb-3 leading-relaxed">We're not confident enough to give a reliable result. Please capture another clear image in good lighting.</p>
-                <Link href="/scan">
-                  <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl h-10 text-xs font-bold px-5 shadow-sm">
-                    Retake Photo
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Why KisanEdge Flagged This */}
-          {!isHealthy && result.reasons && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-              <h3 className="font-extrabold text-[#0e3b1c] text-[17px] px-2 mb-3">Why KisanEdge flagged this</h3>
-              <div className="bg-white rounded-[20px] p-5 shadow-sm border border-gray-100">
-                <ul className="flex flex-col gap-3.5">
-                  {result.reasons.map((reason, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <div className="bg-red-50 p-1.5 rounded-full shrink-0 mt-0.5">
-                        <Check className="w-3 h-3 text-red-500 stroke-[4]" />
-                      </div>
-                      <span className="text-[14px] font-medium text-gray-700 leading-snug">{reason}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Crop Health Score */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <h3 className="font-extrabold text-[#0e3b1c] text-[17px] px-2 mb-3 tracking-tight">Crop Health Focus</h3>
-            <div className="bg-gradient-to-br from-[#16a34a] to-[#0e3b1c] rounded-[20px] p-5 shadow-md flex items-center justify-between text-white overflow-hidden relative">
-              <Leaf className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10" />
-              <div className="relative z-10">
-                <p className="text-white/80 text-[13px] font-semibold uppercase tracking-wider mb-1">Vitality Score</p>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-5xl font-black tracking-tighter">{result.healthScore}</span>
-                  <span className="text-xl font-bold text-white/60">/100</span>
-                </div>
-              </div>
-              <Activity className="w-12 h-12 text-white/80 relative z-10" />
-            </div>
-          </motion.div>
-
-          {/* Environmental Risk */}
-          {result.environmentalRisk && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-              <div className="flex items-center gap-2 px-2 mb-3">
-                <h3 className="font-extrabold text-[#0e3b1c] text-[17px]">Environmental Risk</h3>
-                <span className={`${
-                  result.environmentalRisk.riskLevel.includes('High') || result.environmentalRisk.riskLevel.includes('Critical') 
-                    ? 'bg-red-100 text-red-600' 
-                    : result.environmentalRisk.riskLevel.includes('Low') 
-                      ? 'bg-emerald-100 text-emerald-600'
-                      : 'bg-amber-100 text-amber-600'
-                } text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider`}>
-                  {result.environmentalRisk.riskLevel}
+              <div className="flex items-center gap-1 text-[11px] text-gray-500 font-semibold mt-1.5">
+                <span>Env. Risk:</span>
+                <span
+                  className={`capitalize font-bold ${
+                    result.environmentalRisk === "high"
+                      ? "text-red-600"
+                      : result.environmentalRisk === "moderate"
+                      ? "text-amber-600"
+                      : "text-[#16a34a]"
+                  }`}
+                >
+                  {result.environmentalRisk}
                 </span>
               </div>
-              
-              <div className="bg-white rounded-[20px] p-5 shadow-sm border border-gray-100">
-                <div className="grid grid-cols-2 gap-4 mb-4 pb-4 border-b border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-orange-50 p-2.5 rounded-2xl"><Thermometer className="w-5 h-5 text-orange-500" /></div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase">Temp</p>
-                      <p className="font-bold text-gray-900 text-sm">{result.environmentalRisk.temp}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-blue-50 p-2.5 rounded-2xl"><Droplets className="w-5 h-5 text-blue-500" /></div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase">Humidity</p>
-                      <p className="font-bold text-gray-900 text-sm">{result.environmentalRisk.humidity}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-amber-50 p-2.5 rounded-2xl"><Sprout className="w-5 h-5 text-amber-600" /></div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase">Soil Moisture</p>
-                      <p className="font-bold text-gray-900 text-sm">{result.environmentalRisk.moisture}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-cyan-50 p-2.5 rounded-2xl"><CloudRain className="w-5 h-5 text-cyan-600" /></div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase">Rain Prob.</p>
-                      <p className="font-bold text-gray-900 text-sm">{result.environmentalRisk.rain}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start">
-                  <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                  <p className="text-[13px] text-gray-600 font-medium leading-relaxed">{result.environmentalRisk.explanation}</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Recommendation */}
-          {result.recommendation && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-              <h3 className="font-extrabold text-[#0e3b1c] text-[17px] px-2 mb-3">KisanEdge Recommendation</h3>
-              <div className="bg-emerald-50 border border-emerald-200 rounded-[20px] p-5 relative overflow-hidden shadow-sm">
-                <ShieldAlert className="absolute -right-4 -bottom-4 w-24 h-24 text-emerald-100/60" />
-                <p className="text-[14px] font-semibold text-emerald-900 leading-relaxed relative z-10">
-                  {result.recommendation}
-                </p>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Next Steps */}
-          {result.nextSteps && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-              <h3 className="font-extrabold text-[#0e3b1c] text-[17px] px-2 mb-3">Next Steps</h3>
-              <div className="bg-white rounded-[20px] p-5 shadow-sm border border-gray-100 flex flex-col gap-4">
-                {result.nextSteps.map((step, idx) => (
-                  <div key={idx} className="flex items-start gap-4">
-                    <div className="w-6 h-6 rounded-full bg-[#16a34a]/10 text-[#16a34a] flex items-center justify-center shrink-0 font-bold text-[11px] mt-0.5 border border-[#16a34a]/20">
-                      {idx + 1}
-                    </div>
-                    <p className="text-[14px] font-medium text-gray-700 leading-relaxed">{step}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Plant Health Timeline */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-            <h3 className="font-extrabold text-[#0e3b1c] text-[17px] px-2 mb-3">Plant Health Timeline</h3>
-            <div className="bg-white rounded-[20px] p-6 shadow-sm border border-gray-100">
-              
-              <div className="flex gap-4 relative">
-                <div className="absolute left-2.5 top-3 bottom-0 w-[2px] bg-gray-100" />
-                
-                <div className="flex flex-col gap-6 relative z-10 w-full">
-                  {/* Current Event */}
-                  <div className="flex gap-4">
-                    <div className={`w-5 h-5 rounded-full border-[4px] border-white ${activeBg} flex items-center justify-center shrink-0 shadow-sm`}>
-                      <div className={`w-2 h-2 rounded-full ${activeColor}`} />
-                    </div>
-                    <div className="-mt-1 w-full">
-                      <p className="text-[10px] font-bold text-[#16a34a] uppercase tracking-wider mb-1">Today</p>
-                      <p className="text-[14px] font-bold text-gray-900">{result.disease}</p>
-                      <p className="text-[12px] text-gray-500 mt-1">Diagnostic scan completed</p>
-                    </div>
-                  </div>
-                  
-                  {/* Past Event 1 */}
-                  <div className="flex gap-4">
-                    <div className="w-5 h-5 rounded-full border-[4px] border-white bg-gray-200 shrink-0" />
-                    <div className="-mt-1 w-full">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">3 days ago</p>
-                      <p className="text-[14px] font-bold text-gray-700">Heavy rainfall detected</p>
-                      <p className="text-[12px] text-gray-500 mt-1">45mm of rain logged locally</p>
-                    </div>
-                  </div>
-
-                  {/* Past Event 2 */}
-                  <div className="flex gap-4">
-                    <div className="w-5 h-5 rounded-full border-[4px] border-white bg-emerald-200 shrink-0" />
-                    <div className="-mt-1 w-full">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">12 days ago</p>
-                      <p className="text-[14px] font-bold text-gray-700">Healthy scan</p>
-                      <p className="text-[12px] text-gray-500 mt-1">No diseases detected</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
             </div>
-          </motion.div>
+          </div>
 
-          {/* Action Buttons */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mt-4 flex flex-col gap-3">
-            <Button 
-              size="lg" 
-              className={`w-full h-[60px] rounded-2xl font-bold text-[17px] shadow-xl flex items-center justify-center gap-2 transition-all haptic-press ${
-                isSaved ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#0e3b1c] hover:bg-[#0a2a14]'
-              } text-white`}
-              onClick={() => {
-                setIsSaved(true);
-                setShowToast(true);
-                try {
-                  localStorage.setItem('kisanedge_saved_diagnosis', JSON.stringify(result));
-                } catch(e) {}
-                setTimeout(() => setShowToast(false), 3000);
-              }}
-            >
-              <CheckCircle className="w-5 h-5" /> {isSaved ? 'Diagnosis Saved' : 'Save Diagnosis'}
-            </Button>
-            
-            <div className="flex gap-3">
-              <Button size="lg" variant="outline" className="flex-1 h-[56px] rounded-2xl font-bold text-[15px] bg-white border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm transition-transform active:scale-[0.98]">
-                <MessageSquare className="w-4 h-4 mr-2" /> Ask AI
-              </Button>
-              <Link href="/scan" className="flex-1">
-                <Button size="lg" variant="outline" className="w-full h-[56px] rounded-2xl font-bold text-[15px] bg-white border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm transition-transform active:scale-[0.98]">
-                  <Camera className="w-4 h-4 mr-2" /> Scan New
-                </Button>
-              </Link>
+          {/* Low confidence notice */}
+          {isLowConfidence && !isNotPlant && (
+            <div className="bg-amber-50 rounded-xl p-2.5 border border-amber-200 text-amber-900 text-[12px] flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>Low-confidence visual result. Try taking a closer, well-lit photo of the affected leaf.</span>
             </div>
+          )}
+        </div>
 
-            <div className="text-center mt-6 mb-4">
-              <span className="text-[13px] text-gray-500 font-medium mr-2">Not confident in this result?</span>
-              <Link href="/scan" className="text-[13px] font-bold text-[#16a34a] underline underline-offset-2">
-                Retake photo
-              </Link>
+        {/* Observed Symptoms Section */}
+        {result.observedSymptoms && result.observedSymptoms.length > 0 && (
+          <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-col gap-3">
+            <h3 className="font-bold text-[16px] text-[#14532D] flex items-center gap-2">
+              <Leaf className="w-4 h-4 text-[#16A34A]" />
+              Observed Visual Symptoms
+            </h3>
+            <ul className="space-y-2">
+              {result.observedSymptoms.map((symptom, idx) => (
+                <li key={idx} className="flex items-start gap-2.5 text-[14px] text-gray-700 leading-snug">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a] mt-1.5 shrink-0" />
+                  <span>{symptom}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* AI Explanation / Why KisanEdge AI Thinks This */}
+        {result.explanation && (
+          <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-col gap-2.5">
+            <h3 className="font-bold text-[16px] text-[#14532D] flex items-center gap-2">
+              <Info className="w-4 h-4 text-[#16A34A]" />
+              Diagnostic Visual Reasoning
+            </h3>
+            <p className="text-[14px] text-gray-700 leading-relaxed">{result.explanation}</p>
+          </div>
+        )}
+
+        {/* Alternative Possibilities */}
+        {result.alternativeConditions && result.alternativeConditions.length > 0 && (
+          <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-col gap-3">
+            <h3 className="font-bold text-[16px] text-[#14532D] flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#16A34A]" />
+              Alternative Possibilities
+            </h3>
+            <div className="space-y-2.5">
+              {result.alternativeConditions.map((alt, idx) => (
+                <div key={idx} className="bg-[#f8faf9] p-3 rounded-2xl border border-gray-100 flex flex-col gap-0.5">
+                  <span className="font-bold text-[14px] text-gray-800">{alt.name}</span>
+                  {alt.reason && <span className="text-[12.5px] text-gray-500 leading-snug">{alt.reason}</span>}
+                </div>
+              ))}
             </div>
-          </motion.div>
+          </div>
+        )}
 
+        {/* Recommended Actions */}
+        {result.recommendedActions && result.recommendedActions.length > 0 && (
+          <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex flex-col gap-3">
+            <h3 className="font-bold text-[16px] text-[#14532D] flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#16A34A]" />
+              Recommended Next Steps
+            </h3>
+            <div className="space-y-2">
+              {result.recommendedActions.map((action, idx) => (
+                <div key={idx} className="flex items-start gap-2.5 text-[14px] text-gray-700">
+                  <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                    {idx + 1}
+                  </div>
+                  <span className="leading-snug">{action}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Safety & Compliance Disclaimer */}
+        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 text-[12px] text-gray-500 leading-relaxed flex flex-col gap-1.5">
+          <span className="font-bold text-gray-700 flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+            Agricultural Advisory Notice
+          </span>
+          <p>
+            This is an AI visual assessment and not a laboratory-confirmed diagnosis. Never apply unauthorized chemical
+            dosages. Always follow product labels and local agricultural extension guidance.
+          </p>
+        </div>
+      </main>
+
+      {/* Fixed Bottom Action Floating Bar */}
+      <div className="fixed bottom-[74px] sm:bottom-[80px] left-0 right-0 bg-gradient-to-t from-[#f8faf9] via-[#f8faf9]/95 to-transparent pt-3 pb-2 px-4 z-30 pointer-events-none">
+        <div className="max-w-md mx-auto flex gap-3 pointer-events-auto">
+          {/* Ask KisanEdge AI button (Connects seamlessly to Assistant) */}
+          <Button
+            onClick={() => router.push("/assistant")}
+            className="flex-1 h-13 rounded-2xl bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-[15px] shadow-[0_8px_20px_rgba(22,163,74,0.3)] flex items-center justify-center gap-2 active:scale-95 transition-all"
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Ask KisanEdge AI</span>
+          </Button>
+
+          {/* Scan Again */}
+          <Button
+            variant="outline"
+            onClick={() => router.push("/scan")}
+            className="h-13 px-4 rounded-2xl bg-white border border-gray-200 text-gray-700 font-semibold text-[14px] hover:bg-gray-50 shadow-2xs active:scale-95"
+          >
+            <Camera className="w-4 h-4 mr-1.5" />
+            <span>Rescan</span>
+          </Button>
         </div>
       </div>
     </div>
