@@ -192,6 +192,43 @@ export function FarmerDashboard() {
             </div>
           </motion.div>
 
+          {/* Featured: Community Card */}
+          <motion.div variants={item}>
+            <Link href="/community" className="block relative overflow-hidden bg-gradient-to-br from-[#14532D] to-[#0e3b1c] rounded-[24px] p-5 text-white shadow-lg group">
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors" />
+              <div className="flex justify-between items-start relative z-10">
+                <div className="flex flex-col">
+                  <h2 className="text-[18px] font-bold text-white/90">KisanEdge Community</h2>
+                  <p className="text-[13px] text-white/70 mt-1 max-w-[200px]">Connect with farmers, ask questions, and share expertise.</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Recent Diagnosis Card */}
+          <motion.div variants={item}>
+            <Link href="/results" className="block">
+              <div className="bg-white rounded-[20px] p-4 shadow-sm border border-orange-200 flex gap-3.5 haptic-press">
+                <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-orange-500" />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-[15px] text-[#0e3b1c] leading-tight">Early Blight Detected</h3>
+                    <span className="text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">94% AI</span>
+                  </div>
+                  <p className="text-[13px] text-gray-500 mt-1">Tomato Field A • Moderate severity</p>
+                  <p className="text-[12px] text-[#16a34a] font-semibold mt-1.5 flex items-center gap-1">
+                    View full diagnosis <ArrowRight className="w-3 h-3" />
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
           {/* Crop Health Hero */}
           <motion.div variants={item} className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E5E7EB] flex flex-col relative overflow-hidden">
             <div className="flex items-center justify-between mb-5">
@@ -202,8 +239,8 @@ export function FarmerDashboard() {
                 <h2 className="text-[19px] font-bold text-[#14532D]">Crop Health</h2>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[#16A34A] font-extrabold text-[32px] leading-none tracking-tighter">
-                  82<span className="text-[#94A3B8] text-[18px] font-bold">/100</span>
+                <span className="text-[#F59E0B] font-extrabold text-[32px] leading-none tracking-tighter">
+                  76<span className="text-[#94A3B8] text-[18px] font-bold">/100</span>
                 </span>
               </div>
             </div>
