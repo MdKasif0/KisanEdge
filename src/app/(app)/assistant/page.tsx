@@ -9,7 +9,6 @@ import {
   Sprout,
   ShieldAlert,
   Trash2,
-  AlertCircle,
   WifiOff,
 } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
@@ -44,7 +43,7 @@ export default function AssistantPage() {
     const isFarmer = role !== "home";
     const greeting = name ? `Hello ${name}!` : "Hello!";
     const contextNote = isFarmer
-      ? `I'm KisanEdge AI, your intelligent agricultural and plant-care assistant. I'm monitoring your fields in ${location || "Pune, MH"} with live soil moisture at ${DEMO_SENSOR.soilMoisture}%. How can I help your crops today?`
+      ? `I'm KisanEdge AI, your agricultural assistant powered by real-time intelligence. I'm monitoring your fields in ${location || "Pune, MH"} with soil moisture at ${DEMO_SENSOR.soilMoisture}%. How can I help your crops today?`
       : `I'm KisanEdge AI, your intelligent plant-care assistant. I'm tracking your plants in ${location || "Pune, MH"} at ${DEMO_WEATHER.temp}°C. How can I help your plants thrive today?`;
 
     return {
@@ -152,7 +151,7 @@ export default function AssistantPage() {
         name,
       });
 
-      // Prepare conversation history (exclude welcome greeting if user wants cleaner history, or include last turns)
+      // Prepare conversation history (exclude initial welcome greeting for cleaner model memory)
       const historyTurns = messages
         .filter((m) => m.id !== "welcome-msg")
         .slice(-10)
@@ -212,59 +211,61 @@ export default function AssistantPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8faf9] relative min-h-screen">
       {/* Sticky Header */}
-      <div
-        className="px-4 pb-3.5 bg-white sticky top-0 z-20 border-b border-gray-100 shadow-xs"
+      <header
+        className="bg-white sticky top-0 z-20 border-b border-gray-100 shadow-2xs"
         style={{ paddingTop: "calc(var(--safe-top, 0px) + 20px)" }}
       >
-        <div className="flex items-center justify-between h-[44px]">
-          <div className="flex items-center gap-3">
-            <img
-              src="/icon-512x512.png"
-              alt="KisanEdge AI"
-              className="w-[38px] h-[38px] rounded-[12px] object-cover shadow-xs border border-gray-100"
-            />
-            <div className="flex flex-col justify-center">
-              <h1 className="text-[19px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
-                KisanEdge AI <Sparkles className="w-4 h-4 text-[#16A34A]" />
-              </h1>
-              <p className="text-[12.5px] text-gray-500 font-medium tracking-tight">
-                Real agricultural intelligence
-              </p>
+        <div className="max-w-md mx-auto px-4 pb-3.5 flex flex-col">
+          <div className="flex items-center justify-between h-[44px]">
+            <div className="flex items-center gap-3">
+              <img
+                src="/icon-512x512.png"
+                alt="KisanEdge AI"
+                className="w-[38px] h-[38px] rounded-[12px] object-cover shadow-2xs border border-gray-100/80"
+              />
+              <div className="flex flex-col justify-center">
+                <h1 className="text-[19px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
+                  KisanEdge AI <Sparkles className="w-4 h-4 text-[#16A34A]" />
+                </h1>
+                <p className="text-[12px] text-gray-500 font-medium tracking-tight">
+                  Real agricultural intelligence
+                </p>
+              </div>
+            </div>
+
+            {/* Header action button */}
+            <div className="flex items-center gap-1.5">
+              {messages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={handleClearChat}
+                  title="Clear conversation"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-1.5">
-            {messages.length > 1 && (
-              <button
-                type="button"
-                onClick={handleClearChat}
-                title="Clear conversation"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            )}
+          {/* Live Context Pills */}
+          <div className="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
+            <ContextPill icon={MapPin} text={location} color="blue" />
+            <ContextPill
+              icon={CloudSun}
+              text={`${DEMO_WEATHER.temp}° ${DEMO_WEATHER.condition}`}
+              color="amber"
+            />
+            <ContextPill icon={Sprout} text={cropDisplay} color="emerald" />
+            <ContextPill
+              icon={Activity}
+              text={`Moisture: ${DEMO_SENSOR.soilMoisture}%`}
+              color="indigo"
+            />
+            <ContextPill icon={ShieldAlert} text="Early Blight detected" color="red" />
           </div>
         </div>
-
-        {/* Live Context Pills */}
-        <div className="flex gap-2 overflow-x-auto hide-scrollbar mt-3 pb-1">
-          <ContextPill icon={MapPin} text={location} color="blue" />
-          <ContextPill
-            icon={CloudSun}
-            text={`${DEMO_WEATHER.temp}° ${DEMO_WEATHER.condition}`}
-            color="amber"
-          />
-          <ContextPill icon={Sprout} text={cropDisplay} color="emerald" />
-          <ContextPill
-            icon={Activity}
-            text={`Moisture: ${DEMO_SENSOR.soilMoisture}%`}
-            color="indigo"
-          />
-          <ContextPill icon={ShieldAlert} text="Early Blight detected" color="red" />
-        </div>
-      </div>
+      </header>
 
       {/* Offline Banner */}
       {isOffline && (
@@ -275,7 +276,7 @@ export default function AssistantPage() {
       )}
 
       {/* Chat Messages Area */}
-      <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4 pb-44">
+      <main className="flex-1 max-w-md mx-auto w-full overflow-y-auto flex flex-col gap-4 p-4 pb-48">
         {messages.map((msg) => (
           <AIMessage key={msg.id} message={msg} />
         ))}
@@ -293,11 +294,11 @@ export default function AssistantPage() {
         )}
 
         <div ref={messagesEndRef} />
-      </div>
+      </main>
 
       {/* Input & Suggestions Fixed Area */}
-      <div className="fixed bottom-[80px] sm:bottom-[88px] left-0 right-0 bg-gradient-to-t from-[#f8faf9] via-[#f8faf9]/95 to-transparent pt-4 pb-2 px-4 z-30 pointer-events-none">
-        <div className="max-w-[600px] mx-auto flex flex-col gap-2 pointer-events-auto">
+      <div className="fixed bottom-[74px] sm:bottom-[80px] left-0 right-0 bg-gradient-to-t from-[#f8faf9] via-[#f8faf9]/95 to-transparent pt-4 pb-2 px-4 z-30 pointer-events-none">
+        <div className="max-w-md mx-auto flex flex-col gap-2 pointer-events-auto">
           {/* Context-aware Quick Suggestions */}
           <AISuggestions
             role={role}
