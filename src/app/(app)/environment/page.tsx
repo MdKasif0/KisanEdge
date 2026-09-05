@@ -86,7 +86,10 @@ export default function EnvironmentPage() {
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-24">
         
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pt-safe pt-6 pb-3 border-b border-gray-100 flex items-center justify-between shadow-sm">
+        <header 
+          className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pb-3.5 border-b border-gray-100 flex items-center justify-between shadow-sm"
+          style={{ paddingTop: 'calc(var(--safe-top, 0px) + 24px)' }}
+        >
           <div className="flex items-center gap-3">
             <img src="/icon-512x512.png" alt="Environment" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
             <div className="flex flex-col justify-center">
@@ -97,7 +100,7 @@ export default function EnvironmentPage() {
             </div>
           </div>
           <div className={cn(
-            "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)] self-start mt-2",
+            "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)] self-center",
             connState === "connected" ? "bg-[#16A34A] shadow-[#16A34A]/50" : "bg-gray-400"
           )} />
         </header>
