@@ -194,12 +194,13 @@ export function FarmerDashboard() {
           >
             {/* Provided Farm Landscape positioned on the right half of the card */}
             <div 
-              className="absolute right-0 top-0 bottom-0 w-[65%] pointer-events-none bg-cover bg-center sm:bg-right-center z-0"
+              className="absolute right-0 top-0 bottom-0 w-[70%] pointer-events-none bg-cover z-0"
               style={{ 
                 backgroundImage: 'url("/farm-landscape.png")',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 50%)',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 50%)',
-                opacity: 0.9
+                backgroundPosition: '74% 20%',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 45%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 45%)',
+                opacity: 0.92
               }} 
             />
 
