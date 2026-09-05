@@ -8,12 +8,15 @@ import {
   Waves, HeartPulse, Cpu, X, Settings2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type FilterTab = "All" | "Important" | "Disease" | "Weather" | "Care";
 
 export default function AlertsPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [showSettings, setShowSettings] = useState(false);
+  const router = useRouter();
   
   // Settings state (mock)
   const [settings, setSettings] = useState({
@@ -154,7 +157,14 @@ export default function AlertsPage() {
                       </p>
                       
                       {alert.action && (
-                        <button className="flex items-center gap-1 text-[13px] font-semibold text-[#16a34a]">
+                        <button 
+                          onClick={() => {
+                            if (alert.action === 'View Diagnosis' || alert.action === 'Inspect Plants') router.push('/scan');
+                            else if (alert.action === 'View Forecast' || alert.action === 'Check Environment') router.push('/environment');
+                            else if (alert.action === 'Review Irrigation' || alert.action === 'Turn on Irrigation') router.push('/environment');
+                          }}
+                          className="flex items-center gap-1 text-[13px] font-semibold text-[#16a34a] haptic-press"
+                        >
                           {alert.action}
                           <ChevronRight className="w-4 h-4" />
                         </button>
