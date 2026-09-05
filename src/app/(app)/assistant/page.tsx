@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import {
+  ArrowLeft,
   Sparkles,
   MapPin,
   CloudSun,
@@ -217,14 +219,21 @@ export default function AssistantPage() {
       >
         <div className="max-w-md mx-auto px-4 pb-3.5 flex flex-col">
           <div className="flex items-center justify-between h-[44px]">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/home"
+                className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-[#0D3321] hover:bg-gray-100 active:scale-95 transition-all cursor-pointer shrink-0"
+                title="Back to Home"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
               <img
                 src="/icon-512x512.png"
                 alt="KisanEdge AI"
-                className="w-[38px] h-[38px] rounded-[12px] object-cover shadow-2xs border border-gray-100/80"
+                className="w-[38px] h-[38px] rounded-[12px] object-cover shadow-2xs border border-gray-100/80 shrink-0"
               />
               <div className="flex flex-col justify-center">
-                <h1 className="text-[19px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
+                <h1 className="text-[18px] sm:text-[19px] font-bold text-[#14532D] leading-tight tracking-tight flex items-center gap-1.5">
                   KisanEdge AI <Sparkles className="w-4 h-4 text-[#16A34A]" />
                 </h1>
                 <p className="text-[12px] text-gray-500 font-medium tracking-tight">
@@ -276,7 +285,7 @@ export default function AssistantPage() {
       )}
 
       {/* Chat Messages Area */}
-      <main className="flex-1 max-w-md mx-auto w-full overflow-y-auto flex flex-col gap-4 p-4 pb-48">
+      <main className="flex-1 max-w-md mx-auto w-full overflow-y-auto flex flex-col gap-4 p-4 pb-36">
         {messages.map((msg) => (
           <AIMessage key={msg.id} message={msg} />
         ))}
@@ -297,7 +306,10 @@ export default function AssistantPage() {
       </main>
 
       {/* Input & Suggestions Fixed Area */}
-      <div className="fixed bottom-[74px] sm:bottom-[80px] left-0 right-0 bg-gradient-to-t from-[#f8faf9] via-[#f8faf9]/95 to-transparent pt-4 pb-2 px-4 z-30 pointer-events-none">
+      <div 
+        className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#f8faf9] via-[#f8faf9]/98 to-transparent pt-3 px-4 z-30 pointer-events-none"
+        style={{ paddingBottom: "calc(var(--safe-bottom, 0px) + 12px)" }}
+      >
         <div className="max-w-md mx-auto flex flex-col gap-2 pointer-events-auto">
           {/* Context-aware Quick Suggestions */}
           <AISuggestions

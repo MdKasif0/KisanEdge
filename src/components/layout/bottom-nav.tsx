@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export function BottomNav() {
   const pathname = usePathname();
 
-  if (pathname === "/scan" || pathname === "/results") {
+  if (pathname === "/scan" || pathname === "/results" || pathname === "/assistant") {
     return null;
   }
 
