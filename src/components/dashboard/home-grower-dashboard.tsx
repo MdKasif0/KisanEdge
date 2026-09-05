@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CropCard } from "@/components/features/crop-card";
 import { MOCK_HOME_INSIGHTS, MOCK_PLANTS } from "@/lib/mock-data";
-import { ArrowRight, AlertTriangle, ScanLine, Droplet, Sun, Flower, Search, CloudSun, Thermometer } from "lucide-react";
+import { ArrowRight, AlertTriangle, ScanLine, Droplet, Sun, Flower, Search, CloudSun, Thermometer, Leaf, MapPin, Bell } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
 import { motion } from "framer-motion";
 import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
@@ -30,9 +30,38 @@ export function HomeGrowerDashboard() {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6 p-3.5 sm:p-4 pb-24">
+      {/* Top Header */}
+      <header className="flex items-center justify-between pt-safe pb-2">
+        <div className="flex flex-col gap-0.5">
+          <h1 className="text-[22px] sm:text-[24px] font-bold text-[#14532D] tracking-tight flex items-center gap-2">
+            <div className="w-8 h-8 bg-[#16A34A] rounded-xl flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-white stroke-[2.5]" />
+            </div>
+            KisanEdge
+          </h1>
+          <div className="flex items-center gap-1 mt-1">
+            <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" />
+            <span className="text-[13px] text-[#64748b] font-medium">Pune, MH</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/alerts">
+            <button className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+              <Bell className="w-6 h-6 text-[#14532D]" />
+              <div className="absolute top-2 right-2 w-2 h-2 bg-[#F59E0B] rounded-full border-2 border-[#F8FAF9]" />
+            </button>
+          </Link>
+          <Link href="/profile">
+            <div className="w-10 h-10 rounded-full bg-[#DCFCE7] border border-[#16A34A]/20 flex items-center justify-center cursor-pointer shadow-sm">
+              <span className="text-[#14532D] font-bold text-lg">K</span>
+            </div>
+          </Link>
+        </div>
+      </header>
+
       {/* Welcome */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-        <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">Good morning, {name}</h1>
+        <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">Good morning, {name}</h2>
         <p className="text-[14px] sm:text-[15px] text-gray-500 font-medium mt-1">Let's check on your plants today.</p>
       </motion.div>
 
