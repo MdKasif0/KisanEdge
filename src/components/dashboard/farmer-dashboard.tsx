@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MOCK_ALERTS, MOCK_FARMER_INSIGHTS, MOCK_PLANTS } from "@/lib/mock-data";
+import { MOCK_ALERTS, MOCK_FARMER_INSIGHTS, MOCK_PLANTS, MOCK_WEATHER } from "@/lib/mock-data";
 import { 
   ArrowRight, AlertTriangle, ScanLine, Sprout, CloudSun, Droplet, Clock, 
   MapPin, Bell, Sun, Thermometer, Wind, Leaf, Sparkles, Activity, Check 
@@ -94,23 +94,25 @@ export function FarmerDashboard() {
             <p className="text-[15px] text-[#64748b] font-medium">Here is your farm overview today.</p>
           </motion.div>
 
-          {/* Current Weather Card */}
+          {/* Weather Intelligence Card */}
           <motion.div variants={item} className="w-full rounded-[24px] bg-gradient-to-br from-[#16A34A] to-[#14532D] shadow-[0_12px_24px_rgba(20,83,45,0.15)] p-5 text-white relative overflow-hidden">
             {/* Subtle background decoration */}
-            <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-white/5 rounded-full blur-2xl" />
+            <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none" />
             
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-[14px] font-medium text-white/80">Current Weather</span>
-                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
-                  <Sun className="w-7 h-7 text-yellow-300 fill-yellow-300" />
-                </div>
+                <span className="text-[14px] font-medium text-white/80">Weather Intelligence</span>
+                <Link href="/weather">
+                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors">
+                    <ArrowRight className="w-4 h-4 text-white" />
+                  </div>
+                </Link>
               </div>
               
               <div className="flex flex-col gap-0">
-                <span className="text-[32px] sm:text-[40px] font-bold leading-none tracking-tighter">28°C</span>
+                <span className="text-[32px] sm:text-[40px] font-bold leading-none tracking-tighter">{MOCK_WEATHER.temp}°C</span>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[16px] font-semibold">Sunny</span>
+                  <span className="text-[16px] font-semibold">{MOCK_WEATHER.condition}</span>
                   <div className="w-1 h-1 rounded-full bg-white/50" />
                   <span className="text-[13px] bg-white/20 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
                     <Sprout className="w-3 h-3" /> Good for farming
@@ -123,25 +125,39 @@ export function FarmerDashboard() {
                 <div className="flex items-center gap-2.5">
                   <Droplet className="w-5 h-5 text-blue-200" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">65%</span>
+                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.humidity}%</span>
                     <span className="text-[11px] text-white/70 font-medium">Humidity</span>
                   </div>
                 </div>
                 <div className="w-px h-8 bg-white/20" />
                 <div className="flex items-center gap-2.5">
-                  <Thermometer className="w-5 h-5 text-orange-200" />
+                  <CloudRain className="w-5 h-5 text-blue-300" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">Feels 30°</span>
-                    <span className="text-[11px] text-white/70 font-medium">Real feel</span>
+                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.rainProbability}%</span>
+                    <span className="text-[11px] text-white/70 font-medium">Rain Prob.</span>
                   </div>
                 </div>
                 <div className="w-px h-8 bg-white/20" />
                 <div className="flex items-center gap-2.5">
                   <Wind className="w-5 h-5 text-teal-200" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">12 km/h</span>
-                    <span className="text-[11px] text-white/70 font-medium">Wind speed</span>
+                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.windSpeed} km/h</span>
+                    <span className="text-[11px] text-white/70 font-medium">Wind</span>
                   </div>
+                </div>
+              </div>
+
+              {/* 7-Day Forecast */}
+              <div className="mt-5 border-t border-white/10 pt-4">
+                <h4 className="text-[12px] font-semibold text-white/70 mb-3 uppercase tracking-wider">7-Day Forecast</h4>
+                <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar -mx-5 px-5">
+                  {MOCK_WEATHER.forecast.map((f, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1.5 shrink-0 bg-black/5 rounded-xl p-2.5 min-w-[56px] border border-white/5">
+                      <span className="text-[11px] font-medium text-white/80">{f.day}</span>
+                      <span className="text-xl">{f.icon}</span>
+                      <span className="text-[13px] font-bold">{f.temp}°</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -279,7 +295,7 @@ export function FarmerDashboard() {
           <motion.section variants={item} className="mb-4">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-[20px] font-bold text-[#14532D] flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#F59E0B]" /> Today's Insights
+                <Sparkles className="w-5 h-5 text-[#16A34A]" /> Smart Insights
               </h2>
             </div>
             <div className="flex flex-col gap-3">
@@ -287,9 +303,10 @@ export function FarmerDashboard() {
                 <div key={insight.id} className="bg-white border border-[#E5E7EB] p-4 rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow relative overflow-hidden group">
                   <div className="flex gap-4">
                     <div className="shrink-0 mt-0.5 relative z-10">
-                      {insight.icon === 'warning' && <div className="w-11 h-11 rounded-[14px] bg-amber-50 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-amber-500" /></div>}
+                      {insight.icon === 'warning' && <div className="w-11 h-11 rounded-[14px] bg-orange-50 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-orange-500" /></div>}
                       {insight.icon === 'droplet' && <div className="w-11 h-11 rounded-[14px] bg-blue-50 flex items-center justify-center"><Droplet className="w-5 h-5 text-blue-500" /></div>}
-                      {insight.icon === 'cloud' && <div className="w-11 h-11 rounded-[14px] bg-[#F0FDF4] flex items-center justify-center"><CloudSun className="w-5 h-5 text-[#16A34A]" /></div>}
+                      {insight.icon === 'cloud' && <div className="w-11 h-11 rounded-[14px] bg-indigo-50 flex items-center justify-center"><CloudRain className="w-5 h-5 text-indigo-500" /></div>}
+                      {insight.icon === 'sun' && <div className="w-11 h-11 rounded-[14px] bg-amber-50 flex items-center justify-center"><ThermometerSun className="w-5 h-5 text-amber-500" /></div>}
                     </div>
                     <div className="flex-1 relative z-10 pt-0.5">
                       <div className="flex items-start justify-between gap-2">
