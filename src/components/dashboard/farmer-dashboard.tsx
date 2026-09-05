@@ -2,186 +2,268 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MOCK_ALERTS, MOCK_FARMER_INSIGHTS, MOCK_PLANTS, MOCK_WEATHER } from "@/lib/mock-data";
 import { 
-  ArrowRight, AlertTriangle, ScanLine, Sprout, CloudSun, Droplet, Clock, 
+  ArrowRight, AlertTriangle, ScanLine, Sprout, CloudSun, Droplet,
   MapPin, Bell, Sun, Thermometer, Wind, Leaf, Sparkles, Activity, Check,
-  CloudRain, ThermometerSun
+  CloudRain, ChevronRight, Users
 } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
-import { useTranslation } from "@/lib/i18n/context";
 import { motion } from "framer-motion";
-import { FARM_CROPS, HOME_PLANTS } from "@/lib/onboarding-data";
-import { DEMO_DIAGNOSIS } from "@/lib/demo-state";
+import { useEffect, useState } from "react";
+
+const FORECAST_DATA = [
+  { day: "Mon", temp: 28, icon: "sun" },
+  { day: "Tue", temp: 29, icon: "cloud-sun" },
+  { day: "Wed", temp: 24, icon: "cloud-rain" },
+  { day: "Thu", temp: 26, icon: "cloud-sun" },
+  { day: "Fri", temp: 27, icon: "sun" },
+];
 
 export function FarmerDashboard() {
-  const { name, crops } = useUser();
-  const { t } = useTranslation();
-  
-  const allPlants = [...FARM_CROPS, ...HOME_PLANTS];
-  const userCrops = crops.length > 0 
-    ? crops.map(id => {
-        const p = allPlants.find(x => x.id === id);
-        return p ? {
-          id: p.id,
-          name: p.name,
-          type: "Crop",
-          status: "healthy" as const,
-          healthScore: 85 + Math.floor(Math.random() * 10),
-          lastWatered: "Today",
-          image: p.emoji
-        } : null;
-      }).filter(Boolean) as typeof MOCK_PLANTS
-    : MOCK_PLANTS.slice(0, 3);
+  const { name, location } = useUser();
+  const [greeting, setGreeting] = useState("Good morning");
 
-  // Animation variants
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      setGreeting("Good morning");
+    } else if (hour < 18) {
+      setGreeting("Good afternoon");
+    } else {
+      setGreeting("Good evening");
+    }
+  }, []);
+
+  const displayName = name || "Kasif";
+  const displayLocation = location || "Pune, MH";
+
+  // Framer Motion container variants
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      transition: { staggerChildren: 0.08 }
     }
   };
 
   const item = {
-    hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
+    hidden: { opacity: 0, y: 14 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { type: "spring" as const, stiffness: 320, damping: 26 } 
+    }
   };
 
   return (
-    <div className="flex flex-col relative w-full overflow-hidden bg-[#F8FAF9] min-h-[100dvh]">
+    <div className="flex flex-col relative w-full overflow-x-hidden bg-[#F8FAF9] min-h-[100dvh]">
       {/* Botanical subtle background */}
-      <div className="absolute top-0 right-0 w-[350px] h-[350px] opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50,100 C50,100 0,60 0,30 C0,13.431 13.431,0 30,0 C38.284,0 45.784,3.358 50,8.783 C54.216,3.358 61.716,0 70,0 C86.569,0 100,13.431 100,30 C100,60 50,100 50,100 Z\' fill=\'%2316A34A\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'top right', backgroundSize: '100%' }} />
+      <div 
+        className="absolute top-0 right-0 w-[350px] h-[350px] opacity-[0.035] pointer-events-none" 
+        style={{ 
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50,100 C50,100 0,60 0,30 C0,13.431 13.431,0 30,0 C38.284,0 45.784,3.358 50,8.783 C54.216,3.358 61.716,0 70,0 C86.569,0 100,13.431 100,30 C100,60 50,100 50,100 Z\' fill=\'%2316A34A\'/%3E%3C/svg%3E")', 
+          backgroundRepeat: 'no-repeat', 
+          backgroundPosition: 'top right', 
+          backgroundSize: '100%' 
+        }} 
+      />
 
-      <div className="flex flex-col p-4 sm:p-5 relative z-10 w-full max-w-md mx-auto pb-24">
+      <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-32">
         
-        {/* Top Header */}
-        <header className="flex items-center justify-between pt-safe pb-6">
-          <div className="flex flex-col gap-0.5">
-            <h1 className="text-[22px] sm:text-[24px] font-bold text-[#14532D] tracking-tight flex items-center gap-2">
-              <img src="/icon-512x512.png" alt="KisanEdge" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
-              KisanEdge
-            </h1>
-            <div className="flex items-center gap-1 mt-1">
-              <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" />
-              <span className="text-[13px] text-[#64748b] font-medium">Pune, MH</span>
+        {/* Sticky Top Header */}
+        <header 
+          className="sticky top-0 z-40 bg-[#F8FAF9]/95 backdrop-blur-md px-4 sm:px-5 pb-3 border-b border-gray-100/80 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+          style={{ paddingTop: 'calc(var(--safe-top, 0px) + 20px)' }}
+        >
+          <div className="flex items-center gap-3">
+            <img 
+              src="/icon-512x512.png" 
+              alt="KisanEdge" 
+              className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm border border-black/5" 
+            />
+            <div className="flex flex-col justify-center">
+              <h1 className="text-[22px] font-bold text-[#14532D] leading-none tracking-tight">
+                KisanEdge
+              </h1>
+              <div className="flex items-center gap-1 mt-1">
+                <MapPin className="w-3.5 h-3.5 text-[#94A3B8]" />
+                <span className="text-[13px] text-[#64748b] font-medium">{displayLocation}</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2.5">
             <Link href="/alerts">
-              <button className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
-                <Bell className="w-6 h-6 text-[#14532D]" />
-                <div className="absolute top-2 right-2 w-2 h-2 bg-[#F59E0B] rounded-full border-2 border-[#F8FAF9]" />
+              <button 
+                aria-label="View alerts"
+                className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <Bell className="w-5 h-5 text-[#14532D]" />
+                <div className="absolute top-2 right-2 w-2 h-2 bg-[#EF4444] rounded-full border-2 border-[#F8FAF9]" />
               </button>
             </Link>
             <Link href="/profile">
-              <div className="w-10 h-10 rounded-full bg-[#DCFCE7] border border-[#16A34A]/20 flex items-center justify-center cursor-pointer shadow-sm">
-                <span className="text-[#14532D] font-bold text-lg">K</span>
+              <div 
+                aria-label="Open profile"
+                className="w-10 h-10 rounded-full bg-[#DCFCE7] border border-[#16A34A]/30 flex items-center justify-center cursor-pointer shadow-sm hover:ring-2 hover:ring-[#16A34A]/20 transition-all"
+              >
+                <span className="text-[#14532D] font-bold text-base">K</span>
               </div>
             </Link>
           </div>
         </header>
 
+        {/* Dashboard Content */}
         <motion.div 
           variants={container}
           initial="hidden"
           animate="show"
-          className="flex flex-col gap-6"
+          className="px-4 sm:px-5 flex flex-col gap-6 mt-3"
         >
-          {/* Welcome Section */}
-          <motion.div initial="hidden" animate="show" variants={item} className="pt-2">
-            <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0e3b1c] tracking-tight">{t("dashboard.greeting")}, {name}</h1>
-            <p className="text-[14px] sm:text-[15px] text-[#64748b] font-medium mt-1">{t("dashboard.subtitle")}</p>
+          {/* Greeting Section */}
+          <motion.div variants={item} className="pt-1">
+            <h2 className="text-[26px] sm:text-[28px] font-bold text-[#14532D] tracking-tight leading-tight">
+              {greeting}, {displayName}
+            </h2>
+            <p className="text-[15px] sm:text-[16px] text-[#64748B] font-normal mt-1">
+              Here is your farm overview today.
+            </p>
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div variants={item} className="flex gap-2 overflow-x-auto hide-scrollbar -mx-1 px-1">
-            <Link href="/scan" className="flex-1">
-              <div className="bg-[#16a34a] text-white rounded-2xl p-3.5 flex items-center gap-2.5 shadow-md haptic-press min-w-[140px]">
-                <ScanLine className="w-5 h-5 shrink-0" />
-                <span className="font-bold text-[14px]">Scan Crop</span>
-              </div>
-            </Link>
-            <Link href="/alerts" className="flex-1">
-              <div className="bg-white border border-gray-200 rounded-2xl p-3.5 flex items-center gap-2.5 shadow-sm haptic-press min-w-[140px]">
-                <Bell className="w-5 h-5 text-amber-500 shrink-0" />
-                <div className="flex flex-col">
-                  <span className="font-bold text-[14px] text-[#0e3b1c]">Alerts</span>
-                  <span className="text-[11px] text-red-500 font-semibold">3 new</span>
+          <motion.div variants={item} className="flex gap-2.5 overflow-x-auto hide-scrollbar -mx-1 px-1">
+            {/* Primary Action: Scan Crop */}
+            <Link href="/scan" className="flex-1 min-w-[160px]">
+              <div className="bg-[#16A34A] hover:bg-[#15803D] text-white rounded-[20px] p-3.5 flex items-center justify-between shadow-[0_4px_14px_rgba(22,163,74,0.3)] transition-transform active:scale-[0.98]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <ScanLine className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-[15px] leading-tight">Scan Crop</span>
+                    <span className="text-[11px] text-white/80 font-medium mt-0.5">Identify plant health with AI</span>
+                  </div>
+                </div>
+                <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0 ml-1">
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </div>
               </div>
             </Link>
-            <Link href="/farm" className="flex-1">
-              <div className="bg-white border border-gray-200 rounded-2xl p-3.5 flex items-center gap-2.5 shadow-sm haptic-press min-w-[120px]">
-                <Sprout className="w-5 h-5 text-[#16a34a] shrink-0" />
-                <span className="font-bold text-[14px] text-[#0e3b1c]">My Farm</span>
+
+            {/* Secondary Action: Alerts */}
+            <Link href="/alerts" className="shrink-0 min-w-[125px]">
+              <div className="bg-white hover:bg-gray-50/80 border border-[#E5E7EB] rounded-[20px] p-3.5 flex items-center justify-between shadow-sm transition-transform active:scale-[0.98]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                    <Bell className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-[14px] text-[#14532D]">Alerts</span>
+                    <span className="text-[11px] text-[#EF4444] bg-red-50 px-1.5 py-0.2 rounded font-semibold w-fit">3 new</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
+              </div>
+            </Link>
+
+            {/* Tertiary Action: My Farm */}
+            <Link href="/farm" className="shrink-0 min-w-[135px]">
+              <div className="bg-white hover:bg-gray-50/80 border border-[#E5E7EB] rounded-[20px] p-3.5 flex items-center justify-between shadow-sm transition-transform active:scale-[0.98]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] flex items-center justify-center shrink-0">
+                    <Sprout className="w-5 h-5 text-[#16A34A]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-[14px] text-[#14532D]">My Farm</span>
+                    <span className="text-[11px] text-[#64748B] font-medium">Manage crops</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
               </div>
             </Link>
           </motion.div>
 
-          {/* Weather Intelligence Card */}
-          <motion.div variants={item} className="w-full rounded-[24px] bg-gradient-to-br from-[#16A34A] to-[#14532D] shadow-[0_12px_24px_rgba(20,83,45,0.15)] p-5 text-white relative overflow-hidden">
-            {/* Subtle background decoration */}
-            <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-            
+          {/* Weather Intelligence Hero Card */}
+          <motion.div 
+            variants={item} 
+            className="w-full rounded-[26px] bg-gradient-to-br from-[#16A34A] via-[#15803D] to-[#14532D] shadow-[0_12px_28px_rgba(20,83,45,0.18)] p-5 text-white relative overflow-hidden"
+          >
+            {/* Integrated landscape artwork in background */}
+            <div 
+              className="absolute right-0 top-0 bottom-0 w-[60%] opacity-25 pointer-events-none bg-cover bg-left"
+              style={{ 
+                backgroundImage: 'url("/weather-hills.jpg")',
+                maskImage: 'linear-gradient(to right, transparent, black 40%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 40%)'
+              }} 
+            />
+
             <div className="relative z-10">
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-[14px] font-medium text-white/80">Weather Intelligence</span>
-                <Link href="/weather">
-                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <ArrowRight className="w-4 h-4 text-white" />
+              {/* Card Header */}
+              <div className="flex justify-between items-center mb-3">
+                <div className="flex items-center gap-2">
+                  <CloudSun className="w-5 h-5 text-amber-300" />
+                  <span className="text-[15px] font-semibold text-white/95 tracking-tight">Weather Intelligence</span>
+                </div>
+                <Link href="/environment">
+                  <div className="px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center gap-1.5 transition-colors cursor-pointer border border-white/15">
+                    <span className="text-[12px] font-semibold text-white">View Details</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-white" />
                   </div>
                 </Link>
               </div>
-              
-              <div className="flex flex-col gap-0">
-                <span className="text-[32px] sm:text-[40px] font-bold leading-none tracking-tighter">{MOCK_WEATHER.temp}°C</span>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[16px] font-semibold">{MOCK_WEATHER.condition}</span>
-                  <div className="w-1 h-1 rounded-full bg-white/50" />
-                  <span className="text-[13px] bg-white/20 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                    <Sprout className="w-3 h-3" /> Good for farming
-                  </span>
+
+              {/* Temp & Condition */}
+              <div className="flex flex-col gap-1 my-2">
+                <span className="text-[42px] font-extrabold leading-none tracking-tight">
+                  28°C
+                </span>
+                <div className="flex items-center gap-2.5 mt-1.5">
+                  <span className="text-[17px] font-semibold text-white/95">Sunny</span>
+                  <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[12px] font-semibold border border-white/10">
+                    <Leaf className="w-3 h-3 text-[#DCFCE7]" />
+                    <span>Good for farming</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Metrics Row */}
-              <div className="flex items-center justify-between bg-black/10 rounded-2xl p-2.5 sm:p-3.5 mt-5 backdrop-blur-sm border border-white/10">
-                <div className="flex items-center gap-2.5">
-                  <Droplet className="w-5 h-5 text-blue-200" />
+              {/* Metrics Bar */}
+              <div className="grid grid-cols-3 bg-black/15 rounded-[18px] p-3 mt-4 backdrop-blur-md border border-white/15 divide-x divide-white/15">
+                <div className="flex items-center justify-center gap-2.5 px-2">
+                  <Droplet className="w-5 h-5 text-blue-200 shrink-0" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.humidity}%</span>
-                    <span className="text-[11px] text-white/70 font-medium">Humidity</span>
+                    <span className="text-[14px] font-bold leading-tight">65%</span>
+                    <span className="text-[11px] text-white/75 font-medium">Humidity</span>
                   </div>
                 </div>
-                <div className="w-px h-8 bg-white/20" />
-                <div className="flex items-center gap-2.5">
-                  <CloudRain className="w-5 h-5 text-blue-300" />
+                <div className="flex items-center justify-center gap-2.5 px-2">
+                  <CloudRain className="w-5 h-5 text-blue-300 shrink-0" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.rainProbability}%</span>
-                    <span className="text-[11px] text-white/70 font-medium">Rain Prob.</span>
+                    <span className="text-[14px] font-bold leading-tight">10%</span>
+                    <span className="text-[11px] text-white/75 font-medium">Rain Prob.</span>
                   </div>
                 </div>
-                <div className="w-px h-8 bg-white/20" />
-                <div className="flex items-center gap-2.5">
-                  <Wind className="w-5 h-5 text-teal-200" />
+                <div className="flex items-center justify-center gap-2.5 px-2">
+                  <Wind className="w-5 h-5 text-teal-200 shrink-0" />
                   <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight">{MOCK_WEATHER.windSpeed} km/h</span>
-                    <span className="text-[11px] text-white/70 font-medium">Wind</span>
+                    <span className="text-[14px] font-bold leading-tight">12 km/h</span>
+                    <span className="text-[11px] text-white/75 font-medium">Wind</span>
                   </div>
                 </div>
               </div>
 
               {/* 7-Day Forecast */}
-              <div className="mt-5 border-t border-white/10 pt-4">
-                <h4 className="text-[12px] font-semibold text-white/70 mb-3 uppercase tracking-wider">7-Day Forecast</h4>
-                <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar -mx-5 px-5">
-                  {MOCK_WEATHER.forecast.map((f, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1.5 shrink-0 bg-black/5 rounded-xl p-2.5 min-w-[56px] border border-white/5">
-                      <span className="text-[11px] font-medium text-white/80">{f.day}</span>
-                      <span className="text-xl">{f.icon}</span>
+              <div className="mt-4 border-t border-white/15 pt-3.5">
+                <h4 className="text-[12px] font-bold text-white/80 mb-2.5 uppercase tracking-wider">7-Day Forecast</h4>
+                <div className="grid grid-cols-5 gap-2">
+                  {FORECAST_DATA.map((f, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1.5 bg-black/10 rounded-[14px] py-2 px-1 border border-white/10 backdrop-blur-sm">
+                      <span className="text-[12px] font-medium text-white/85">{f.day}</span>
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        {f.icon === "sun" && <Sun className="w-4 h-4 text-amber-300" />}
+                        {f.icon === "cloud-sun" && <CloudSun className="w-4 h-4 text-amber-200" />}
+                        {f.icon === "cloud-rain" && <CloudRain className="w-4 h-4 text-blue-300" />}
+                      </div>
                       <span className="text-[13px] font-bold">{f.temp}°</span>
                     </div>
                   ))}
@@ -190,76 +272,108 @@ export function FarmerDashboard() {
             </div>
           </motion.div>
 
-          {/* Featured: Community Card */}
+          {/* KisanEdge Community Card */}
           <motion.div variants={item}>
-            <Link href="/community" className="block relative overflow-hidden bg-gradient-to-br from-[#14532D] to-[#0e3b1c] rounded-[24px] p-5 text-white shadow-lg group">
-              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors" />
-              <div className="flex justify-between items-start relative z-10">
-                <div className="flex flex-col">
-                  <h2 className="text-[18px] font-bold text-white/90">KisanEdge Community</h2>
-                  <p className="text-[13px] text-white/70 mt-1 max-w-[200px]">Connect with farmers, ask questions, and share expertise.</p>
+            <Link 
+              href="/community" 
+              className="block relative overflow-hidden bg-gradient-to-br from-[#14532D] to-[#0D381E] rounded-[24px] p-5 text-white shadow-md border border-[#16A34A]/20 group transition-transform active:scale-[0.99]"
+            >
+              <div 
+                className="absolute right-0 top-0 bottom-0 w-36 opacity-10 pointer-events-none" 
+                style={{ 
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50,100 C50,100 0,60 0,30 C0,13.431 13.431,0 30,0 C38.284,0 45.784,3.358 50,8.783 C54.216,3.358 61.716,0 70,0 C86.569,0 100,13.431 100,30 C100,60 50,100 50,100 Z\' fill=\'%2316A34A\'/%3E%3C/svg%3E")', 
+                  backgroundRepeat: 'no-repeat', 
+                  backgroundPosition: 'center right', 
+                  backgroundSize: 'contain' 
+                }} 
+              />
+              <div className="flex justify-between items-center relative z-10">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-[#16A34A]/25 border border-white/10 flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5 text-[#DCFCE7]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[17px] font-bold text-white tracking-tight">KisanEdge Community</h3>
+                    <p className="text-[13px] text-white/75 mt-0.5 leading-snug">Connect with farmers, ask questions, and share expertise.</p>
+                  </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                  <ArrowRight className="w-4 h-4" />
+                <div className="px-3 py-1.5 rounded-full bg-white/15 group-hover:bg-white/25 flex items-center gap-1 transition-colors shrink-0 ml-2 border border-white/10">
+                  <span className="text-[12px] font-semibold text-white">Join Now</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </div>
               </div>
             </Link>
           </motion.div>
 
-          {/* Recent Diagnosis Card */}
+          {/* Disease Alert Card (High Priority) */}
           <motion.div variants={item}>
             <Link href="/results" className="block">
-              <div className="bg-white rounded-[20px] p-4 shadow-sm border border-orange-200 flex gap-3.5 haptic-press">
-                <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-6 h-6 text-orange-500" />
+              <div className="bg-white rounded-[22px] p-4.5 shadow-[0_4px_16px_rgba(245,158,11,0.08)] border border-amber-200/80 flex items-center gap-3.5 transition-transform active:scale-[0.99] hover:border-amber-300">
+                <div className="w-12 h-12 rounded-[18px] bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-amber-500" />
                 </div>
-                <div className="flex flex-col flex-1">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-bold text-[15px] text-[#0e3b1c] leading-tight">Early Blight Detected</h3>
-                    <span className="text-[11px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">94% AI</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-bold text-[16px] text-[#14532D] leading-tight truncate">Early Blight Detected</h3>
+                    <span className="text-[11px] font-bold text-amber-700 bg-amber-100/70 border border-amber-200 px-2 py-0.5 rounded-full shrink-0">
+                      94% AI
+                    </span>
                   </div>
-                  <p className="text-[13px] text-gray-500 mt-1">Tomato Field A • Moderate severity</p>
-                  <p className="text-[12px] text-[#16a34a] font-semibold mt-1.5 flex items-center gap-1">
-                    View full diagnosis <ArrowRight className="w-3 h-3" />
-                  </p>
+                  <p className="text-[13px] text-[#64748B] font-medium mt-1">Tomato Field A • Moderate severity</p>
+                  <p className="text-[12px] text-[#64748B] mt-0.5">Yellowing leaves with dark spots detected.</p>
+                  <div className="text-[13px] text-[#16A34A] font-semibold mt-1.5 flex items-center gap-1">
+                    <span>View full diagnosis</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shrink-0 text-gray-400">
+                  <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>
           </motion.div>
 
-          {/* Crop Health Hero */}
-          <motion.div variants={item} className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E5E7EB] flex flex-col relative overflow-hidden">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#F0FDF4] flex items-center justify-center">
-                  <Activity className="w-4 h-4 text-[#16A34A]" />
+          {/* Crop Health Card */}
+          <motion.div 
+            variants={item} 
+            className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E5E7EB] flex flex-col relative overflow-hidden"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-[#F0FDF4] border border-[#DCFCE7] flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-[#16A34A]" />
                 </div>
-                <h2 className="text-[19px] font-bold text-[#14532D]">Crop Health</h2>
+                <div className="flex flex-col">
+                  <h2 className="text-[20px] font-bold text-[#14532D] leading-tight">Crop Health</h2>
+                  <span className="text-[13px] text-[#64748B] font-medium">Overall health across your crops</span>
+                </div>
               </div>
-              <div className="flex flex-col items-end">
-                <span className="text-[#F59E0B] font-extrabold text-[32px] leading-none tracking-tighter">
-                  76<span className="text-[#94A3B8] text-[18px] font-bold">/100</span>
+              <div className="flex items-baseline">
+                <span className="text-[#F59E0B] font-extrabold text-[32px] leading-none tracking-tight">
+                  76
                 </span>
+                <span className="text-[#94A3B8] text-[18px] font-bold">/100</span>
               </div>
             </div>
 
-            {/* Segmented Visualization */}
-            <div className="flex flex-col gap-3 mb-5">
-              <div className="flex gap-1.5 h-3 w-full">
-                <div className="flex-1 bg-[#16A34A] rounded-l-full rounded-r-sm" />
-                <div className="flex-1 bg-[#16A34A] rounded-sm" />
-                <div className="flex-1 bg-[#16A34A] rounded-sm" />
-                <div className="flex-1 bg-[#F59E0B] rounded-sm" />
-                <div className="flex-1 bg-gray-100 rounded-r-full rounded-l-sm" />
+            {/* Segmented Meter */}
+            <div className="flex flex-col gap-2.5 mb-5">
+              <div className="flex gap-1.5 h-3.5 w-full">
+                <div className="flex-1 bg-[#16A34A] rounded-l-full rounded-r-sm shadow-sm" />
+                <div className="flex-1 bg-[#16A34A] rounded-sm shadow-sm" />
+                <div className="flex-1 bg-[#16A34A] rounded-sm shadow-sm" />
+                <div className="flex-1 bg-[#F59E0B] rounded-sm shadow-sm" />
+                <div className="flex-1 bg-gray-200 rounded-r-full rounded-l-sm" />
               </div>
-              <div className="flex items-center justify-between px-1">
+              <div className="flex items-center justify-between px-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#16A34A]" />
-                  <span className="text-[12px] font-medium text-[#64748b]">Healthy (3)</span>
+                  <span className="text-[13px] font-medium text-[#64748B]">Healthy (3)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
-                  <span className="text-[12px] font-medium text-[#64748b]">Attention (1)</span>
+                  <span className="text-[13px] font-medium text-[#64748B]">Attention (1)</span>
                 </div>
               </div>
             </div>
@@ -267,125 +381,198 @@ export function FarmerDashboard() {
             {/* Actions */}
             <div className="flex gap-3">
               <Link href="/scan" className="flex-[3]">
-                <Button className="w-full h-12 rounded-[16px] bg-[#16A34A] hover:bg-[#14532D] text-white shadow-[0_4px_12px_rgba(22,163,74,0.25)] font-semibold text-[15px] transition-transform active:scale-[0.98]">
+                <Button className="w-full h-12 rounded-[16px] bg-[#16A34A] hover:bg-[#15803D] text-white shadow-[0_4px_12px_rgba(22,163,74,0.25)] font-bold text-[15px] transition-transform active:scale-[0.98]">
                   <ScanLine className="w-5 h-5 mr-2" /> Scan Crop
                 </Button>
               </Link>
               <Link href="/environment" className="flex-[2]">
-                <Button variant="outline" className="w-full h-12 rounded-[16px] border-[#E5E7EB] text-[#16A34A] font-semibold text-[15px] hover:bg-[#F0FDF4] bg-white transition-transform active:scale-[0.98]">
-                  <Sprout className="w-5 h-5 mr-2" /> Soil
+                <Button variant="outline" className="w-full h-12 rounded-[16px] border-[#E5E7EB] text-[#16A34A] font-bold text-[15px] hover:bg-[#F0FDF4] bg-white transition-transform active:scale-[0.98]">
+                  <Sprout className="w-5 h-5 mr-2" /> Soil Analysis
                 </Button>
               </Link>
             </div>
           </motion.div>
 
-          {/* Environment Preview Card */}
-          <motion.div variants={item} className="bg-gradient-to-br from-[#14532D] to-[#0e3b1c] rounded-[24px] p-5 text-white shadow-lg relative overflow-hidden">
-            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+          {/* Soil & Environment Preview Card */}
+          <motion.div 
+            variants={item} 
+            className="bg-gradient-to-br from-[#14532D] to-[#0E3B1C] rounded-[24px] p-5 text-white shadow-lg relative overflow-hidden"
+          >
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+            
             <div className="flex justify-between items-start mb-4 relative z-10">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-1">
                   <CloudSun className="w-4 h-4 text-amber-300" />
-                  <h2 className="text-[16px] font-bold text-white/90">Soil & Environment</h2>
+                  <h2 className="text-[17px] font-bold text-white tracking-tight">Soil & Environment</h2>
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="w-2 h-2 rounded-full bg-[#16A34A] shadow-[0_0_8px_rgba(22,163,74,0.8)]" />
-                  <span className="text-[12px] text-white/70 font-medium">Node Connected</span>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#16A34A] shadow-[0_0_8px_rgba(22,163,74,0.9)] animate-pulse" />
+                  <span className="text-[12px] text-white/80 font-medium">Node Connected</span>
                 </div>
               </div>
               <Link href="/environment">
-                <Button variant="ghost" size="sm" className="h-8 rounded-full bg-white/10 hover:bg-white/20 text-white text-[12px] font-semibold border border-white/10">
-                  Details <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
+                <div className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md flex items-center gap-1 transition-colors cursor-pointer border border-white/10">
+                  <span className="text-[12px] font-semibold text-white">Details</span>
+                  <ArrowRight className="w-3 h-3 text-white" />
+                </div>
               </Link>
             </div>
             
             <div className="grid grid-cols-2 gap-3 relative z-10">
-              <div className="bg-white/10 backdrop-blur-md rounded-[16px] p-3 flex flex-col border border-white/5">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <Droplet className="w-3.5 h-3.5 text-blue-300" />
-                  <span className="text-[11px] font-medium text-white/70">Soil Moisture</span>
+              <div className="bg-white/10 backdrop-blur-md rounded-[18px] p-3.5 flex flex-col border border-white/10">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <Droplet className="w-4 h-4 text-blue-300" />
+                  <span className="text-[12px] font-medium text-white/75">Soil Moisture</span>
                 </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-[20px] font-bold">31%</span>
-                  <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-sm font-semibold">Low</span>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[22px] font-extrabold tracking-tight">31%</span>
+                  <span className="text-[11px] bg-amber-500/25 text-amber-300 px-2 py-0.5 rounded-md font-semibold border border-amber-400/20">Low</span>
                 </div>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-md rounded-[16px] p-3 flex flex-col border border-white/5">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <Thermometer className="w-3.5 h-3.5 text-orange-300" />
-                  <span className="text-[11px] font-medium text-white/70">Soil Temp</span>
+              <div className="bg-white/10 backdrop-blur-md rounded-[18px] p-3.5 flex flex-col border border-white/10">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <Thermometer className="w-4 h-4 text-orange-300" />
+                  <span className="text-[12px] font-medium text-white/75">Soil Temp</span>
                 </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-[20px] font-bold">28°</span>
-                  <span className="text-[10px] bg-[#16A34A]/20 text-[#DCFCE7] px-1.5 py-0.5 rounded-sm font-semibold">Good</span>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[22px] font-extrabold tracking-tight">28°</span>
+                  <span className="text-[11px] bg-[#16A34A]/25 text-[#DCFCE7] px-2 py-0.5 rounded-md font-semibold border border-[#16A34A]/30">Good</span>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Your Crops */}
+          {/* Your Crops Section */}
           <motion.section variants={item}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[20px] font-bold text-[#14532D]">Your Crops</h2>
+            <div className="flex items-center justify-between mb-3.5">
+              <h2 className="text-[20px] font-bold text-[#14532D] tracking-tight">Your Crops</h2>
               <Link href="/farm" className="text-[#16A34A] text-[14px] font-semibold flex items-center gap-1 hover:opacity-80">
                 See all <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x hide-scrollbar">
-              {userCrops.map((crop) => (
-                <Link key={crop.id} href={`/plants/${crop.id}`} className="snap-start shrink-0 w-[220px] sm:w-[260px]">
-                  <div className="bg-white p-3.5 rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center gap-4 hover:border-[#16A34A]/30 transition-colors">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[16px] bg-[#F0FDF4] flex items-center justify-center shrink-0">
-                      <span className="text-3xl">{crop.image}</span>
-                    </div>
-                    <div className="flex flex-col py-1">
-                      <h3 className="font-bold text-[#14532D] text-[16px] leading-tight">{crop.name}</h3>
-                      <p className="text-[12px] text-[#94A3B8] font-medium mb-1.5">Crop</p>
-                      <div className="flex items-center gap-1.5">
-                        <div className="bg-[#DCFCE7] text-[#16A34A] px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1">
-                          <Check className="w-3 h-3 stroke-[3]" /> {crop.healthScore}% Health
-                        </div>
-                      </div>
-                    </div>
+            <div className="flex gap-3.5 overflow-x-auto pb-2 -mx-4 px-4 snap-x hide-scrollbar">
+              {/* Rice */}
+              <Link href="/plants/rice" className="snap-start shrink-0 w-[240px]">
+                <div className="bg-white p-3.5 rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center gap-3.5 hover:border-[#16A34A]/30 transition-colors">
+                  <div className="w-14 h-14 rounded-[16px] bg-[#F0FDF4] p-1 border border-[#DCFCE7] flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="/crops/rice.jpg" alt="Rice" className="w-full h-full object-cover rounded-[12px]" />
                   </div>
-                </Link>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Today's Insights */}
-          <motion.section variants={item} className="mb-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[20px] font-bold text-[#14532D] flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#16A34A]" /> Smart Insights
-              </h2>
-            </div>
-            <div className="flex flex-col gap-3">
-              {MOCK_FARMER_INSIGHTS.map((insight, idx) => (
-                <div key={insight.id} className="bg-white border border-[#E5E7EB] p-4 rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow relative overflow-hidden group">
-                  <div className="flex gap-4">
-                    <div className="shrink-0 mt-0.5 relative z-10">
-                      {insight.icon === 'warning' && <div className="w-11 h-11 rounded-[14px] bg-orange-50 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-orange-500" /></div>}
-                      {insight.icon === 'droplet' && <div className="w-11 h-11 rounded-[14px] bg-blue-50 flex items-center justify-center"><Droplet className="w-5 h-5 text-blue-500" /></div>}
-                      {insight.icon === 'cloud' && <div className="w-11 h-11 rounded-[14px] bg-indigo-50 flex items-center justify-center"><CloudRain className="w-5 h-5 text-indigo-500" /></div>}
-                      {insight.icon === 'sun' && <div className="w-11 h-11 rounded-[14px] bg-amber-50 flex items-center justify-center"><ThermometerSun className="w-5 h-5 text-amber-500" /></div>}
+                  <div className="flex flex-col py-0.5 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-[#14532D] text-[16px] leading-tight truncate">Rice</h3>
+                      <span className="text-[11px] text-[#94A3B8] font-medium ml-2">Today</span>
                     </div>
-                    <div className="flex-1 relative z-10 pt-0.5">
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-semibold text-[#14532D] text-[15px] leading-tight pr-6">{insight.title}</h4>
-                        {idx === 0 && (
-                          <span className="shrink-0 bg-[#DCFCE7] text-[#16A34A] text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <Sparkles className="w-3 h-3" /> AI Insight
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[#64748b] text-[13px] mt-1.5 leading-snug">{insight.description}</p>
+                    <p className="text-[12px] text-[#64748B] font-medium mb-1.5">Cereal crop</p>
+                    <div className="flex items-center gap-1 bg-[#DCFCE7] text-[#16A34A] px-2 py-0.5 rounded-md text-[11px] font-bold w-fit">
+                      <Check className="w-3 h-3 stroke-[3]" /> 85% Health
                     </div>
                   </div>
                 </div>
-              ))}
+              </Link>
+
+              {/* Wheat */}
+              <Link href="/plants/wheat" className="snap-start shrink-0 w-[240px]">
+                <div className="bg-white p-3.5 rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center gap-3.5 hover:border-[#16A34A]/30 transition-colors">
+                  <div className="w-14 h-14 rounded-[16px] bg-[#F0FDF4] p-1 border border-[#DCFCE7] flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="/crops/wheat.jpg" alt="Wheat" className="w-full h-full object-cover rounded-[12px]" />
+                  </div>
+                  <div className="flex flex-col py-0.5 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-[#14532D] text-[16px] leading-tight truncate">Wheat</h3>
+                      <span className="text-[11px] text-[#94A3B8] font-medium ml-2">Today</span>
+                    </div>
+                    <p className="text-[12px] text-[#64748B] font-medium mb-1.5">Cereal crop</p>
+                    <div className="flex items-center gap-1 bg-[#DCFCE7] text-[#16A34A] px-2 py-0.5 rounded-md text-[11px] font-bold w-fit">
+                      <Check className="w-3 h-3 stroke-[3]" /> 87% Health
+                    </div>
+                  </div>
+                </div>
+              </Link>
+
+              {/* Tomato */}
+              <Link href="/plants/tomato" className="snap-start shrink-0 w-[240px]">
+                <div className="bg-white p-3.5 rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex items-center gap-3.5 hover:border-amber-300 transition-colors">
+                  <div className="w-14 h-14 rounded-[16px] bg-amber-50 p-1 border border-amber-100 flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="/crops/tomato.jpg" alt="Tomato" className="w-full h-full object-cover rounded-[12px]" />
+                  </div>
+                  <div className="flex flex-col py-0.5 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-[#14532D] text-[16px] leading-tight truncate">Tomato</h3>
+                      <span className="text-[11px] text-[#94A3B8] font-medium ml-2">Today</span>
+                    </div>
+                    <p className="text-[12px] text-[#64748B] font-medium mb-1.5">Vegetable</p>
+                    <div className="flex items-center gap-1 bg-[#FEF3C7] text-[#D97706] px-2 py-0.5 rounded-md text-[11px] font-bold w-fit">
+                      <AlertTriangle className="w-3 h-3" /> 68% Health
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </motion.section>
+
+          {/* Today's Insights Section */}
+          <motion.section variants={item} className="mb-4">
+            <div className="flex items-center justify-between mb-3.5">
+              <h2 className="text-[20px] font-bold text-[#14532D] flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#16A34A]" /> Today's Insights
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3">
+              {/* Insight 1 */}
+              <div className="bg-white border border-[#E5E7EB] p-4 rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow relative overflow-hidden group">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-11 h-11 rounded-[16px] bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-blue-600 mt-0.5">
+                    <CloudRain className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h4 className="font-bold text-[#14532D] text-[15px] leading-tight truncate">High humidity today</h4>
+                      <span className="shrink-0 bg-[#DCFCE7] text-[#16A34A] text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-[#16A34A]/20">
+                        <Sparkles className="w-3 h-3" /> AI Insight
+                      </span>
+                    </div>
+                    <p className="text-[#64748B] text-[13px] leading-snug">Watch for fungal disease on your tomato crop.</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-300 self-center shrink-0" />
+                </div>
+              </div>
+
+              {/* Insight 2 */}
+              <div className="bg-white border border-[#E5E7EB] p-4 rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow relative overflow-hidden group">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-11 h-11 rounded-[16px] bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0 text-[#16A34A] mt-0.5">
+                    <Droplet className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h4 className="font-bold text-[#14532D] text-[15px] leading-tight truncate">Water your wheat tomorrow morning</h4>
+                    </div>
+                    <p className="text-[#64748B] text-[13px] leading-snug">Conditions are favorable for irrigation.</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-300 self-center shrink-0" />
+                </div>
+              </div>
+
+              {/* Insight 3 */}
+              <div className="bg-white border border-[#E5E7EB] p-4 rounded-[20px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow relative overflow-hidden group">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-11 h-11 rounded-[16px] bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0 text-amber-500 mt-0.5">
+                    <Sun className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h4 className="font-bold text-[#14532D] text-[15px] leading-tight truncate">Sunny afternoon expected</h4>
+                      <span className="shrink-0 bg-[#DCFCE7] text-[#16A34A] text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-[#16A34A]/20">
+                        <Sparkles className="w-3 h-3" /> AI Insight
+                      </span>
+                    </div>
+                    <p className="text-[#64748B] text-[13px] leading-snug">Consider checking soil moisture.</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-300 self-center shrink-0" />
+                </div>
+              </div>
             </div>
           </motion.section>
 
