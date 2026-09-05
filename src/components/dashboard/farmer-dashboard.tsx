@@ -58,22 +58,25 @@ export function FarmerDashboard() {
 
   return (
     <div className="flex flex-col relative w-full overflow-x-hidden bg-[#F8FAF9] min-h-[100dvh]">
-      {/* Botanical subtle background */}
+      {/* Top Farm Sunrise Landscape Background (behind header & greeting) */}
       <div 
-        className="absolute top-0 right-0 w-[350px] h-[350px] opacity-[0.035] pointer-events-none" 
-        style={{ 
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50,100 C50,100 0,60 0,30 C0,13.431 13.431,0 30,0 C38.284,0 45.784,3.358 50,8.783 C54.216,3.358 61.716,0 70,0 C86.569,0 100,13.431 100,30 C100,60 50,100 50,100 Z\' fill=\'%2316A34A\'/%3E%3C/svg%3E")', 
-          backgroundRepeat: 'no-repeat', 
-          backgroundPosition: 'top right', 
-          backgroundSize: '100%' 
-        }} 
-      />
+        className="absolute top-0 right-0 left-0 h-[300px] pointer-events-none overflow-hidden z-0"
+      >
+        <div 
+          className="absolute -top-4 -right-12 w-[380px] sm:w-[440px] h-[300px] bg-cover bg-center pointer-events-none opacity-45"
+          style={{ 
+            backgroundImage: 'url("/farm-landscape.png")',
+            maskImage: 'radial-gradient(ellipse at 75% 35%, black 25%, transparent 75%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at 75% 35%, black 25%, transparent 75%)'
+          }} 
+        />
+      </div>
 
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-32">
         
         {/* Sticky Top Header */}
         <header 
-          className="sticky top-0 z-40 bg-[#F8FAF9]/95 backdrop-blur-md px-4 sm:px-5 pb-3 border-b border-gray-100/80 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+          className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pb-3 border-b border-gray-100/80 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
           style={{ paddingTop: 'calc(var(--safe-top, 0px) + 20px)' }}
         >
           <div className="flex items-center gap-3">
@@ -122,7 +125,7 @@ export function FarmerDashboard() {
           className="px-4 sm:px-5 flex flex-col gap-6 mt-3"
         >
           {/* Greeting Section */}
-          <motion.div variants={item} className="pt-1">
+          <motion.div variants={item} className="pt-1 relative z-10">
             <h2 className="text-[26px] sm:text-[28px] font-bold text-[#14532D] tracking-tight leading-tight">
               {greeting}, {displayName}
             </h2>
@@ -132,7 +135,7 @@ export function FarmerDashboard() {
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div variants={item} className="flex gap-2.5 overflow-x-auto hide-scrollbar -mx-1 px-1">
+          <motion.div variants={item} className="flex gap-2.5 overflow-x-auto hide-scrollbar -mx-1 px-1 relative z-10">
             {/* Primary Action: Scan Crop */}
             <Link href="/scan" className="shrink-0 min-w-[175px]">
               <div className="bg-[#16A34A] hover:bg-[#15803D] text-white rounded-[20px] p-3.5 flex items-center justify-between shadow-[0_4px_14px_rgba(22,163,74,0.3)] transition-transform active:scale-[0.98]">
@@ -187,28 +190,30 @@ export function FarmerDashboard() {
           {/* Weather Intelligence Hero Card */}
           <motion.div 
             variants={item} 
-            className="w-full rounded-[26px] bg-gradient-to-br from-[#16A34A] via-[#166534] to-[#14532D] shadow-[0_12px_28px_rgba(20,83,45,0.22)] p-5 text-white relative overflow-hidden"
+            className="w-full rounded-[26px] bg-gradient-to-br from-[#16A34A] via-[#15803D] to-[#14532D] shadow-[0_12px_28px_rgba(20,83,45,0.22)] p-5 text-white relative overflow-hidden"
           >
-            {/* Subtle botanical watermark in corner */}
+            {/* Provided Farm Landscape positioned on the right half of the card */}
             <div 
-              className="absolute -right-6 -bottom-6 w-48 h-48 opacity-10 pointer-events-none" 
+              className="absolute right-0 top-0 bottom-0 w-[65%] pointer-events-none bg-cover bg-center sm:bg-right-center z-0"
               style={{ 
-                backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50,100 C50,100 0,60 0,30 C0,13.431 13.431,0 30,0 C38.284,0 45.784,3.358 50,8.783 C54.216,3.358 61.716,0 70,0 C86.569,0 100,13.431 100,30 C100,60 50,100 50,100 Z\' fill=\'%23FFFFFF\'/%3E%3C/svg%3E")', 
-                backgroundRepeat: 'no-repeat', 
-                backgroundPosition: 'bottom right', 
-                backgroundSize: '100%' 
+                backgroundImage: 'url("/farm-landscape.png")',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 50%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 50%)',
+                opacity: 0.9
               }} 
             />
 
-            {/* Soft ambient sun glow */}
-            <div className="absolute right-12 top-8 w-24 h-24 bg-amber-300/20 rounded-full blur-2xl pointer-events-none" />
+            {/* Subtle gradient overlay at bottom for maximum contrast on metrics & forecast */}
+            <div 
+              className="absolute inset-0 bg-gradient-to-t from-[#14532D]/90 via-[#14532D]/35 to-transparent pointer-events-none z-0"
+            />
 
             <div className="relative z-10">
               {/* Card Header */}
               <div className="flex justify-between items-center mb-3">
                 <div className="flex items-center gap-2">
                   <CloudSun className="w-5 h-5 text-amber-300" />
-                  <span className="text-[15px] font-semibold text-white tracking-tight">Weather Intelligence</span>
+                  <span className="text-[15px] font-semibold text-white tracking-tight drop-shadow-sm">Weather Intelligence</span>
                 </div>
                 <Link href="/environment">
                   <div className="px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20 shadow-sm">
@@ -219,57 +224,50 @@ export function FarmerDashboard() {
               </div>
 
               {/* Temp & Condition */}
-              <div className="flex justify-between items-end my-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[44px] font-extrabold leading-none tracking-tight text-white drop-shadow-sm">
-                    28°C
-                  </span>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-[18px] font-semibold text-white">Sunny</span>
-                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[12px] font-semibold border border-white/20">
-                      <Leaf className="w-3 h-3 text-[#DCFCE7]" />
-                      <span>Good for farming</span>
-                    </div>
+              <div className="flex flex-col gap-1 my-2">
+                <span className="text-[44px] font-extrabold leading-none tracking-tight text-white drop-shadow-md">
+                  28°C
+                </span>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-[18px] font-semibold text-white drop-shadow-sm">Sunny</span>
+                  <div className="flex items-center gap-1 bg-white/25 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[12px] font-semibold border border-white/20 shadow-sm">
+                    <Leaf className="w-3 h-3 text-[#DCFCE7]" />
+                    <span>Good for farming</span>
                   </div>
-                </div>
-                {/* Decorative Sun Icon with Glow */}
-                <div className="relative w-14 h-14 flex items-center justify-center mr-1">
-                  <div className="absolute inset-0 bg-amber-400/25 rounded-full blur-lg" />
-                  <Sun className="w-11 h-11 text-amber-300 drop-shadow-md" />
                 </div>
               </div>
 
               {/* Metrics Bar */}
-              <div className="grid grid-cols-3 bg-black/20 rounded-[18px] p-3 mt-4 backdrop-blur-md border border-white/15 divide-x divide-white/15">
+              <div className="grid grid-cols-3 bg-black/25 rounded-[18px] p-3 mt-4 backdrop-blur-md border border-white/15 divide-x divide-white/15 shadow-inner">
                 <div className="flex items-center justify-center gap-2.5 px-2">
                   <Droplet className="w-5 h-5 text-blue-200 shrink-0" />
                   <div className="flex flex-col">
                     <span className="text-[14px] font-bold text-white leading-tight">65%</span>
-                    <span className="text-[11px] text-white/80 font-medium">Humidity</span>
+                    <span className="text-[11px] text-white/85 font-medium">Humidity</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2.5 px-2">
                   <CloudRain className="w-5 h-5 text-blue-200 shrink-0" />
                   <div className="flex flex-col">
                     <span className="text-[14px] font-bold text-white leading-tight">10%</span>
-                    <span className="text-[11px] text-white/80 font-medium">Rain Prob.</span>
+                    <span className="text-[11px] text-white/85 font-medium">Rain Prob.</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2.5 px-2">
                   <Wind className="w-5 h-5 text-emerald-200 shrink-0" />
                   <div className="flex flex-col">
                     <span className="text-[14px] font-bold text-white leading-tight">12 km/h</span>
-                    <span className="text-[11px] text-white/80 font-medium">Wind</span>
+                    <span className="text-[11px] text-white/85 font-medium">Wind</span>
                   </div>
                 </div>
               </div>
 
               {/* 7-Day Forecast */}
               <div className="mt-4 border-t border-white/15 pt-3.5">
-                <h4 className="text-[12px] font-bold text-white/80 mb-2.5 uppercase tracking-wider">7-Day Forecast</h4>
+                <h4 className="text-[12px] font-bold text-white/85 mb-2.5 uppercase tracking-wider">7-Day Forecast</h4>
                 <div className="grid grid-cols-5 gap-2">
                   {FORECAST_DATA.map((f, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1.5 bg-black/15 rounded-[14px] py-2 px-1 border border-white/10 backdrop-blur-sm">
+                    <div key={i} className="flex flex-col items-center gap-1.5 bg-black/20 rounded-[14px] py-2 px-1 border border-white/15 backdrop-blur-sm shadow-sm">
                       <span className="text-[12px] font-medium text-white/90">{f.day}</span>
                       <div className="w-5 h-5 flex items-center justify-center">
                         {f.icon === "sun" && <Sun className="w-4 h-4 text-amber-300" />}
