@@ -21,7 +21,7 @@ export function BottomNav() {
     { icon: Home, label: t("nav.home"), href: "/home" },
     { icon: Bot, label: t("nav.assistant"), href: "/assistant" },
     { icon: ScanLine, label: t("nav.scan"), href: "/scan", isPrimary: true },
-    { icon: Wrench, label: t("nav.tools"), href: "/tools" },
+    { icon: CloudSun, label: t("nav.weather"), href: "/environment" },
     { icon: UserCircle, label: t("nav.profile"), href: "/profile" },
   ];
 
