@@ -280,13 +280,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
       );
     }
 
-    if (status === 429 || errorCode === "rate_limit_exceeded") {
+    if (
+      status === 429 ||
+      errorCode === "rate_limit_exceeded" ||
+      rawMsg.includes("rate_limit_exceeded") ||
+      rawMsg.includes("OTPM")
+    ) {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "RATE_LIMITED",
-            message: "Too many scans are being processed right now. Please try again shortly.",
+            message: "Scan rate limit reached on Groq free tier. Please wait 15–20 seconds and tap 'Analyze Again'.",
           },
         },
         { status: 429 }
