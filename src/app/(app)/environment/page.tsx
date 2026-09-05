@@ -15,9 +15,26 @@ import {
   Check,
   AlertCircle,
   CheckCircle,
-  Wifi
+  Wifi,
+  CloudSun,
+  CloudRain,
+  ShieldAlert,
+  AlertTriangle,
+  Sprout,
+  Waves,
+  Flame,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const FORECAST = [
+  { day: "Mon", temp: 32, icon: CloudSun, prob: 10 },
+  { day: "Tue", temp: 34, icon: Sun, prob: 0 },
+  { day: "Wed", temp: 33, icon: CloudSun, prob: 20 },
+  { day: "Thu", temp: 28, icon: CloudRain, prob: 80 },
+  { day: "Fri", temp: 27, icon: CloudRain, prob: 60 },
+  { day: "Sat", temp: 29, icon: CloudSun, prob: 30 },
+  { day: "Sun", temp: 31, icon: Sun, prob: 10 },
+];
 
 export default function EnvironmentPage() {
   const [connState, setConnState] = useState<"connected" | "scanning">("connected");
@@ -58,7 +75,7 @@ export default function EnvironmentPage() {
           viewBox="0 0 200 200"
           fill="currentColor"
         >
-          {/* Decorative natural leaf branch branches */}
+          {/* Decorative natural leaf branch */}
           <path d="M190,10 Q140,50 80,65 Q130,25 190,10 Z" />
           <path d="M185,50 Q135,90 95,105 Q145,70 185,50 Z" opacity="0.8" />
           <path d="M170,85 Q120,125 75,135 Q125,105 170,85 Z" opacity="0.6" />
@@ -123,7 +140,6 @@ export default function EnvironmentPage() {
               <div className="w-13 h-13 rounded-2xl bg-[#ECFDF5] border border-emerald-100 flex items-center justify-center relative shrink-0">
                 <div className="relative">
                   <Cpu className="w-6 h-6 text-[#15803D]" />
-                  {/* Subtle wireless signal wave icon overlay */}
                   <Wifi className="w-3.5 h-3.5 text-[#16A34A] absolute -top-1.5 -right-1.5" />
                 </div>
                 {/* Green Connected Indicator Dot */}
@@ -389,6 +405,118 @@ export default function EnvironmentPage() {
                   <Bell className="w-4 h-4 text-white" />
                   <span>Remind me</span>
                 </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 7-DAY FORECAST SECTION */}
+          <div className="bg-white rounded-3xl p-5 shadow-xs border border-gray-100/90 flex flex-col gap-3 mt-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-[18px] font-extrabold text-[#0D3321]">7-Day Forecast</h3>
+              <span className="text-[12px] font-bold text-[#16A34A] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full">
+                Live Outlook
+              </span>
+            </div>
+
+            {/* Horizontal Forecast Scroll */}
+            <div className="flex gap-2.5 overflow-x-auto pb-1 -mx-2 px-2 hide-scrollbar">
+              {FORECAST.map((day, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center min-w-[56px] py-2.5 px-1.5 rounded-2xl bg-[#F8FAF9] border border-gray-100/80 shrink-0 hover:border-emerald-200 transition-colors"
+                >
+                  <span className="text-[12.5px] font-bold text-[#64748B] mb-2">{day.day}</span>
+                  <day.icon
+                    className={cn(
+                      "w-6 h-6 mb-2 shrink-0",
+                      day.temp > 32 ? "text-amber-500" : day.prob > 50 ? "text-blue-500" : "text-emerald-600"
+                    )}
+                  />
+                  <span className="text-[15px] font-extrabold text-[#0D3321] mb-1">
+                    {day.temp}°
+                  </span>
+                  <span className="text-[10.5px] font-bold text-blue-500 flex items-center gap-0.5">
+                    <CloudRain className="w-3 h-3" /> {day.prob}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI RISK ENGINE SECTION */}
+          <div className="flex flex-col gap-3 mt-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-[18px] font-extrabold text-[#0D3321] flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-500" />
+                Risk Engine
+              </h3>
+              <span className="text-[11px] font-extrabold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                Active Alerts
+              </span>
+            </div>
+
+            {/* Engine Data Pipeline Diagram */}
+            <div className="bg-[#ECFDF5] rounded-2xl p-3.5 border border-emerald-200/60 flex items-center justify-between text-[11px] font-extrabold text-[#0D3321] uppercase tracking-wider text-center">
+              <div className="flex flex-col gap-1 items-center flex-1">
+                <Cpu className="w-4 h-4 text-[#16A34A]" />
+                <span>Sensor Data</span>
+              </div>
+              <div className="w-6 h-px bg-[#16A34A]/40" />
+              <div className="flex flex-col gap-1 items-center flex-1">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>AI Model</span>
+              </div>
+              <div className="w-6 h-px bg-[#16A34A]/40" />
+              <div className="flex flex-col gap-1 items-center flex-1">
+                <ShieldAlert className="w-4 h-4 text-red-500" />
+                <span>Realtime Alert</span>
+              </div>
+            </div>
+
+            {/* 2x2 Risk Metric Cards */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Disease Risk */}
+              <div className="bg-white p-4 rounded-3xl border border-gray-100/90 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12px] font-medium text-[#64748B]">Disease Risk</span>
+                  <span className="text-[14px] font-black text-red-600 tracking-tight">HIGH</span>
+                </div>
+              </div>
+
+              {/* Water Stress */}
+              <div className="bg-white p-4 rounded-3xl border border-gray-100/90 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                  <Sprout className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12px] font-medium text-[#64748B]">Water Stress</span>
+                  <span className="text-[14px] font-black text-amber-600 tracking-tight">MODERATE</span>
+                </div>
+              </div>
+
+              {/* Flood Risk */}
+              <div className="bg-white p-4 rounded-3xl border border-gray-100/90 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                  <Waves className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12px] font-medium text-[#64748B]">Flood Risk</span>
+                  <span className="text-[14px] font-black text-blue-600 tracking-tight">LOW</span>
+                </div>
+              </div>
+
+              {/* Heat Stress */}
+              <div className="bg-white p-4 rounded-3xl border border-gray-100/90 shadow-xs flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                  <Flame className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12px] font-medium text-[#64748B]">Heat Stress</span>
+                  <span className="text-[14px] font-black text-orange-600 tracking-tight">MODERATE</span>
+                </div>
               </div>
             </div>
           </div>
