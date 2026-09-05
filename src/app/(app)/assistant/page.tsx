@@ -55,7 +55,7 @@ export default function AssistantPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8faf9] relative pb-24">
       {/* Header */}
-      <div className="pt-safe pt-3 px-4 pb-3 bg-white sticky top-0 z-20 border-b border-gray-100 shadow-sm">
+      <div className="pt-safe pt-6 px-4 pb-3 bg-white sticky top-0 z-20 border-b border-gray-100 shadow-sm">
         <div className="flex items-center gap-3 h-[42px]">
           <img src="/icon-512x512.png" alt="KisanEdge AI" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
           <div className="flex flex-col justify-center">

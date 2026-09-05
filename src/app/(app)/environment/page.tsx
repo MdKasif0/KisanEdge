@@ -86,7 +86,7 @@ export default function EnvironmentPage() {
       <div className="flex flex-col relative z-10 w-full max-w-md mx-auto pb-24">
         
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pt-safe pt-3 pb-3 border-b border-gray-100 flex items-center justify-between shadow-sm">
+        <header className="sticky top-0 z-40 bg-[#F8FAF9]/90 backdrop-blur-md px-4 sm:px-5 pt-safe pt-6 pb-3 border-b border-gray-100 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
             <img src="/icon-512x512.png" alt="Environment" className="w-[42px] h-[42px] rounded-[14px] object-cover shadow-sm" />
             <div className="flex flex-col justify-center">
