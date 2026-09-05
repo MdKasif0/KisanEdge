@@ -170,11 +170,13 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
+        // Set conservative token budget that stays comfortably within Groq's 1,000 OTPM tier
+        const tokenBudget = attempt === 1 ? 450 : 350;
+
         completion = await groqDisease.chat.completions.create(
           {
             model: "qwen/qwen3.8-27b",
-            max_tokens: 3000,
-            reasoning_effort: "medium",
+            max_tokens: tokenBudget,
             response_format: { type: "json_object" },
             messages: [
               {
@@ -209,12 +211,15 @@ export async function POST(req: NextRequest): Promise<NextResponse<DiseaseDetect
         if (
           attempt === 1 &&
           (err?.status === 429 ||
+            err?.code === "rate_limit_exceeded" ||
+            err?.message?.includes("rate_limit_exceeded") ||
+            err?.message?.includes("OTPM") ||
             err?.code === "ETIMEDOUT" ||
             err?.message?.includes("json_validate_failed") ||
             err?.message?.includes("completion tokens"))
         ) {
-          // Wait 1.5s before retry
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+          // Wait 2.5s before retrying with reduced token budget
+          await new Promise((resolve) => setTimeout(resolve, 2500));
           continue;
         }
         throw err;

@@ -81,6 +81,13 @@ Analyze:
 - Recommended actions (practical steps: airflow, sanitation, monitoring, local expert check)
 - Environmental risk factor: "low" | "moderate" | "high" | "unknown"
 
+Keep the JSON output compact and strictly within token limits:
+- "explanation": concise (maximum 2 sentences).
+- "observedSymptoms": 2 to 4 key visual traits.
+- "alternativeConditions": maximum 2 plausible conditions (1 sentence reason each).
+- "recommendedActions": maximum 3 direct, practical agronomic steps.
+- "warnings": 0 to 2 safety warnings.
+
 You MUST respond strictly with a valid JSON object conforming to this exact schema (no preamble, no commentary, no markdown codeblocks):
 {
   "status": "healthy" | "disease_detected" | "pest_detected" | "nutrient_deficiency_possible" | "environmental_stress" | "poor_image" | "not_a_plant" | "uncertain",
