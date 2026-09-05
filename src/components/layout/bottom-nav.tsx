@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ScanLine, Sprout, Leaf, CloudSun, UserCircle } from "lucide-react";
+import { Home, ScanLine, Sprout, Leaf, CloudSun, UserCircle, Bot, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/context";
 import { useUser } from "@/lib/store/user-store";
@@ -18,13 +18,11 @@ export function BottomNav() {
   }
 
   const navItems: { icon: any; label: string; href: string; isPrimary?: boolean }[] = [
-    { icon: Home, label: "Home", href: "/home" },
-    role === "farmer" 
-      ? { icon: Sprout, label: "Farm", href: "/farm" }
-      : { icon: Leaf, label: "Plants", href: "/plants" },
-    { icon: ScanLine, label: "Scan", href: "/scan", isPrimary: true },
-    { icon: CloudSun, label: "Env", href: "/environment" },
-    { icon: UserCircle, label: "Profile", href: "/profile" },
+    { icon: Home, label: t("nav.home"), href: "/home" },
+    { icon: Bot, label: t("nav.assistant"), href: "/assistant" },
+    { icon: ScanLine, label: t("nav.scan"), href: "/scan", isPrimary: true },
+    { icon: Wrench, label: t("nav.tools"), href: "/tools" },
+    { icon: UserCircle, label: t("nav.profile"), href: "/profile" },
   ];
 
   const primaryItem = navItems.find((item) => item.isPrimary);

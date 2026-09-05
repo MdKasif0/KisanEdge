@@ -42,7 +42,15 @@ export type TranslationKey =
   | "nav.farm"
   | "nav.scan"
   | "nav.weather"
-  | "nav.alerts";
+  | "nav.alerts"
+  | "nav.assistant"
+  | "nav.tools"
+  | "nav.profile"
+  | "nav.plants"
+  | "dashboard.greeting"
+  | "dashboard.subtitle"
+  | "profile.title"
+  | "profile.settings";
 
 export const translations: Record<LanguageCode, Record<TranslationKey, string>> = {
   en: {
@@ -74,7 +82,15 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     "nav.farm": "My Farm",
     "nav.scan": "Scan",
     "nav.weather": "Weather",
-    "nav.alerts": "Alerts"
+    "nav.alerts": "Alerts",
+    "nav.assistant": "Assistant",
+    "nav.tools": "Tools",
+    "nav.profile": "Profile",
+    "nav.plants": "Plants",
+    "dashboard.greeting": "Good morning",
+    "dashboard.subtitle": "Here is your farm overview today.",
+    "profile.title": "Profile",
+    "profile.settings": "Settings"
   },
   hi: {
     "onboarding.welcome.tagline": "हर पौधे के लिए स्मार्ट देखभाल।",
@@ -105,7 +121,15 @@ export const translations: Record<LanguageCode, Record<TranslationKey, string>> 
     "nav.farm": "मेरा खेत",
     "nav.scan": "स्कैन",
     "nav.weather": "मौसम",
-    "nav.alerts": "अलर्ट"
+    "nav.alerts": "अलर्ट",
+    "nav.assistant": "सहायक",
+    "nav.tools": "उपकरण",
+    "nav.profile": "प्रोफ़ाइल",
+    "nav.plants": "पौधे",
+    "dashboard.greeting": "सुप्रभात",
+    "dashboard.subtitle": "यहाँ आज आपके खेत का अवलोकन है।",
+    "profile.title": "प्रोफ़ाइल",
+    "profile.settings": "सेटिंग्स"
   },
   bn: {} as any, mr: {} as any, te: {} as any, ta: {} as any, kn: {} as any, ml: {} as any, gu: {} as any, pa: {} as any
 };

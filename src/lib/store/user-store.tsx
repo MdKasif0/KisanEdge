@@ -4,13 +4,16 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { storage } from "@/lib/storage";
 
 export type UserRole = "farmer" | "home";
+export type SupportedLanguage = "en" | "hi" | "mr";
 
 interface UserContextType {
   role: UserRole;
   crops: string[];
   location: string;
   name: string;
+  language: SupportedLanguage;
   setRole: (r: UserRole) => void;
+  setLanguage: (lang: SupportedLanguage) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -20,14 +23,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [crops, setCrops] = useState<string[]>([]);
   const [location, setLocation] = useState<string>("Pune, MH");
   const [name, setName] = useState<string>("Kasif");
+  const [language, setLanguageState] = useState<SupportedLanguage>("en");
   const [isMounted, setIsMounted] = useState(false);
+
+  const setLanguage = (lang: SupportedLanguage) => {
+    setLanguageState(lang);
+    storage.set("kisanedge_language", lang);
+  };
 
   useEffect(() => {
     const savedRole = storage.get<UserRole>("kisanedge_role", "farmer");
+    const savedLanguage = storage.get<SupportedLanguage>("kisanedge_language", "en");
     const savedCrops = storage.get<string[]>("kisanedge_crops", []);
     const savedLoc = storage.get<{city?: string, state?: string} | null>("kisanedge_location", null);
     
     setRole(savedRole);
+    setLanguageState(savedLanguage);
     setCrops(savedCrops);
     if (savedLoc?.city) {
       setLocation(`${savedLoc.city}, ${savedLoc.state || "India"}`);
@@ -44,7 +55,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ role, crops, location, name, setRole }}>
+    <UserContext.Provider value={{ role, crops, location, name, language, setRole, setLanguage }}>
       {children}
     </UserContext.Provider>
   );
