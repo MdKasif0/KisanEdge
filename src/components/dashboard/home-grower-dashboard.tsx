@@ -37,9 +37,7 @@ export function HomeGrowerDashboard() {
       <header className="flex items-center justify-between pt-safe pb-2">
         <div className="flex flex-col gap-0.5">
           <h1 className="text-[22px] sm:text-[24px] font-bold text-[#14532D] tracking-tight flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#16A34A] rounded-xl flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-white stroke-[2.5]" />
-            </div>
+            <img src="/icon-512x512.png" alt="KisanEdge" className="w-8 h-8 rounded-xl object-cover shadow-sm" />
             KisanEdge
           </h1>
           <div className="flex items-center gap-1 mt-1">

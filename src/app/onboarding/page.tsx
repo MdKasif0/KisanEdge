@@ -56,10 +56,12 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           className="relative mb-5 sm:mb-6"
         >
-          <div className="w-[104px] h-[104px] sm:w-[114px] sm:h-[114px] rounded-[30px] bg-gradient-to-br from-[#a3e635] via-[#4ade80] to-[#16a34a] shadow-[0_16px_32px_rgba(20,83,45,0.45)] flex items-center justify-center relative overflow-hidden group">
-            {/* Subtle inner highlight */}
-            <div className="absolute inset-0 rounded-[30px] border-[1.5px] border-white/20 mix-blend-overlay" />
-            <Leaf className="w-[52px] h-[52px] sm:w-[58px] sm:h-[58px] text-white stroke-[2.5]" />
+          <div className="w-[104px] h-[104px] sm:w-[114px] sm:h-[114px] rounded-[30px] shadow-[0_16px_32px_rgba(20,83,45,0.45)] flex items-center justify-center relative overflow-hidden group">
+            <img 
+              src="/icon-512x512.png" 
+              alt="KisanEdge Logo" 
+              className="w-full h-full object-cover"
+            />
           </div>
         </motion.div>
 

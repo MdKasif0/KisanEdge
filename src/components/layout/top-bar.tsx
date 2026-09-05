@@ -22,6 +22,7 @@ export function TopBar() {
         <div className="flex h-12 items-center justify-between">
           <div className="flex flex-col">
             <Link href="/home" className="flex items-center gap-1.5">
+              <img src="/icon-512x512.png" alt="KisanEdge" className="w-6 h-6 rounded-md object-cover shadow-sm" />
               <span className="font-bold text-[22px] text-[#0e3b1c] tracking-tight">KisanEdge</span>
             </Link>
             <div className="flex items-center gap-1 mt-0.5 text-gray-500">
