@@ -131,7 +131,23 @@ export function HomeGrowerDashboard() {
           </div>
         </div>
       </motion.div>
+      </motion.div>
 
+      {/* Featured: Community Card */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+        <Link href="/community" className="block relative overflow-hidden bg-gradient-to-br from-[#14532D] to-[#0e3b1c] rounded-[24px] p-5 text-white shadow-lg group">
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors" />
+          <div className="flex justify-between items-start relative z-10">
+            <div className="flex flex-col">
+              <h2 className="text-[18px] font-bold text-white/90">KisanEdge Community</h2>
+              <p className="text-[13px] text-white/70 mt-1 max-w-[200px]">Connect with growers, ask questions, and share expertise.</p>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+        </Link>
+      </motion.div>
       {/* My Plants */}
       <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
         <div className="flex items-center justify-between mb-3">
