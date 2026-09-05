@@ -23,6 +23,7 @@ export interface ClientContextParams {
 
 /**
  * Builds structured context object from client state, stores, and sensor readings.
+ * Seamlessly integrates real disease scans saved in localStorage.
  * Ensures no private credentials or keys are included.
  */
 export function buildClientAIContext(params: ClientContextParams): AIContext {
@@ -33,9 +34,29 @@ export function buildClientAIContext(params: ClientContextParams): AIContext {
   // Check if sensor is explicitly disconnected in storage
   const isSensorConnected = storage.get<boolean>("kisanedge_sensor_connected", DEMO_SENSOR.isConnected);
 
-  const primaryCrop = params.crops && params.crops.length > 0
-    ? params.crops[0]
-    : (isFarmer ? "Tomato" : "Indoor Plant");
+  // Check if real scan result exists in localStorage
+  const savedScan = storage.get<any>("kisanedge_scan_result", null);
+
+  const primaryCrop = savedScan?.plantType || (params.crops && params.crops.length > 0 ? params.crops[0] : (isFarmer ? "Tomato" : "Indoor Plant"));
+
+  const latestScanContext = savedScan
+    ? {
+        crop: savedScan.plantType || primaryCrop,
+        condition: savedScan.conditionName || (savedScan.status === "healthy" ? "Healthy Plant" : "Under Observation"),
+        confidence: savedScan.confidence,
+        severity: savedScan.severity,
+        reasons: savedScan.observedSymptoms || [],
+        recommendation: savedScan.recommendedActions?.[0] || savedScan.explanation,
+      }
+    : {
+        crop: "Tomato",
+        condition: DEMO_DIAGNOSIS.disease,
+        confidence: DEMO_DIAGNOSIS.confidence,
+        severity: DEMO_DIAGNOSIS.severity,
+        healthScore: DEMO_DIAGNOSIS.healthScore,
+        reasons: DEMO_DIAGNOSIS.reasons,
+        recommendation: DEMO_DIAGNOSIS.recommendation,
+      };
 
   return {
     role: isFarmer ? "farmer" : "home_grower",
@@ -62,15 +83,7 @@ export function buildClientAIContext(params: ClientContextParams): AIContext {
       rainProbability: DEMO_WEATHER.rainProbability,
       windSpeed: DEMO_WEATHER.windSpeed,
     },
-    diseaseRisk: DEMO_DIAGNOSIS.environmentalRisk.riskLevel || "High",
-    latestScan: {
-      crop: "Tomato",
-      condition: DEMO_DIAGNOSIS.disease,
-      confidence: DEMO_DIAGNOSIS.confidence,
-      severity: DEMO_DIAGNOSIS.severity,
-      healthScore: DEMO_DIAGNOSIS.healthScore,
-      reasons: DEMO_DIAGNOSIS.reasons,
-      recommendation: DEMO_DIAGNOSIS.recommendation,
-    },
+    diseaseRisk: savedScan?.environmentalRisk || DEMO_DIAGNOSIS.environmentalRisk.riskLevel || "High",
+    latestScan: latestScanContext,
   };
 }
