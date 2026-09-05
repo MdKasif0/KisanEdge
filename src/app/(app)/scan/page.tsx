@@ -377,17 +377,34 @@ export default function ScanPage() {
 
         {/* Error notification banner */}
         {errorMessage && (
-          <div className="absolute top-[80px] left-4 right-4 z-30 bg-red-500/90 backdrop-blur-md text-white px-4 py-2.5 rounded-xl border border-red-400/40 shadow-lg flex items-center justify-between gap-2 text-[13px] animate-fade-in">
-            <div className="flex items-center gap-2">
+          <div
+            className={cn(
+              "absolute top-[80px] left-4 right-4 z-30 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl shadow-lg flex items-center justify-between gap-2.5 text-[12.5px] animate-fade-in border",
+              errorMessage.toLowerCase().includes("rate limit") || errorMessage.toLowerCase().includes("wait")
+                ? "bg-amber-600/95 border-amber-400/40"
+                : "bg-red-500/90 border-red-400/40"
+            )}
+          >
+            <div className="flex items-center gap-2 flex-1">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
+              <span className="leading-snug">{errorMessage}</span>
             </div>
-            <button
-              onClick={() => setErrorMessage(null)}
-              className="text-white/80 hover:text-white text-xs font-semibold px-2 py-0.5"
-            >
-              Dismiss
-            </button>
+            <div className="flex items-center gap-1 shrink-0">
+              {scanState === "preview" && imageSrc && (
+                <button
+                  onClick={handleAnalyze}
+                  className="bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                >
+                  Retry Now
+                </button>
+              )}
+              <button
+                onClick={() => setErrorMessage(null)}
+                className="text-white/80 hover:text-white text-xs font-semibold px-1.5 py-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
           </div>
         )}
 
