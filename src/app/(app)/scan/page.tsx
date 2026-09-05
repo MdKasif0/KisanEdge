@@ -158,11 +158,11 @@ export default function ScanPage() {
       const rawDataUrl = event.target?.result as string;
       if (!rawDataUrl) return;
 
-      // Optimize image for fast and reliable AI vision analysis
+      // Optimize image for fast and reliable AI vision analysis (1024px preserves lesion details while conserving token limits)
       const img = new Image();
       img.onload = () => {
         try {
-          const maxDim = 1600;
+          const maxDim = 1024;
           let width = img.width;
           let height = img.height;
 
@@ -182,7 +182,7 @@ export default function ScanPage() {
           const ctx = canvas.getContext("2d");
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            const optimized = canvas.toDataURL("image/jpeg", 0.9);
+            const optimized = canvas.toDataURL("image/jpeg", 0.85);
             setImageSrc(optimized);
           } else {
             setImageSrc(rawDataUrl);
