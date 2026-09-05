@@ -61,111 +61,12 @@ export const MOCK_PLANTS: Plant[] = [
   },
 ];
 
-export const MOCK_WEATHER: Weather = {
-  temp: 28,
-  condition: "Sunny",
-  humidity: 65,
-  rainProbability: 10,
-  windSpeed: 12,
-  forecast: [
-    { day: "Mon", temp: 28, icon: "☀️", condition: "Sunny" },
-    { day: "Tue", temp: 29, icon: "🌤️", condition: "Mostly Sunny" },
-    { day: "Wed", temp: 24, icon: "🌧️", condition: "Rain" },
-    { day: "Thu", temp: 26, icon: "⛅", condition: "Partly Cloudy" },
-    { day: "Fri", temp: 27, icon: "☀️", condition: "Sunny" },
-    { day: "Sat", temp: 30, icon: "☀️", condition: "Hot" },
-    { day: "Sun", temp: 28, icon: "⛅", condition: "Partly Cloudy" },
-  ],
-};
+// Re-export from connected demo state
+import { DEMO_WEATHER, DEMO_ALERTS, DEMO_HISTORY, DEMO_FIELDS } from "./demo-state";
 
-export const MOCK_ALERTS: Alert[] = [
-  {
-    id: "a1",
-    title: "Possible fungal disease risk increased",
-    description: "High humidity conditions are favorable for blight development.",
-    severity: "critical",
-    date: "10 mins ago",
-    category: "disease",
-    relatedEntity: "Tomato Field A",
-    action: "Inspect Plants",
-    isRead: false,
-  },
-  {
-    id: "a2",
-    title: "Soil moisture is low",
-    description: "Soil moisture dropped below 30%.",
-    severity: "warning",
-    date: "2 hours ago",
-    category: "irrigation",
-    relatedEntity: "Field A",
-    action: "Turn on Irrigation",
-    isRead: false,
-  },
-  {
-    id: "a3",
-    title: "Heavy rainfall expected tomorrow",
-    description: "80% chance of heavy rain. Ensure proper drainage.",
-    severity: "warning",
-    date: "5 hours ago",
-    category: "weather",
-    action: "View Forecast",
-    isRead: true,
-  },
-  {
-    id: "a4",
-    title: "High temperatures may cause crop stress",
-    description: "Temperatures expected to exceed 35°C today.",
-    severity: "warning",
-    date: "1 day ago",
-    category: "heat",
-    relatedEntity: "All Crops",
-    action: "Review Irrigation",
-    isRead: true,
-  },
-  {
-    id: "a5",
-    title: "Increasing pest activity detected",
-    description: "Aphid activity noted in recent scans.",
-    severity: "critical",
-    date: "1 day ago",
-    category: "pest",
-    relatedEntity: "Wheat Field B",
-    action: "Inspect Affected Plants",
-    isRead: true,
-  },
-  {
-    id: "a6",
-    title: "Your Rose may need attention",
-    description: "Last scan indicated potential nutrient deficiency.",
-    severity: "info",
-    date: "2 days ago",
-    category: "care",
-    relatedEntity: "Rose",
-    action: "View Care Guide",
-    isRead: true,
-  },
-  {
-    id: "a7",
-    title: "Water your Tulsi today",
-    description: "It has been 3 days since last watering.",
-    severity: "info",
-    date: "3 days ago",
-    category: "care",
-    relatedEntity: "Tulsi",
-    action: "Mark as Watered",
-    isRead: true,
-  },
-  {
-    id: "a8",
-    title: "Humidity conditions may increase fungal risk",
-    description: "Indoor humidity is above 70%. Ensure good ventilation.",
-    severity: "warning",
-    date: "4 days ago",
-    category: "weather",
-    action: "Check Environment",
-    isRead: true,
-  }
-];
+export const MOCK_WEATHER: Weather = DEMO_WEATHER;
+
+export const MOCK_ALERTS: Alert[] = DEMO_ALERTS;
 
 export const MOCK_FARMER_INSIGHTS = [
   {
@@ -342,44 +243,7 @@ export type Field = {
   image: string;
 };
 
-export const MOCK_FIELDS: Field[] = [
-  {
-    id: "f1",
-    name: "Field A",
-    crop: "Tomato",
-    area: "2.5 Acres",
-    sowingDate: "12 Aug 2026",
-    growthStage: "Flowering",
-    healthScore: 82,
-    alerts: 2,
-    risk: "Moderate",
-    image: "🍅"
-  },
-  {
-    id: "f2",
-    name: "Field B",
-    crop: "Wheat",
-    area: "5.0 Acres",
-    sowingDate: "05 Jul 2026",
-    growthStage: "Vegetative Growth",
-    healthScore: 91,
-    alerts: 0,
-    risk: "Low",
-    image: "🌾"
-  },
-  {
-    id: "f3",
-    name: "Field C",
-    crop: "Potato",
-    area: "1.2 Acres",
-    sowingDate: "20 Aug 2026",
-    growthStage: "Germination",
-    healthScore: 74,
-    alerts: 1,
-    risk: "High",
-    image: "🥔"
-  }
-];
+export const MOCK_FIELDS: Field[] = DEMO_FIELDS;
 
 export type DetailedPlant = {
   id: string;
@@ -432,41 +296,4 @@ export type HistoryScan = {
   imagePath?: string;
 };
 
-export const MOCK_HISTORY: HistoryScan[] = [
-  {
-    id: "h1",
-    date: "Today, 10:30 AM",
-    crop: "Tomato",
-    diagnosis: "Early Blight",
-    confidence: 94,
-    severity: "Moderate",
-    healthScore: 68
-  },
-  {
-    id: "h2",
-    date: "Yesterday",
-    crop: "Wheat",
-    diagnosis: "Healthy",
-    confidence: 98,
-    severity: "Healthy",
-    healthScore: 91
-  },
-  {
-    id: "h3",
-    date: "02 Sep 2026",
-    crop: "Potato",
-    diagnosis: "Late Blight Risk",
-    confidence: 82,
-    severity: "Severe",
-    healthScore: 45
-  },
-  {
-    id: "h4",
-    date: "28 Aug 2026",
-    crop: "Tomato",
-    diagnosis: "Nitrogen Deficiency",
-    confidence: 88,
-    severity: "Early",
-    healthScore: 76
-  }
-];
+export const MOCK_HISTORY: HistoryScan[] = DEMO_HISTORY;

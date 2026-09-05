@@ -3,10 +3,14 @@
   "short_name": "KisanEdge",
   "description": "Smart care for every plant. Detect. Understand. Protect.",
   "start_url": "/home",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#f8faf9",
   "theme_color": "#16a34a",
   "orientation": "portrait",
+  "prefer_related_applications": false,
+  "categories": ["agriculture", "health", "utilities"],
   "icons": [
     {
       "src": "/icon-192x192.png",
