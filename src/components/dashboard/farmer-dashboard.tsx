@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { MOCK_ALERTS, MOCK_FARMER_INSIGHTS, MOCK_PLANTS, MOCK_WEATHER } from "@/lib/mock-data";
 import { 
   ArrowRight, AlertTriangle, ScanLine, Sprout, CloudSun, Droplet, Clock, 
-  MapPin, Bell, Sun, Thermometer, Wind, Leaf, Sparkles, Activity, Check 
+  MapPin, Bell, Sun, Thermometer, Wind, Leaf, Sparkles, Activity, Check,
+  CloudRain, ThermometerSun
 } from "lucide-react";
 import { useUser } from "@/lib/store/user-store";
 import { motion } from "framer-motion";
