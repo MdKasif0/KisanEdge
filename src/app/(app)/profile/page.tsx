@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { UserCircle, Settings, ChevronRight, LogOut, MapPin, Globe, Bell, WifiOff, Cpu, Leaf, Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUser, SupportedLanguage } from "@/lib/store/user-store";
+import { useUser } from "@/lib/store/user-store";
 import { useTranslation } from "@/lib/i18n/context";
-import { LANGUAGES } from "@/lib/i18n/translations";
+import { LANGUAGES, LanguageCode } from "@/lib/i18n/translations";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function ProfilePage() {
-  const { name, role, location, language, setLanguage } = useUser();
-  const { t } = useTranslation();
+  const { name, role, location } = useUser();
+  const { t, language, setLanguage } = useTranslation();
   
   const [offlineMode, setOfflineMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
@@ -61,7 +61,7 @@ export default function ProfilePage() {
               </div>
               <select 
                 value={language}
-                onChange={(e) => setLanguage(e.target.value as SupportedLanguage)}
+                onChange={(e) => setLanguage(e.target.value as LanguageCode)}
                 className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-[#16a34a] focus:border-[#16a34a] block p-2.5 outline-none font-medium appearance-none"
               >
                 {Object.entries(LANGUAGES).map(([code, lang]) => (
