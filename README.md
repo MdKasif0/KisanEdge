@@ -389,7 +389,7 @@ Copyright (c) 2026 Md Kasifuddin and KisanEdge Contributors
 
 ## 👨‍💻 Authors & Acknowledgments
 
-- **Developed by**: [Md Kasifuddin](https://github.com/MdKasif0)
+- **Developed by**: [Md Kasif Uddin](https://github.com/MdKasif0)
 - **AI Infrastructure**: [Groq Cloud](https://groq.com/) for lightning-fast LPU inference (`qwen/qwen3.8-27b` & `openai/gpt-oss-120b`).
 - **Framework**: Built with [Next.js](https://nextjs.org/) by Vercel.
 
